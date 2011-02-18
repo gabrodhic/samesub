@@ -62,6 +62,7 @@ class SubjectController extends Controller
 	public function actionCreate()
 	{
 		$model=new Subject;
+		$model->scenario='add';
 
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
@@ -69,6 +70,10 @@ class SubjectController extends Controller
 		if(isset($_POST['Subject']))
 		{
 			$model->attributes=$_POST['Subject'];
+			// Assign the user_id 1 if is a guest
+			$model->user_id=(Yii::app()->user->id) ? Yii::app()->user->id : 1;
+			$model->time_submitted = time();
+			$model->user_ip = $_SERVER['REMOTE_ADDR'];
 			if($model->save())
 				$this->redirect(array('view','id'=>$model->id));
 		}

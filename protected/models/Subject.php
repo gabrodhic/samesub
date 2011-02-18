@@ -49,15 +49,20 @@ class Subject extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('user_id, user_comment, title, urn, content_type_id, content_id, country_id, moderator_id, moderator_ip, moderator_comment, time_submitted, time_moderated', 'required'),
-			array('user_id, content_type_id, content_state_id, content_id, country_id, moderator_id, time_submitted, time_moderated, priority_id, show_time', 'numerical', 'integerOnly'=>true),
-			array('user_ip, moderator_ip', 'length', 'max'=>20),
-			array('title, urn, moderator_comment', 'length', 'max'=>250),
+			array('title, content_type_id', 'required', 'on'=>'add'), //***** content_value
+			array('content_state_id', 'required', 'on'=>'moderate'),
+			array('content_type_id', 'numerical', 'integerOnly'=>true, 'on'=>'add'),
+			array('content_state_id', 'numerical', 'integerOnly'=>true, 'on'=>'moderate'),			
+			array('title', 'length', 'max'=>240, 'on'=>'add'),
+			array('user_comment', 'type', 'type'=>'string', 'on'=>'add'),
+			array('moderator_comment', 'length', 'max'=>240, 'on'=>'moderate'),
+			array('priority_id, country_id, language_id', 'numerical', 'integerOnly'=>true),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
 			array('id, user_id, user_ip, user_comment, title, urn, content_type_id, content_state_id, content_id, country_id, moderator_id, moderator_ip, moderator_comment, time_submitted, time_moderated, priority_id, show_time', 'safe', 'on'=>'search'),
 		);
 	}
+	
 
 	/**
 	 * @return array relational rules.
