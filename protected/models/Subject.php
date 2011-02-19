@@ -11,7 +11,7 @@
  * @property string $title
  * @property string $urn
  * @property integer $content_type_id
- * @property integer $content_state_id
+ * @property integer $subject_status_id
  * @property integer $content_id
  * @property integer $country_id
  * @property integer $moderator_id
@@ -27,6 +27,7 @@ class Subject extends CActiveRecord
 	public $image;
 	public $text;
 	public $video;
+	public $urn;
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @return Subject the static model class
@@ -53,21 +54,53 @@ class Subject extends CActiveRecord
 		// will receive user inputs.
 		return array(
 			array('title, content_type_id', 'required', 'on'=>'add'),
-			array('content_state_id', 'required', 'on'=>'moderate'),
-			array('content_type_id', 'numerical', 'integerOnly'=>true, 'on'=>'add'),
-			array('content_state_id', 'numerical', 'integerOnly'=>true, 'on'=>'moderate'),			
+			array('subject_status_id', 'numerical', 'integerOnly'=>true, 'on'=>'moderate'),
+			array('content_type_id', 'numerical', 'integerOnly'=>true, 'on'=>'add'),			
 			array('title', 'length', 'max'=>240, 'on'=>'add'),
 			array('user_comment', 'type', 'type'=>'string', 'on'=>'add'),
 			array('moderator_comment', 'length', 'max'=>240, 'on'=>'moderate'),
-			array('priority_id, country_id, language_id', 'numerical', 'integerOnly'=>true),
-			array('content_type_id', 'validateContentType', 'on'=>'add'),
+			array('priority_id, country_id, language_id', 'numerical', 'integerOnly'=>true),			
 			array('image', 'safe', 'on'=>'add'),//So that it can be massively assigned, either way its gonna be validated by validateContentType
 			array('text', 'safe', 'on'=>'add'),//So that it can be massively assigned, either way its gonna be validated by validateContentType
 			array('video', 'safe', 'on'=>'add'),//So that it can be massively assigned, either way its gonna be validated by validateContentType
+			array('content_type_id', 'validateContentType', 'on'=>'add'),
+			array('subject_status_id', 'validateSubjectStatus', 'on'=>'moderate'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, user_id, user_ip, user_comment, title, urn, content_type_id, content_state_id, content_id, country_id, moderator_id, moderator_ip, moderator_comment, time_submitted, time_moderated, priority_id, show_time', 'safe', 'on'=>'search'),
+			array('id, user_id, user_ip, user_comment, title, urn, content_type_id, subject_status_id, content_id, country_id, moderator_id, moderator_ip, moderator_comment, time_submitted, time_moderated, priority_id, show_time', 'safe', 'on'=>'search'),
 		);
+	}
+	
+	/**
+	 * Check some things prior to save
+	 * 
+	 */
+	public function beforeSave()
+    {
+		//If its being modified
+		if(! $this->getIsNewRecord()){
+			//Invalidate the status if the content has been showed while it was being modified
+			if(Subject::model()->findByPk($this->id,'show_time > :show_time', array(':show_time'=>0))){
+				$this->addError('subject_status_id','Content has been showed. You can not modify it.');
+				return false;
+			}
+		}
+		return true;
+	}
+	/**
+	 * Validate that the subject status id its listed on the databse table
+	 * 
+	 */
+	public function validateSubjectStatus($attribute,$params)
+    {
+	
+		//Invalidate the status if status_id its not listed on the database table
+		if(! Yii::app()->db->createCommand()
+			->select('*')
+			->from($this->tableName().'_status')
+			->where('id='.$this->id)
+			->queryRow()
+		) $this->addError('subject_status_id','The status id is invalid.');
 	}
 	
 	/**
@@ -125,7 +158,7 @@ class Subject extends CActiveRecord
 			'title' => 'Title',
 			'urn' => 'Urn',
 			'content_type_id' => 'Content Type',
-			'content_state_id' => 'Content State',
+			'subject_status_id' => 'Subject Status',
 			'content_id' => 'Content',
 			'country_id' => 'Country',
 			'moderator_id' => 'Moderator',
@@ -156,7 +189,7 @@ class Subject extends CActiveRecord
 		$criteria->compare('title',$this->title,true);
 		$criteria->compare('urn',$this->urn,true);
 		$criteria->compare('content_type_id',$this->content_type_id);
-		$criteria->compare('content_state_id',$this->content_state_id);
+		$criteria->compare('subject_status_id',$this->subject_status_id);
 		$criteria->compare('content_id',$this->content_id);
 		$criteria->compare('country_id',$this->country_id);
 		$criteria->compare('moderator_id',$this->moderator_id);

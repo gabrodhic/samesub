@@ -25,7 +25,7 @@ $this->menu=array(
 		'title',
 		'urn',
 		'content_type_id',
-		'content_state_id',
+		'subject_status_id',
 		'content_id',
 		'country_id',
 		'moderator_id',

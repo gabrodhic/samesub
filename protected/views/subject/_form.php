@@ -62,9 +62,9 @@
 	</div>
 
 	<div class="row">
-		<?php echo $form->labelEx($model,'content_state_id'); ?>
-		<?php echo $form->textField($model,'content_state_id'); ?>
-		<?php echo $form->error($model,'content_state_id'); ?>
+		<?php echo $form->labelEx($model,'subject_status_id'); ?>
+		<?php echo $form->textField($model,'subject_status_id'); ?>
+		<?php echo $form->error($model,'subject_status_id'); ?>
 	</div>
 
 	<div class="row">
