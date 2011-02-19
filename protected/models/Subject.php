@@ -24,6 +24,9 @@
  */
 class Subject extends CActiveRecord
 {
+	public $image;
+	public $text;
+	public $video;
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @return Subject the static model class
@@ -49,7 +52,7 @@ class Subject extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('title, content_type_id', 'required', 'on'=>'add'), //***** content_value
+			array('title, content_type_id', 'required', 'on'=>'add'),
 			array('content_state_id', 'required', 'on'=>'moderate'),
 			array('content_type_id', 'numerical', 'integerOnly'=>true, 'on'=>'add'),
 			array('content_state_id', 'numerical', 'integerOnly'=>true, 'on'=>'moderate'),			
@@ -57,13 +60,47 @@ class Subject extends CActiveRecord
 			array('user_comment', 'type', 'type'=>'string', 'on'=>'add'),
 			array('moderator_comment', 'length', 'max'=>240, 'on'=>'moderate'),
 			array('priority_id, country_id, language_id', 'numerical', 'integerOnly'=>true),
+			array('content_type_id', 'validateContentType', 'on'=>'add'),
+			array('image', 'safe', 'on'=>'add'),//So that it can be massively assigned, either way its gonna be validated by validateContentType
+			array('text', 'safe', 'on'=>'add'),//So that it can be massively assigned, either way its gonna be validated by validateContentType
+			array('video', 'safe', 'on'=>'add'),//So that it can be massively assigned, either way its gonna be validated by validateContentType
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
 			array('id, user_id, user_ip, user_comment, title, urn, content_type_id, content_state_id, content_id, country_id, moderator_id, moderator_ip, moderator_comment, time_submitted, time_moderated, priority_id, show_time', 'safe', 'on'=>'search'),
 		);
 	}
 	
-
+	/**
+	 * Validate the content depending on the type
+	 * 
+	 */
+	public function validateContentType($attribute,$params)
+    {
+        
+		switch ($this->content_type_id) {
+			case 1:
+				$image=CUploadedFile::getInstance($this,'image');
+				if(get_class($image) <> 'CUploadedFile'){ $this->addError('image','No file received'); break; }
+				if($image->getHasError()){ $this->addError('image','Please select an image.');break; }
+				if($image->getSize() > (1024 * 1024 * 4)){  $this->addError('image','Please select an image smaller than 4MB.');break;}//4MB
+				$types = array("image/jpg", "image/png", "image/gif", "image/jpeg");
+				if (! in_array(CFileHelper::getMimeType($image->getName()), $types)) $this->addError('image','File type '.CFileHelper::getMimeType($image->getName()).' not supported .Please select a valid image type.');//4MB
+				break;
+			case 2:
+				//At least 1 char lengh
+				if(strlen($this->text) < 2 ) $this->addError('text',$this->text.'Please insert text.');
+				break;
+			case 3:
+				//Needs more validation here
+				if(strlen($this->video) < 2) $this->addError('video','Please insert the video embed code.');
+				break;
+			default:
+				//The content type its not listed
+				$this->addError('content_type_id','You are providing an unsopported content type.');
+		}
+		
+    }
+	
 	/**
 	 * @return array relational rules.
 	 */

@@ -2,7 +2,7 @@
 
 <?php $form=$this->beginWidget('CActiveForm', array(
 	'id'=>'subject-form',
-	'enableAjaxValidation'=>false,
+	'enableAjaxValidation'=>false,'htmlOptions'=>array('enctype' => 'multipart/form-data'),
 )); ?>
 
 	<p class="note">Fields with <span class="required">*</span> are required.</p>
@@ -15,6 +15,22 @@
 		<?php echo $form->error($model,'user_id'); ?>
 	</div>
 
+	<div class="row">
+		<?php echo $form->labelEx($model,'image'); ?>		
+		<?php echo CHtml::activeFileField($model, 'image');?>
+		<?php echo $form->error($model,'image'); ?>
+	</div>
+	<div class="row">
+		<?php echo $form->labelEx($model,'text'); ?>
+		<?php echo $form->textArea($model,'text',array('rows'=>6, 'cols'=>50)); ?>
+		<?php echo $form->error($model,'text'); ?>
+	</div>
+	<div class="row">
+		<?php echo $form->labelEx($model,'video'); ?>
+		<?php echo $form->textArea($model,'video',array('rows'=>6, 'cols'=>50)); ?>
+		<?php echo $form->error($model,'video'); ?>
+	</div>
+	
 	<div class="row">
 		<?php echo $form->labelEx($model,'user_ip'); ?>
 		<?php echo $form->textField($model,'user_ip',array('size'=>20,'maxlength'=>20)); ?>
