@@ -71,6 +71,24 @@ class Subject extends CActiveRecord
 		);
 	}
 	
+	
+	
+	/**
+	 * Check some things prior to validation
+	 * 
+	 */
+	public function beforeValidate()
+    {
+		//TODO: Validate that the ip the request is coming from(independently that it comes from a proxy,nat,etc)
+		//hasn't submitted any other record in a considered time frame.		
+		//To validate this, we can use a combination of keys stored in the table (ip,time,request headers,title)
+		//and then obtain a "trust metric" result obtained by adding and subtracting the values
+		//assigned to those keys for the actual request in question.
+		//If the submitted request gets enough points according to the "trust metric" then
+		//it can go on, otherwise it can't and should be stopped. 
+	
+	
+	}
 	/**
 	 * Check some things prior to save
 	 * 
