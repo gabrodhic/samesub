@@ -53,17 +53,19 @@ class Subject extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
+			array('priority_id, country_id, language_id', 'numerical', 'integerOnly'=>true),
+			
 			array('title, content_type_id', 'required', 'on'=>'add'),
-			array('subject_status_id', 'numerical', 'integerOnly'=>true, 'on'=>'moderate'),
 			array('content_type_id', 'numerical', 'integerOnly'=>true, 'on'=>'add'),			
 			array('title', 'length', 'max'=>240, 'on'=>'add'),
-			array('user_comment', 'type', 'type'=>'string', 'on'=>'add'),
-			array('moderator_comment', 'length', 'max'=>240, 'on'=>'moderate'),
-			array('priority_id, country_id, language_id', 'numerical', 'integerOnly'=>true),			
+			array('user_comment', 'type', 'type'=>'string', 'on'=>'add'),			
 			array('image', 'safe', 'on'=>'add'),//So that it can be massively assigned, either way its gonna be validated by validateContentType
 			array('text', 'safe', 'on'=>'add'),//So that it can be massively assigned, either way its gonna be validated by validateContentType
 			array('video', 'safe', 'on'=>'add'),//So that it can be massively assigned, either way its gonna be validated by validateContentType
 			array('content_type_id', 'validateContentType', 'on'=>'add'),
+			
+			array('subject_status_id', 'numerical', 'integerOnly'=>true, 'on'=>'moderate'),
+			array('moderator_comment', 'length', 'max'=>240, 'on'=>'moderate'),
 			array('subject_status_id', 'validateSubjectStatus', 'on'=>'moderate'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
@@ -103,69 +105,70 @@ class Subject extends CActiveRecord
 				return false;
 			}
 		}
+		else{
 		
-		//Generate a urn with the title property to uniquely identify this subject
-		//First, lets generate a clean title(just numbers and letters, remove everything else)		
-		$clean_title = ereg_replace("[^A-Za-z0-9 ]", "", $this->title);
-		//And replace whitespaces with underscores(this gives us the possible urn)
-		$possible_urn = str_replace(" ", "_", $clean_title);
-		//Verify that the obtained possible_urn its really unique on the database table 
-		//if not, generate one adding a sequence number to the possible_urn variable
-		//Make 50 attempts to find a unique urn
-		for ($i = 1; $i <= 50; $i++) {
-			$possible_urn_i = ($i==1) ? $possible_urn : $possible_urn.'_'.$i;
-			if (! Subject::model()->find('urn=:urn', array(':urn'=>$possible_urn_i)) ) {
-				$this->urn = $possible_urn_i;//we found it
-				break;
+			//Generate a urn with the title property to uniquely identify this subject
+			//First, lets generate a clean title(just numbers and letters, remove everything else)		
+			$clean_title = ereg_replace("[^A-Za-z0-9 ]", "", $this->title);
+			//And replace whitespaces with underscores(this gives us the possible urn)
+			$possible_urn = str_replace(" ", "_", $clean_title);
+			//Verify that the obtained possible_urn its really unique on the database table 
+			//if not, generate one adding a sequence number to the possible_urn variable
+			//Make 50 attempts to find a unique urn
+			for ($i = 1; $i <= 50; $i++) {
+				$possible_urn_i = ($i==1) ? $possible_urn : $possible_urn.'_'.$i;
+				if (! Subject::model()->find('urn=:urn', array(':urn'=>$possible_urn_i)) ) {
+					$this->urn = $possible_urn_i;//we found it
+					break;
+				}
+				if($i == 48){ $this->addError('title','Please change something in the title.'); return false;}
 			}
-			if($i == 48){ $this->addError('title','Please change something in the title.'); return false;}
+			
+			//Insert the content type on its proper table
+			switch ($this->content_type_id) {
+				case 1:
+					//Image
+					//If there was an image in the post submitted, then save it in the disk and on its proper content table
+					$img_extension = ($this->image->getExtensionName()) ? $this->image->getExtensionName() : '';
+					$img_type = CFileHelper::getMimeType($this->image->getName());
+					$img_size = $this->image->getSize();
+					//The path should be changed as time passes so that directory isn't very full(ie:img/1, img/2...) 
+					$img_path = 'img/1';
+					
+					//If can't save the image in the db or in the disk, then invalidate
+					if(! Yii::app()->db->createCommand()
+					->insert('content_image', array('path'=>$img_path,'extension'=>$img_extension,'type'=>$img_type,'size'=>$img_size)))
+					{
+						$this->addError('image','We could not save the image in the database.'); 
+						return false;				
+					}
+					$img_name = Yii::app()->db->getLastInsertID().'.'.$img_extension;
+					if(! $this->image->saveAs(Yii::app()->basePath . '/../'.$img_path.'/' . $img_name))
+					{
+						$this->addError('image','We could not save the image in the disk.'); 
+						return false;				
+					}
+					break;
+				case 2:
+					//Text
+					if(! Yii::app()->db->createCommand()->insert('content_text', array('text'=>$this->text)))
+					{
+						$this->addError('text','We could not save the text.'); 
+						return false;
+					}
+					break;
+				case 3:
+					//Video
+					if(! Yii::app()->db->createCommand()->insert('content_video', array('embed_code'=>$this->video)))
+					{
+						$this->addError('video','We could not save the video.'); 
+						return false;
+					}
+					break;
+			}
+			//Get the insert id as our content id for the subject
+			$this->content_id = Yii::app()->db->getLastInsertID();
 		}
-		
-		//Insert the content type on its proper table
-		switch ($this->content_type_id) {
-			case 1:
-				//Image
-				//If there was an image in the post submitted, then save it in the disk and on its proper content table
-				$img_extension = ($this->image->getExtensionName()) ? $this->image->getExtensionName() : '';
-				$img_type = CFileHelper::getMimeType($this->image->getName());
-				$img_size = $this->image->getSize();
-				//The path should be changed as time passes so that directory isn't very full(ie:img/1, img/2...) 
-				$img_path = 'img/1';
-				
-				//If can't save the image in the db or in the disk, then invalidate
-				if(! Yii::app()->db->createCommand()
-				->insert('content_image', array('path'=>$img_path,'extension'=>$img_extension,'type'=>$img_type,'size'=>$img_size)))
-				{
-					$this->addError('image','We could not save the image in the database.'); 
-					return false;				
-				}
-				$img_name = Yii::app()->db->getLastInsertID().'.'.$img_extension;
-				if(! $this->image->saveAs(Yii::app()->basePath . '/../'.$img_path.'/' . $img_name))
-				{
-					$this->addError('image','We could not save the image in the disk.'); 
-					return false;				
-				}
-				break;
-			case 2:
-				//Text
-				if(! Yii::app()->db->createCommand()->insert('content_text', array('text'=>$this->text)))
-				{
-					$this->addError('text','We could not save the text.'); 
-					return false;
-				}
-				break;
-			case 3:
-				//Video
-				if(! Yii::app()->db->createCommand()->insert('content_video', array('embed_code'=>$this->video)))
-				{
-					$this->addError('video','We could not save the video.'); 
-					return false;
-				}
-				break;
-		}
-		//Get the insert id as our content id for the subject
-		$this->content_id = Yii::app()->db->getLastInsertID();
-		
 		
 		
 		return true;
