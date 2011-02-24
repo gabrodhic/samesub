@@ -86,8 +86,8 @@ class Subject extends CActiveRecord
 		//assigned to those keys for the actual request in question.
 		//If the submitted request gets enough points according to the "trust metric" then
 		//it can go on, otherwise it can't and should be stopped. 
-	
-	
+ 
+		return true;
 	}
 	/**
 	 * Check some things prior to save
@@ -239,7 +239,10 @@ class Subject extends CActiveRecord
 	{
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
+		//something like this should work, 
+		//but right now doesn't: var_dump( Subject::model()->with('type_content')->findByPk(30)->type_content->name);
 		return array(
+			'type_content'=>array(self::HAS_ONE, 'ContentType', 'id'),
 		);
 	}
 
