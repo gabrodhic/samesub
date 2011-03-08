@@ -60,7 +60,12 @@ return array(
 			'username' => 'usrsamesub',
 			'password' => 'pwdsamesub',
 			'charset' => 'utf8',
-		),		
+		),
+		//authManager application component provides Role-Based Access Control to control user access(Yii::app()->authManager)
+		'authManager'=>array(
+            'class'=>'CDbAuthManager',
+            'connectionID'=>'db',
+        ),		
 		'errorHandler'=>array(
 			// use 'site/error' action to display errors
             'errorAction'=>'site/error',

@@ -26,17 +26,17 @@ class SubjectController extends Controller
 	public function accessRules()
 	{
 		return array(
-			array('allow',  // allow all users to perform 'index' and 'view' actions
-				'actions'=>array('index','view','create'),
+			array('allow',  // allow all users to perform 'index' 'add' 'view' actions
+				'actions'=>array('index','view','add'),
 				'users'=>array('*'),
 			),
-			array('allow', // allow authenticated user to perform 'create' and 'update' actions
+			array('allow', // allow authenticated user to perform 'update' actions
 				'actions'=>array('update'),
 				'users'=>array('@'),
 			),
 			array('allow', // allow admin user to perform 'admin' and 'delete' actions
 				'actions'=>array('admin','delete'),
-				'users'=>array('admin'),
+				'users'=>array('super'),
 			),
 			array('deny',  // deny all users
 				'users'=>array('*'),
@@ -59,7 +59,7 @@ class SubjectController extends Controller
 	 * Creates a new model.
 	 * If creation is successful, the browser will be redirected to the 'view' page.
 	 */
-	public function actionCreate()
+	public function actionAdd()
 	{
 		$model=new Subject;
 		$model->scenario='add';
@@ -84,25 +84,97 @@ class SubjectController extends Controller
 	}
 
 	/**
-	 * Updates a particular model.
+	 * Updates only the data submitted by the user.
 	 * If update is successful, the browser will be redirected to the 'view' page.
 	 * @param integer $id the ID of the model to be updated
 	 */
 	public function actionUpdate($id)
 	{
 		$model=$this->loadModel($id);
+		$model->scenario='update';
 
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
 
 		if(isset($_POST['Subject']))
 		{
-			$model->attributes=$_POST['Subject'];
-			if($model->save())
-				$this->redirect(array('view','id'=>$model->id));
+			//Create an array(named Subject) with the params stored in the databse for this element
+			//We can't use $_POST['Subject'], because it would just load the submited user data params and not other data already in database.
+			$params=array('Subject'=>$model->attributes);
+			if(Yii::app()->user->checkAccess('subject_update',$params))
+			{
+				$model->attributes=$_POST['Subject'];
+				if($model->save())
+					$this->redirect(array('view','id'=>$model->id));
+			}else
+			{
+				throw new CHttpException(403,'You are not allowed to update this subject.');
+			}
 		}
 
 		$this->render('update',array(
+			'model'=>$model,
+		));
+	}
+	
+	/**
+	 * Updates particular fields of a subject submitted by a user.
+	 * If update is successful, the browser will be redirected to the 'view' page.
+	 * @param integer $id the ID of the model to be updated
+	 */
+	public function actionModerate($id)
+	{
+		$model=$this->loadModel($id);
+		$model->scenario='moderate';
+
+		// Uncomment the following line if AJAX validation is needed
+		// $this->performAjaxValidation($model);
+
+		if(isset($_POST['Subject']))
+		{
+			if(Yii::app()->user->checkAccess('subject_moderate'))
+			{
+				$model->attributes=$_POST['Subject'];
+				if($model->save())
+					$this->redirect(array('view','id'=>$model->id));
+			}else
+			{
+				throw new CHttpException(403,'You are not allowed to moderate this subject.');
+			}
+		}
+
+		$this->render('moderate',array(
+			'model'=>$model,
+		));
+	}
+	
+	/**
+	 * Updates particular fields of a subject submitted by a user.
+	 * If update is successful, the browser will be redirected to the 'view' page.
+	 * @param integer $id the ID of the model to be updated
+	 */
+	public function actionAuthorize($id)
+	{
+		$model=$this->loadModel($id);
+		$model->scenario='authorize';
+
+		// Uncomment the following line if AJAX validation is needed
+		// $this->performAjaxValidation($model);
+
+		if(isset($_POST['Subject']))
+		{
+			if(Yii::app()->user->checkAccess('subject_authorize'))
+			{
+				$model->attributes=$_POST['Subject'];
+				if($model->save())
+					$this->redirect(array('view','id'=>$model->id));
+			}else
+			{
+				throw new CHttpException(403,'You are not allowed to authorize this subject.');
+			}
+		}
+
+		$this->render('authorize',array(
 			'model'=>$model,
 		));
 	}

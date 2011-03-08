@@ -53,20 +53,23 @@ class Subject extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('priority_id, country_id, language_id', 'numerical', 'integerOnly'=>true),
+			array('priority_id, country_id, language_id', 'numerical', 'integerOnly'=>true, 'on'=>'add,update,moderate,authorize'),
+			array('priority_id', 'numerical', 'min'=>1, 'max'=>3),
 			
-			array('title, content_type_id', 'required', 'on'=>'add'),
-			array('content_type_id', 'numerical', 'integerOnly'=>true, 'on'=>'add'),			
-			array('title', 'length', 'max'=>240, 'on'=>'add'),
-			array('user_comment', 'type', 'type'=>'string', 'on'=>'add'),			
-			array('image', 'safe', 'on'=>'add'),//So that it can be massively assigned, either way its gonna be validated by validateContentType
-			array('text', 'safe', 'on'=>'add'),//So that it can be massively assigned, either way its gonna be validated by validateContentType
-			array('video', 'safe', 'on'=>'add'),//So that it can be massively assigned, either way its gonna be validated by validateContentType
+			array('title, content_type_id', 'required', 'on'=>'add,update'),
+			array('content_type_id', 'numerical', 'integerOnly'=>true, 'on'=>'add,update'),			
+			array('title', 'length', 'max'=>240, 'on'=>'add,update'),
+			array('user_comment', 'type', 'type'=>'string', 'on'=>'add,update'),			
+			array('image', 'safe', 'on'=>'add,update'),//So that it can be massively assigned, either way its gonna be validated by validateContentType
+			array('text', 'safe', 'on'=>'add,update'),//So that it can be massively assigned, either way its gonna be validated by validateContentType
+			array('video', 'safe', 'on'=>'add,update'),//So that it can be massively assigned, either way its gonna be validated by validateContentType
 			array('content_type_id', 'validateContentType', 'on'=>'add'),
 			
 			array('subject_status_id', 'numerical', 'integerOnly'=>true, 'on'=>'moderate'),
 			array('moderator_comment', 'length', 'max'=>240, 'on'=>'moderate'),
 			array('subject_status_id', 'validateSubjectStatus', 'on'=>'moderate'),
+			
+			array('authorized', 'numerical', 'integerOnly'=>true, 'on'=>'authorize'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
 			array('id, user_id, user_ip, user_comment, title, urn, content_type_id, subject_status_id, content_id, country_id, moderator_id, moderator_ip, moderator_comment, time_submitted, time_moderated, priority_id, show_time', 'safe', 'on'=>'search'),
@@ -104,24 +107,17 @@ class Subject extends CActiveRecord
 				$this->addError('subject_status_id','Content has been showed. You can not modify it.');
 				return false;
 			}
+			//Generate the urn for this subject
+			if(! $this->urn = $this->generateUrn($this->title)){
+				$this->addError('title','Please change something in the title.'); return false;
+			}
+			//TODO:Update the table belonging to each content type(image,text,video,etc)
+			//also validatecontenttype
 		}
 		else{
-		
-			//Generate a urn with the title property to uniquely identify this subject
-			//First, lets generate a clean title(just numbers and letters, remove everything else)		
-			$clean_title = ereg_replace("[^A-Za-z0-9 ]", "", $this->title);
-			//And replace whitespaces with underscores(this gives us the possible urn)
-			$possible_urn = str_replace(" ", "_", $clean_title);
-			//Verify that the obtained possible_urn its really unique on the database table 
-			//if not, generate one adding a sequence number to the possible_urn variable
-			//Make 50 attempts to find a unique urn
-			for ($i = 1; $i <= 50; $i++) {
-				$possible_urn_i = ($i==1) ? $possible_urn : $possible_urn.'_'.$i;
-				if (! Subject::model()->find('urn=:urn', array(':urn'=>$possible_urn_i)) ) {
-					$this->urn = $possible_urn_i;//we found it
-					break;
-				}
-				if($i == 48){ $this->addError('title','Please change something in the title.'); return false;}
+			//Generate the urn for this subject
+			if(! $this->urn = $this->generateUrn($this->title)){
+				$this->addError('title','Please change something in the title.'); return false;
 			}
 			
 			//Insert the content type on its proper table
@@ -185,6 +181,31 @@ class Subject extends CActiveRecord
 	
 	}
 	
+	/**
+	 * Generates a URN(Uniform Resource Name) for the given title to uniquely identify a subject(eg: in seo friendly urls)
+	 * @return mixed boolean false if can't generate a urn, otherwise a string with the urn
+	 */
+	public function generateUrn($title)
+    {
+	 
+		//First, lets generate a clean title(just numbers and letters, remove everything else)		
+		$clean_title = ereg_replace("[^A-Za-z0-9 ]", "", $title);
+		//And replace whitespaces with underscores(this gives us the possible urn)
+		$possible_urn = str_replace(" ", "_", $clean_title);
+		//Verify that the obtained possible_urn its really unique on the database table 
+		//if not, generate one adding a sequence number to the possible_urn variable
+		//Make 50 attempts to find a unique urn
+		for ($i = 1; $i <= 50; $i++) {
+			$possible_urn_i = ($i==1) ? $possible_urn : $possible_urn.'_'.$i;
+			if (! Subject::model()->find('urn=:urn', array(':urn'=>$possible_urn_i)) ) {
+				$urn = $possible_urn_i;//we found it
+				return $urn;
+			}
+		}
+		return false;
+
+	}
+
 	/**
 	 * Validate that the subject status id its listed on the databse table
 	 * 
