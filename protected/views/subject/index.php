@@ -4,8 +4,8 @@ $this->breadcrumbs=array(
 );
 
 $this->menu=array(
-	array('label'=>'Create Subject', 'url'=>array('create')),
-	array('label'=>'Manage Subject', 'url'=>array('admin')),
+	array('label'=>'Create Subject', 'url'=>array('add')),
+	array('label'=>'Manage Subject', 'url'=>array('manage')),
 );
 ?>
 

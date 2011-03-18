@@ -1,17 +1,20 @@
 <?php
 
 /**
- * This is the model class for table "content_type".
+ * This is the model class for table "content_image".
  *
- * The followings are the available columns in table 'content_type':
+ * The followings are the available columns in table 'content_image':
  * @property integer $id
- * @property string $name
+ * @property string $path
+ * @property string $extension
+ * @property string $type
+ * @property integer $size
  */
-class ContentType extends CActiveRecord
+class ContentImage extends CActiveRecord
 {
 	/**
 	 * Returns the static model of the specified AR class.
-	 * @return ContentType the static model class
+	 * @return ContentImage the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{
@@ -23,7 +26,7 @@ class ContentType extends CActiveRecord
 	 */
 	public function tableName()
 	{
-		return 'content_type';
+		return 'content_image';
 	}
 
 	/**
@@ -34,12 +37,14 @@ class ContentType extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('name, fullname', 'required'),
-			array('name', 'length', 'max'=>20),
-			array('fullname', 'length', 'max'=>50),
+			array('path, extension, type, size', 'required'),
+			array('size', 'numerical', 'integerOnly'=>true),
+			array('path', 'length', 'max'=>100),
+			array('extension', 'length', 'max'=>50),
+			array('type', 'length', 'max'=>20),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, name, fullname', 'safe', 'on'=>'search'),
+			array('id, path, extension, type, size', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -51,7 +56,7 @@ class ContentType extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'subjects'=>array(self::HAS_MANY, 'Subject', 'content_type_id'),
+			'subject'=>array(self::HAS_ONE, 'Subject', 'content_id'),
 		);
 	}
 
@@ -62,8 +67,10 @@ class ContentType extends CActiveRecord
 	{
 		return array(
 			'id' => 'ID',
-			'name' => 'Name',
-			'fullname' => 'Name',
+			'path' => 'Path',
+			'extension' => 'Extension',
+			'type' => 'Type',
+			'size' => 'Size',
 		);
 	}
 
@@ -79,8 +86,10 @@ class ContentType extends CActiveRecord
 		$criteria=new CDbCriteria;
 
 		$criteria->compare('id',$this->id);
-		$criteria->compare('name',$this->name,true);
-		$criteria->compare('fullname',$this->fullname,true);
+		$criteria->compare('path',$this->path,true);
+		$criteria->compare('extension',$this->extension,true);
+		$criteria->compare('type',$this->type,true);
+		$criteria->compare('size',$this->size);
 
 		return new CActiveDataProvider(get_class($this), array(
 			'criteria'=>$criteria,

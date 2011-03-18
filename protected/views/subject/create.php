@@ -6,7 +6,7 @@ $this->breadcrumbs=array(
 
 $this->menu=array(
 	array('label'=>'List Subject', 'url'=>array('index')),
-	array('label'=>'Manage Subject', 'url'=>array('admin')),
+	array('label'=>'Manage Subject', 'url'=>array('manage')),
 );
 ?>
 

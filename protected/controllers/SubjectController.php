@@ -31,11 +31,11 @@ class SubjectController extends Controller
 				'users'=>array('*'),
 			),
 			array('allow', // allow authenticated user to perform 'update' actions
-				'actions'=>array('update'),
+				'actions'=>array('update','moderate','authorize','manage'),
 				'users'=>array('@'),
 			),
 			array('allow', // allow admin user to perform 'admin' and 'delete' actions
-				'actions'=>array('admin','delete'),
+				'actions'=>array('delete'),
 				'users'=>array('super'),
 			),
 			array('deny',  // deny all users
@@ -124,28 +124,28 @@ class SubjectController extends Controller
 	 */
 	public function actionModerate($id)
 	{
-		$model=$this->loadModel($id);
-		$model->scenario='moderate';
-
-		// Uncomment the following line if AJAX validation is needed
-		// $this->performAjaxValidation($model);
-
-		if(isset($_POST['Subject']))
+		if(Yii::app()->user->checkAccess('subject_moderate'))
 		{
-			if(Yii::app()->user->checkAccess('subject_moderate'))
-			{
-				$model->attributes=$_POST['Subject'];
-				if($model->save())
-					$this->redirect(array('view','id'=>$model->id));
-			}else
-			{
-				throw new CHttpException(403,'You are not allowed to moderate this subject.');
-			}
-		}
+			$model=$this->loadModel($id);
+			$model->scenario='moderate';
 
-		$this->render('moderate',array(
-			'model'=>$model,
-		));
+			// Uncomment the following line if AJAX validation is needed
+			// $this->performAjaxValidation($model);
+
+			if(isset($_POST['Subject']))
+			{
+					$model->attributes=$_POST['Subject'];
+					if($model->save())
+						$this->redirect(array('manage'));
+			}
+
+			$this->render('moderate',array(
+				'model'=>$model,
+			));
+		}else
+		{
+			throw new CHttpException(403,'You are not allowed to moderate this subject.');
+		}
 	}
 	
 	/**
@@ -155,28 +155,28 @@ class SubjectController extends Controller
 	 */
 	public function actionAuthorize($id)
 	{
-		$model=$this->loadModel($id);
-		$model->scenario='authorize';
-
-		// Uncomment the following line if AJAX validation is needed
-		// $this->performAjaxValidation($model);
-
-		if(isset($_POST['Subject']))
+		if(Yii::app()->user->checkAccess('subject_authorize'))
 		{
-			if(Yii::app()->user->checkAccess('subject_authorize'))
-			{
-				$model->attributes=$_POST['Subject'];
-				if($model->save())
-					$this->redirect(array('view','id'=>$model->id));
-			}else
-			{
-				throw new CHttpException(403,'You are not allowed to authorize this subject.');
-			}
-		}
+			$model=$this->loadModel($id);
+			$model->scenario='authorize';
 
-		$this->render('authorize',array(
-			'model'=>$model,
-		));
+			// Uncomment the following line if AJAX validation is needed
+			// $this->performAjaxValidation($model);
+
+			if(isset($_POST['Subject']))
+			{
+					$model->attributes=$_POST['Subject'];
+					if($model->save())
+						$this->redirect(array('manage'));	
+			}
+
+			$this->render('authorize',array(
+				'model'=>$model,
+			));
+		}else
+		{
+			throw new CHttpException(403,'You are not allowed to authorize this subject.');
+		}
 	}
 
 	/**
@@ -186,17 +186,23 @@ class SubjectController extends Controller
 	 */
 	public function actionDelete($id)
 	{
-		if(Yii::app()->request->isPostRequest)
+		if(Yii::app()->user->checkAccess('subject_delete'))
 		{
-			// we only allow deletion via POST request
-			$this->loadModel($id)->delete();
+			if(Yii::app()->request->isPostRequest)
+			{
+				// we only allow deletion via POST request
+				$this->loadModel($id)->delete();
 
-			// if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
-			if(!isset($_GET['ajax']))
-				$this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin'));
+				// if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
+				if(!isset($_GET['ajax']))
+					$this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin'));
+			}
+			else
+				throw new CHttpException(400,'Invalid request. Please do not repeat this request again.');
+		}else
+		{
+			throw new CHttpException(403,'You are not allowed to delete this subject.');
 		}
-		else
-			throw new CHttpException(400,'Invalid request. Please do not repeat this request again.');
 	}
 
 	/**
@@ -204,25 +210,33 @@ class SubjectController extends Controller
 	 */
 	public function actionIndex()
 	{
+		
 		$dataProvider=new CActiveDataProvider('Subject');
 		$this->render('index',array(
 			'dataProvider'=>$dataProvider,
 		));
+		
 	}
 
 	/**
 	 * Manages all models.
 	 */
-	public function actionAdmin()
+	public function actionManage()
 	{
-		$model=new Subject('search');
-		$model->unsetAttributes();  // clear any default values
-		if(isset($_GET['Subject']))
-			$model->attributes=$_GET['Subject'];
+		if(Yii::app()->user->checkAccess('subject_manage'))
+		{
+			$model=new Subject('search');
+			$model->unsetAttributes();  // clear any default values
+			if(isset($_GET['Subject']))
+				$model->attributes=$_GET['Subject'];
 
-		$this->render('admin',array(
-			'model'=>$model,
-		));
+			$this->render('manage',array(
+				'model'=>$model,
+			));
+		}else
+		{
+			throw new CHttpException(403,'You are not allowed to manage subjects.');
+		}
 	}
 
 	/**

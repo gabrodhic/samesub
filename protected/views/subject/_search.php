@@ -41,8 +41,8 @@
 	</div>
 
 	<div class="row">
-		<?php echo $form->label($model,'subject_status_id'); ?>
-		<?php echo $form->textField($model,'subject_status_id'); ?>
+		<?php echo $form->label($model,'approved'); ?>
+		<?php echo $form->textField($model,'approved'); ?>
 	</div>
 
 	<div class="row">

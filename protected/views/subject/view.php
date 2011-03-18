@@ -6,10 +6,10 @@ $this->breadcrumbs=array(
 
 $this->menu=array(
 	array('label'=>'List Subject', 'url'=>array('index')),
-	array('label'=>'Create Subject', 'url'=>array('create')),
+	array('label'=>'Create Subject', 'url'=>array('add')),
 	array('label'=>'Update Subject', 'url'=>array('update', 'id'=>$model->id)),
 	array('label'=>'Delete Subject', 'url'=>'#', 'linkOptions'=>array('submit'=>array('delete','id'=>$model->id),'confirm'=>'Are you sure you want to delete this item?')),
-	array('label'=>'Manage Subject', 'url'=>array('admin')),
+	array('label'=>'Manage Subject', 'url'=>array('manage')),
 );
 ?>
 
@@ -25,7 +25,8 @@ $this->menu=array(
 		'title',
 		'urn',
 		'content_type_id',
-		'subject_status_id',
+		'approved',
+		'authorized',
 		'content_id',
 		'country_id',
 		'moderator_id',

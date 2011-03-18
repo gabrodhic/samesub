@@ -1,17 +1,17 @@
 <?php
 
 /**
- * This is the model class for table "content_type".
+ * This is the model class for table "content_video".
  *
- * The followings are the available columns in table 'content_type':
+ * The followings are the available columns in table 'content_video':
  * @property integer $id
- * @property string $name
+ * @property string $embed_code
  */
-class ContentType extends CActiveRecord
+class ContentVideo extends CActiveRecord
 {
 	/**
 	 * Returns the static model of the specified AR class.
-	 * @return ContentType the static model class
+	 * @return ContentVideo the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{
@@ -23,7 +23,7 @@ class ContentType extends CActiveRecord
 	 */
 	public function tableName()
 	{
-		return 'content_type';
+		return 'content_video';
 	}
 
 	/**
@@ -34,12 +34,11 @@ class ContentType extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('name, fullname', 'required'),
-			array('name', 'length', 'max'=>20),
-			array('fullname', 'length', 'max'=>50),
+			array('embed_code', 'required'),
+			array('embed_code', 'length', 'max'=>250),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, name, fullname', 'safe', 'on'=>'search'),
+			array('id, embed_code', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -51,7 +50,7 @@ class ContentType extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'subjects'=>array(self::HAS_MANY, 'Subject', 'content_type_id'),
+			'subject'=>array(self::HAS_ONE, 'Subject', 'content_id'),
 		);
 	}
 
@@ -62,8 +61,7 @@ class ContentType extends CActiveRecord
 	{
 		return array(
 			'id' => 'ID',
-			'name' => 'Name',
-			'fullname' => 'Name',
+			'embed_code' => 'Embed Code',
 		);
 	}
 
@@ -79,8 +77,7 @@ class ContentType extends CActiveRecord
 		$criteria=new CDbCriteria;
 
 		$criteria->compare('id',$this->id);
-		$criteria->compare('name',$this->name,true);
-		$criteria->compare('fullname',$this->fullname,true);
+		$criteria->compare('embed_code',$this->embed_code,true);
 
 		return new CActiveDataProvider(get_class($this), array(
 			'criteria'=>$criteria,

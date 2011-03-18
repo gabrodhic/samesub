@@ -43,6 +43,11 @@
 		<?php echo $form->error($model,'user_comment'); ?>
 	</div>
 
+	<div class="row">
+		<?php echo $form->labelEx($model,'priority_id'); ?>
+		<?php echo $form->DropDownList($model, 'priority_id',array('1'=>'Low', '2'=>'Medium','3'=>'High')); ?>
+		<?php echo $form->error($model,'priority_id'); ?>
+	</div>
 
 	<div class="row buttons">
 		<?php echo CHtml::submitButton($model->isNewRecord ? 'Create' : 'Save'); ?>
