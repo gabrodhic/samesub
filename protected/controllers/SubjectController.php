@@ -27,7 +27,7 @@ class SubjectController extends Controller
 	{
 		return array(
 			array('allow',  // allow all users to perform 'index' 'add' 'view' actions
-				'actions'=>array('index','view','add'),
+				'actions'=>array('index','view','add','fetch'),
 				'users'=>array('*'),
 			),
 			array('allow', // allow authenticated user to perform 'update' actions
@@ -204,7 +204,37 @@ class SubjectController extends Controller
 			throw new CHttpException(403,'You are not allowed to delete this subject.');
 		}
 	}
+	
+	/**
+	 * Fetch data about a subject.
+	 * This action does NOT return a html web page. 
+	 * This action returns data about a subject in an encoded format for data interchange(JSON,XML,etc.)
+	 * It can be used for API implementation.
+	 */
+	public function actionFetch($subject_id2=0,$comment_number=0)
+	{
+		$data = NULL;
+		//In this for is where all the comet(long polling) magic occurs
+		for ($i = 1; $i <= 3; $i++) {
+			if ( $data = Subject::getNewData($subject_id2,$comment_number) )
+			{
+				echo $data;				
+				die();
+			}
+		}
 
+		//Time has gone, user its updated, respone 0
+		echo json_encode(array('id'=>'0'));
+		die();
+
+		
+		//$dataProvider=new CActiveDataProvider('Subject');
+		//$this->render('index',array(
+		//	'dataProvider'=>$dataProvider,
+		//));
+		
+	}
+	
 	/**
 	 * Lists all models.
 	 */
