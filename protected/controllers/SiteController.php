@@ -29,7 +29,9 @@ class SiteController extends Controller
 	{
 		// renders the view file 'protected/views/site/index.php'
 		// using the default layout 'protected/views/layouts/main.php'
-		$this->render('index');
+		$note = Notification::getNotification();
+		$base_url = Yii::app()->getRequest()->getBaseUrl(true);
+		$this->renderPartial('index',array('note'=>$note,'base_url'=>$base_url));
 	}
 
 	/**

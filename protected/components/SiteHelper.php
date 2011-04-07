@@ -15,7 +15,7 @@ class SiteHelper extends CHtml
 	{
 		switch ($subject->content_type_id) {
 			case 1:
-				$html = '<img src="'.Yii::app()->getRequest()->getBaseUrl(true).'/'.$subject->content_image->path.'/'.$subject->content_image->id.'.'.$subject->content_image->extension.'">';//Yii::app()->getRequest()->getHostInfo().
+				$html = '<img src="'.Yii::app()->getRequest()->getBaseUrl(true).'/'.$subject->content_image->path.'/'.$subject->content_image->id.'.'.$subject->content_image->extension.'" width="100%">';//Yii::app()->getRequest()->getHostInfo().
 				break;
 			case 2:
 				$html = $subject->content_text->text;

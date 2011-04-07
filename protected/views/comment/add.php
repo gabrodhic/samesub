@@ -7,7 +7,7 @@ $this->breadcrumbs=array(
 <div class="form">
 
 <?php $form=$this->beginWidget('CActiveForm', array(
-	'id'=>'user-form',
+	'id'=>'comment-form',
 	'enableAjaxValidation'=>false,
 )); ?>
 

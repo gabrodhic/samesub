@@ -261,10 +261,11 @@ class Subject extends CActiveRecord
     }
 	
 	/**
-	 * Find out if there is new information for the client making the request
+	 * Gets the latest live data about the current and next subject to be live
+	 * 
 	 * 
 	 */
-	public function getNewData($subject_id2, $comment_number)
+	public function getLiveData($subject_id_2, $comment_number,$sleep=false)
     {
 		$arr_data = array();
 		$arr_comments = array();
@@ -273,13 +274,13 @@ class Subject extends CActiveRecord
 		->select('*')
 		->from('live_subject')
 		->queryRow();//returns an array, not an object
-		
+
 		
 		$live_comments = Yii::app()->db->createCommand()
 		->select('*')
 		->from('live_comment')
 		->where('comment_number > :comment_number', array(':comment_number'=>$comment_number))
-		->order('comment_number desc')
+		->order('comment_number ASC')
 		->queryAll();
 		
 		foreach ($live_comments as $live_comment){
@@ -288,43 +289,44 @@ class Subject extends CActiveRecord
 		$arr_data['comments']= $arr_comments;
 		
 		//If the subject cached on client's device its the same that the live_subject table indicates to be cached...
-		if($subject_id2 == $live_subject['subject_id2']){
+		if($subject_id_2 == $live_subject['subject_id_2']){
 			
 			//Then verify if there is a change in comments number, its enough to respond with the comment, dont have to wait for a change in subject
 			if($comment_number <> $live_subject['last_comment_number']){
 				$arr_data['comment_update'] = 'yes';
-				$arr_data['id'] = 'somevalue';
+				$arr_data['id_1'] = 'somevalue';
 				$arr_data['ttt'] = $comment_number."...". $live_subject['last_comment_number'];
 				return json_encode($arr_data);
 				//die();
 			}
-			sleep(2);			
-		}else{
-		
-			$subject_data = Subject::model()->findByPk($live_subject['subject_id2']);
-			$arr_data['id'] = $subject_data->id;
-			$arr_data['title'] = $subject_data->title;
-			$arr_data['content_type_id'] = $subject_data->content_type_id;
+			
+			if($sleep) {sleep(1);}
+			return false;
+		}else{		
+			$subject_data = Subject::model()->findByPk($live_subject['subject_id_1']);
+			$arr_data['id_1'] = $subject_data->id;
+			$arr_data['title_1'] = $subject_data->title;
+			$arr_data['content_type_id_1'] = $subject_data->content_type_id;
 			//$content_data = Yii::app()->db->createCommand()
 			//				->select('*')
 			//				->from('content_'. ContentType::model()->findByPk($subject_data->content_type_id)->name)
 			//				->queryRow();
-			$arr_data['content_html'] = SiteHelper::subject_content($subject_data);
-			$arr_data['content_data'] = (array) Subject::subject_content($subject_data)->getAttributes();
+			$arr_data['content_html_1'] = SiteHelper::subject_content($subject_data);
+			$arr_data['content_data_1'] = (array) Subject::subject_content($subject_data)->getAttributes();
 			
 			$arr_data['comment_update'] = 'no';
 			
 			// If the subject cached in client its not the one to be showed, lets add it to the array also
-			if($subject_id2 <> $live_subject['subject_id1']){
-				$subject_data = Subject::model()->findByPk($live_subject['subject_id1']);
+			if($subject_id_2 <> $live_subject['subject_id_2']){
+				$subject_data = Subject::model()->findByPk($live_subject['subject_id_2']);
 				
 				//Add it to the cached data Array also, client needs it
-				$arr_data['id2']= $subject_data->id;
-				$arr_data['title2']= $subject_data->title;			
-				$arr_data['ctype_id2']= $subject_data->content_type_id;
+				$arr_data['id_2']= $subject_data->id;
+				$arr_data['title_2']= $subject_data->title;			
+				$arr_data['content_type_id_2']= $subject_data->content_type_id;
 				
-				$arr_data['content_html2'] = SiteHelper::subject_content($subject_data);
-				$arr_data['content_data2'] = (array) Subject::subject_content($subject_data)->getAttributes();
+				$arr_data['content_html_2'] = SiteHelper::subject_content($subject_data);
+				$arr_data['content_data_2'] = (array) Subject::subject_content($subject_data)->getAttributes();
 			}
 			
 			//print_r($arr_data);

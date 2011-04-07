@@ -211,20 +211,26 @@ class SubjectController extends Controller
 	 * This action returns data about a subject in an encoded format for data interchange(JSON,XML,etc.)
 	 * It can be used for API implementation.
 	 */
-	public function actionFetch($subject_id2=0,$comment_number=0)
+	public function actionFetch($subject_id_2=0,$comment_number=0)
 	{
+		//in case params are sent via POST
+		if(isset($_POST['subject_id_2'])) $subject_id_2 = $_POST['subject_id_2'];
+		if(isset($_POST['comment_number'])) $comment_number = $_POST['comment_number'];
+		//PHP casts any string to 0. so its ok. We need to cast in case we receive a string.
+		$subject_id_2 =  (int)$subject_id_2;
+		$comment_number = (int)$comment_number;
 		$data = NULL;
 		//In this for is where all the comet(long polling) magic occurs
-		for ($i = 1; $i <= 3; $i++) {
-			if ( $data = Subject::getNewData($subject_id2,$comment_number) )
+		for ($i = 1; $i <= 10; $i++) {
+			if ( $data = Subject::getLiveData($subject_id_2,$comment_number,true) )
 			{
-				echo $data;				
+				echo $data;
 				die();
 			}
 		}
 
 		//Time has gone, user its updated, respone 0
-		echo json_encode(array('id'=>'0'));
+		echo json_encode(array('id_1'=>'0'));
 		die();
 
 		

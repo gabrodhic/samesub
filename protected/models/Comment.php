@@ -38,13 +38,40 @@ class Comment extends CActiveRecord
 		// will receive user inputs.
 		return array(
 			array('comment', 'required'),
-			array('comment', 'length', 'max'=>250),
+			array('comment', 'length', 'min'=>2, 'max'=>250),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
 			array('id, user_id, subject_id, time, comment', 'safe', 'on'=>'search'),
 		);
 	}
 
+	/**
+	 * 
+	 */
+	public function beforeSave()
+	{
+		// Assign the user_id 1 if is a guest
+///TODO:add userid. Issue, cant make use of user component while other request is open(subject/fetch)		$this->user_id=(Yii::app()->user->getId()) ? Yii::app()->user->getId() : 1;
+		$this->user_id = 0;
+		
+		$this->time = time();
+		$this->user_ip = $_SERVER['REMOTE_ADDR'];
+	
+		$live_subject = Yii::app()->db->createCommand()->select('subject_id_1, (comment_sequence+1)as next_sequence')->from('live_subject')->queryRow();
+		//print_r($live_subject);return;
+		Yii::app()->db->createCommand()->insert('live_comment', array(
+		'comment_sequence'=>$live_subject['next_sequence'],
+		'comment_text'=>$this->comment,
+		));
+		Yii::app()->db->createCommand()->update('live_subject', array(
+		'last_comment_number'=>Yii::app()->db->getLastInsertID(),
+		'comment_sequence'=>$live_subject['next_sequence'],
+		));
+		
+		$this->sequence = $live_subject['next_sequence'];
+		$this->subject_id = $live_subject['subject_id_1'];
+		return true;
+	}
 	/**
 	 * @return array relational rules.
 	 */
