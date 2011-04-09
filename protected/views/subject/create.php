@@ -10,7 +10,7 @@ $this->menu=array(
 );
 ?>
 
-<h1>Create Subject</h1>
+<h1>Add Subject</h1>
 
 <div class="form">
 
@@ -46,7 +46,7 @@ $this->menu=array(
 		<?php echo $form->error($model,'text'); ?>
 	</div>
 	<div class="row">
-		<?php echo $form->labelEx($model,'video'); ?>
+		<?php echo $form->labelEx($model,'Insert video embed code'); ?>
 		<?php echo $form->textArea($model,'video',array('rows'=>6, 'cols'=>50)); ?>
 		<?php echo $form->error($model,'video'); ?>
 	</div>
@@ -74,5 +74,33 @@ $this->menu=array(
 	</div>
 
 <?php $this->endWidget(); ?>
+<script>
 
+function show_content_input(){
+
+	switch($("#Subject_content_type_id").val())
+	{
+	case '1':
+	  $("#Subject_image").parent().show();
+	  $("#Subject_text").parent().hide();
+	  $("#Subject_video").parent().hide();
+	  break;
+	case '2':
+	  $("#Subject_image").parent().hide();
+	  $("#Subject_text").parent().show();
+	  $("#Subject_video").parent().hide();
+	  break;
+	case '3':
+	  $("#Subject_image").parent().hide();
+	  $("#Subject_text").parent().hide();
+	  $("#Subject_video").parent().show();
+	  break;
+	default:
+	  //nothing
+	}
+}
+show_content_input();
+$("#Subject_content_type_id").change(function (){ show_content_input();});
+
+</script>
 </div><!-- form -->
