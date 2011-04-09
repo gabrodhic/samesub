@@ -54,17 +54,19 @@ class Subject extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('priority_id, country_id, language_id', 'numerical', 'integerOnly'=>true, 'on'=>'add,update,moderate,authorize'),
+			array('priority_id', 'numerical', 'integerOnly'=>true, 'on'=>'add,update,moderate,authorize'),
 			array('priority_id', 'numerical', 'min'=>1, 'max'=>3),
 			
+			
 			array('title, content_type_id', 'required', 'on'=>'add,update'),
-			array('content_type_id', 'numerical', 'integerOnly'=>true, 'on'=>'add,update'),			
+			array('content_type_id,country_id', 'numerical', 'integerOnly'=>true, 'on'=>'add,update'),			
 			array('title', 'length', 'max'=>240, 'on'=>'add,update'),
 			array('user_comment', 'type', 'type'=>'string', 'on'=>'add,update'),			
 			array('image', 'safe', 'on'=>'add,update'),//So that it can be massively assigned, either way its gonna be validated by validateContentType
 			array('text', 'safe', 'on'=>'add,update'),//So that it can be massively assigned, either way its gonna be validated by validateContentType
 			array('video', 'safe', 'on'=>'add,update'),//So that it can be massively assigned, either way its gonna be validated by validateContentType
 			array('content_type_id', 'validateContentType', 'on'=>'add'),
+
 			
 			array('approved', 'numerical', 'integerOnly'=>true, 'on'=>'moderate'),
 			array('moderator_comment', 'length', 'max'=>240, 'on'=>'moderate'),
@@ -390,7 +392,7 @@ class Subject extends CActiveRecord
 			'approved' => 'Approved',
 			'authorized' => 'Authorized',
 			'content_id' => 'Content',
-			'country_id' => 'Country',
+			'country_id' => 'Country of the Subject',
 			'moderator_id' => 'Moderator',
 			'moderator_ip' => 'Moderator Ip',
 			'moderator_comment' => 'Moderator Comment',
