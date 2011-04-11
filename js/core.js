@@ -73,11 +73,12 @@ function getTime(){
 	return d.getTime();
 }
 
+function fromUnixTime(timeStamp){
+	var theDate = new Date(timeStamp * 1000);
+	return theDate;
+}
 		
-var count = 0;
-var cache_div_id = 0;
-var cache_div_title;
-var cache_div_html;
+
 //Cause enter keypress submit the text on the text area
 $('#comment_textarea').keypress(function(event) {
 
@@ -105,7 +106,13 @@ function ajax_request(url,data,bsend,suc,err,method,dt){
 }
 		
 
-			
+var count = 0;
+var cache_div_id = 0;
+var cache_div_title;
+var cache_div_html;
+var cache_div_info;
+var time_submitted;
+
 function get_Contents(callback){
 	//alert('etro');
 	var d = new Date();
@@ -126,12 +133,15 @@ function get_Contents(callback){
 					$("#content_div").attr("data-id", json.id_1);//id
 					$("#content_div").attr("data-title", json.title_1);//title
 					$('#content_div').html(json.content_html_1);
+					time_submitted = fromUnixTime(json.time_submitted_1);
+					$("#content_div").attr("data-info", '<b>UTC '+time_submitted.getHours()+':'+time_submitted.getMinutes()+'</b> | '+json.country_name_1);
 					
 			 }else{
 				 //alert('content updated');
 					$("#content_div").attr("data-id", cache_div_id);
 					$("#content_div").attr("data-title", cache_div_title);
 					$("#content_div").html(cache_div_html);
+					$("#content_div").attr("data-info", cache_div_info);
 
 			 }
 			 //alert('id2'+json.id_2);
@@ -139,7 +149,12 @@ function get_Contents(callback){
 			 //alert('cache bot'+cache_div_id);
 			 cache_div_title = json.title_2;
 			 cache_div_html = $('<div>').html(json.content_html_2);
+			 time_submitted = fromUnixTime(json.time_submitted_2);
+			 cache_div_info = '<b>UTC '+time_submitted.getHours()+':'+time_submitted.getMinutes()+'</b> | '+json.country_name_2;
+			 
 			 $("#header_title").html($("#content_div").attr("data-title"));
+			 $("#header_info").html($("#content_div").attr("data-info"));
+			 
 			 blink_page_title($("#content_div").attr("data-title"));
 			 $("#comments_board").attr("data-number", json.comment_number);
 			 $("#comments_board").html("Waiting for comments");

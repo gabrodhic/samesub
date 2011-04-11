@@ -77,7 +77,7 @@ class SubjectController extends Controller
 			$model->attributes=$_POST['Subject'];
 			// Assign the user_id 1 if is a guest
 			$model->user_id=(Yii::app()->user->id) ? Yii::app()->user->id : 1;
-			$model->time_submitted = time();
+			$model->time_submitted = SiteLibrary::utc_time();
 			$model->user_ip = $_SERVER['REMOTE_ADDR'];
 			$model->user_country_id = $country->id;
 			

@@ -309,6 +309,10 @@ class Subject extends CActiveRecord
 			$arr_data['id_1'] = $subject_data->id;
 			$arr_data['title_1'] = $subject_data->title;
 			$arr_data['content_type_id_1'] = $subject_data->content_type_id;
+			$arr_data['time_submitted_1'] = $subject_data->time_submitted;
+			$country = Country::model()->findByPk($subject_data->country_id);
+			$arr_data['country_code_1'] = ($country->code) ? $country->code : 'WW';
+			$arr_data['country_name_1'] = ($country->name) ? $country->name : 'WORLD';
 			//$content_data = Yii::app()->db->createCommand()
 			//				->select('*')
 			//				->from('content_'. ContentType::model()->findByPk($subject_data->content_type_id)->name)
@@ -326,6 +330,10 @@ class Subject extends CActiveRecord
 				$arr_data['id_2']= $subject_data->id;
 				$arr_data['title_2']= $subject_data->title;			
 				$arr_data['content_type_id_2']= $subject_data->content_type_id;
+				$arr_data['time_submitted_2'] = $subject_data->time_submitted;
+				$country = Country::model()->findByPk($subject_data->country_id);
+				$arr_data['country_code_2'] = ($country->code) ? $country->code : 'WW';
+				$arr_data['country_name_2'] = ($country->name) ? $country->name : 'WORLD';
 				
 				$arr_data['content_html_2'] = SiteHelper::subject_content($subject_data);
 				$arr_data['content_data_2'] = (array) Subject::subject_content($subject_data)->getAttributes();

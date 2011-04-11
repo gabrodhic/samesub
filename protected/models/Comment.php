@@ -54,7 +54,7 @@ class Comment extends CActiveRecord
 ///TODO:add userid. Issue, cant make use of user component while other request is open(subject/fetch)		$this->user_id=(Yii::app()->user->getId()) ? Yii::app()->user->getId() : 1;
 		$this->user_id = 0;
 		
-		$this->time = time();
+		$this->time = SiteLibrary::utc_time();
 		$this->user_ip = $_SERVER['REMOTE_ADDR'];
 	
 		$live_subject = Yii::app()->db->createCommand()->select('subject_id_1, (comment_sequence+1)as next_sequence')->from('live_subject')->queryRow();

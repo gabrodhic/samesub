@@ -70,6 +70,7 @@ document.getElementsByTagName("head")[0].appendChild(element2);
 	<div id="header_bottom">
 		<div id="header_error">ERROR DIV</div>
 		<div id="header_title"></div>
+		<div id="header_info"></div>
 	</div>
 </div>
 <div id="left_container">
