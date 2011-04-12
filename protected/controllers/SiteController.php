@@ -31,7 +31,8 @@ class SiteController extends Controller
 		// using the default layout 'protected/views/layouts/main.php'
 		$information = Notification::getNotification();
 		$base_url = Yii::app()->getRequest()->getBaseUrl(true);
-		$this->renderPartial('index',array('information'=>$information,'base_url'=>$base_url));
+		$utc_time = SiteLibrary::utc_time();
+		$this->renderPartial('index',array('information'=>$information,'base_url'=>$base_url,'utc_time'=>$utc_time));
 	}
 
 	/**

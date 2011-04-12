@@ -77,7 +77,31 @@ function fromUnixTime(timeStamp){
 	var theDate = new Date(timeStamp * 1000);
 	return theDate;
 }
-		
+
+var tick;
+var ut;
+
+function clock() {
+  
+	if( typeof(ut) != 'undefined' ){
+		ut.setSeconds(ut.getSeconds() + 1);
+	}else{
+		ut=new Date(fromUnixTime(utc_time));
+	}
+	
+	var h,m,s;
+	var time="        ";
+	h=ut.getHours();
+	m=ut.getMinutes();
+	s=ut.getSeconds();
+	if(s<=9) s="0"+s;
+	if(m<=9) m="0"+m;
+	if(h<=9) h="0"+h;
+	time+=h+":"+m+":"+s;
+	$('#utc_clock').html(time);
+	tick=window.setTimeout("clock()",1000); 
+}
+clock();
 
 //Cause enter keypress submit the text on the text area
 $('#comment_textarea').keypress(function(event) {

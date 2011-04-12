@@ -8,6 +8,7 @@ var preload_time_passed = 0;
 window.setTimeout(function () { preload_time_passed = 5;},5000);
 
 var baseUrl = "<?php echo $base_url;?>";
+var utc_time = <?php echo $utc_time;?>;
 
 var element1 = document.createElement("link");
 element1.type="text/css";
@@ -49,6 +50,7 @@ document.getElementsByTagName("head")[0].appendChild(element2);
 			</div>
 			<div style="float:right; padding:8px;" >
 				<a href="<? echo $base_url;?>/feedback">Contact us</a>
+				<span><b> | UTC now: </b></span><span id="utc_clock"></span>
 			</div>
 		</div>
 	</div>
