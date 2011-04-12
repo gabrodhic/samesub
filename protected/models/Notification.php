@@ -50,18 +50,20 @@ class Notification extends CActiveRecord
 	public function getNotification()
 	{
 		//First we must return a notification that is set to fixed
-		if($note = Notification::model()->find('fixed=:fixed', array(':fixed'=>1))) return $note->message;		 
+		$information = new stdClass;
+		if($note = Notification::model()->find('fixed=:fixed', array(':fixed'=>1))) $information->note = $note->message;		 
 		//If there is no fixed notification then return the live subject if it has a high priority
 		$live_subject = Yii::app()->db->createCommand()->select('*')->from('live_subject')->queryRow();
 		$subject_data =  Yii::app()->db->createCommand()->select('*')->from('subject')
-			->where('id=:id AND priority_id >2', 
+			->where('id=:id', 
 			array(':id'=>$live_subject['subject_id_1']))
 			->queryRow();
-		if($subject_data) return '<b>Now: </b>"'.$subject_data['title'].'"<br><span>--Get ready to make your comments--</span>';
+		if($subject_data) $information->live = $subject_data['title'];
+		return $information;
 		//If nothing above is found then return a random notification
-		$notifications = Yii::app()->db->createCommand()->select('id')->from(Notification::tableName())->queryAll();
-		$rand_num = mt_rand(0,(count($notifications)-1));
-		return Notification::model()->findByPk($notifications[$rand_num]['id'])->message;
+		//$notifications = Yii::app()->db->createCommand()->select('id')->from(Notification::tableName())->queryAll();
+		//$rand_num = mt_rand(0,(count($notifications)-1));
+		//return Notification::model()->findByPk($notifications[$rand_num]['id'])->message;
 	}
 	/**
 	 * @return array relational rules.

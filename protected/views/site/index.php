@@ -4,6 +4,9 @@
 <meta http-equiv="Content-Language" content="en-us">
 <title>Samesub</title>
 <script type="text/javascript">
+var preload_time_passed = 0;
+window.setTimeout(function () { preload_time_passed = 5;},5000);
+
 var baseUrl = "<?php echo $base_url;?>";
 
 var element1 = document.createElement("link");
@@ -18,34 +21,17 @@ element2.type="text/javascript";
 document.getElementsByTagName("head")[0].appendChild(element2);
 
 </script>
-<style>
-.modal_note{
-	width: 800px;
-	height: 200px;
-	position: fixed;
-	top: 50%;
-	left: 50%;
-	margin: -100px 0 0 -400px;
-	/*background-color: grey;*/
-	color: black;
-	/*font-weight: bold;*/
-	text-align: center; 
-	font-size: 14px;
-	font-family: Trebuchet MS, Arial, Helvetica, sans-serif;
-	padding: 3px;
-	z-index: 3000;
-	/*top: expression((document.documentElement.scrollTop || document.body.scrollTop) + Math.round(17 * (document.documentElement.offsetHeight || document.body.clientHeight) / 100) + 'px');*/
-
-}
-
-</style>
 </head>
 <body>
 <noscript>Your browser does NOT support javascript or has it disabled. Please click <?php echo CHtml::link('here',Yii::app()->getRequest()->getBaseUrl(true).'/index/noscript'); ?> if you want to use this site without javascript or enable the javascript feature in your browser and reload the page.</noscript>
-<div id="notification" class="modal_note">
-	<div style="font-size: 24px;">Welcome to samesub!</div>	
-	<div style="margin-top:5px;"><?php echo $note;?></div>
-	<div style="margin-top:100px">page is loading...</div>
+
+<div id="preload" style="position:fixed; width: 680px; left: 50%; margin:20px 0px 0px -340px;font-family: Trebuchet MS, Arial, Helvetica, sans-serif;">
+	<div style="font-size: 12px;"><b>NOW: </b><?php echo $information->live;?></div>
+	<div style="background-color: #336699; font-size: 170px; color: white; font-weight:bold; margin: 20px 0px 20px 0px;">samesub</div>
+	<hr style="border: 1px solid grey;" />
+	<div style="font-size: 20px; color:#303030;"><?php echo $information->note;?></div>
+	<hr style="border: 1px solid grey;" />
+	<div style="margin:50px 0px 0px 0px; font-size: 16px;">Page is loading, get ready ...</div>
 </div>
 
 <div id="page" style="display:none; position:absolute; top: 10px; right: 30px; left:30px">
