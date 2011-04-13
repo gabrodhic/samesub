@@ -35,51 +35,55 @@ document.getElementsByTagName("head")[0].appendChild(element2);
 	<div style="margin:50px 0px 0px 0px; font-size: 16px;">Page is loading, get ready ...</div>
 </div>
 
-<div id="page" style="display:none; position:absolute; top: 10px; right: 30px; left:30px">
-<div id="header">
+<div id="page" style="display:none;">
+<div id="header" class="bounded">
 	<div id="header_top"></div>
 	<div id="header_middle">
-		<div id="logo" style="float:left;">HERE GOES THE LOGO INSIDE THIS DIV POSITION</div>
+		<div id="logo">HERE GOES THE LOGO INSIDE THIS DIV POSITION</div>
 		<div id="main_menu">
-			<div style="float:left;">
-				<ul class="navigation" style="list-style: disc; margin-left: 30px; margin-bottom: 1em;">
+			<div id="menu_left">
+				<ul class="navigation">
 					<li class="selected"><a href="<? echo $base_url;?>/">Live</a></li>
 					<li><a href="<? echo $base_url;?>/subject/add">Add Subject</a></li>
-					<li><a href="<? echo $base_url;?>/subject/manage">Manage</a></li>
+					<li><a href="<? echo $base_url;?>/subject/">History</a></li>
 				</ul>
 			</div>
-			<div style="float:right; padding:8px;" >
-				<a href="<? echo $base_url;?>/feedback">Contact us</a>
-				<span><b> | UTC now: </b></span><span id="utc_clock"></span>
+			<div id="menu_right">
+				<span><a href="<? echo $base_url;?>/feedback">Contact us</a></span>
+				<span><b> | </b><a href="<? echo $base_url;?>/subject/manage">Manage</a></span>
+				<span><b> | UTC NOW: </b></span><span id="utc_clock"></span>
 			</div>
 		</div>
 	</div>
 	<br class="clear_both">
+
+</div>
+<hr class="page_hrline">
+<div id="content" class="bounded">
 	<div id="header_bottom">
 		<div id="header_error">ERROR DIV</div>
 		<div id="header_title"></div>
 		<div id="header_info"></div>
 	</div>
-</div>
-<div id="left_container">
-	<div id="content_div"></div>
-</div>
-<div id="right_container">
-	<div id="comments_container">
-		<div>
-			<h4>Send Comment</h4>
-			<form id="CommentAddForm" method="post" action="/samesub/comment/add">		
-			<div class="textwrapper"><textarea id="comment_textarea" name="Comment[comment]" rows="2"></textarea></div>
-			</form>	
+	<div id="left_container">
+		<div id="content_div"></div>
+	</div>
+	<div id="right_container">
+		<div id="comments_container">
+			<div>
+				<h4>Send Comment</h4>
+				<form id="CommentAddForm" method="post" action="/samesub/comment/add">		
+				<div class="textwrapper"><textarea id="comment_textarea" name="Comment[comment]" rows="2"></textarea></div>
+				</form>	
+			</div>
+			<div id="comments_board"></div>
 		</div>
-		<div id="comments_board"></div>
 	</div>
 </div>
 <br class="clear_both">
-<div id="footer">CONTENT FOR FOOTER</div>
+<div id="footer" class="bounded">CONTENT FOR FOOTER</div>
 
 </div>
-
 </body>
 </html>
 

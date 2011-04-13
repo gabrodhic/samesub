@@ -237,10 +237,10 @@ function clear_preload(){
 	$("#page").show();
 }
 function check_preload(){
-	if(preload_time_passed >=5){
+	//if(preload_time_passed >=5){
 		clear_preload();
 		window.clearInterval(interval_check);
-	}
+	//}
 }
 
 var interval_check;

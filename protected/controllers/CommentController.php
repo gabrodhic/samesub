@@ -20,6 +20,19 @@ class CommentController extends Controller
 			if($text) $model->comment = $text;
 			if($_POST['text']) $model->comment = $_POST['text'];
 			
+			$live_subject = Yii::app()->db->createCommand()->select('subject_id_1, (comment_sequence+1)as next_sequence')->from('live_subject')->queryRow();
+			//print_r($live_subject);return;
+			Yii::app()->db->createCommand()->insert('live_comment', array(
+			'comment_sequence'=>$live_subject['next_sequence'],
+			'comment_text'=>$model->comment,
+			));
+			Yii::app()->db->createCommand()->update('live_subject', array(
+			'last_comment_number'=>Yii::app()->db->getLastInsertID(),
+			'comment_sequence'=>$live_subject['next_sequence'],
+			));
+		
+			$model->sequence = $live_subject['next_sequence'];
+			$model->subject_id = $live_subject['subject_id_1'];
 
 			$model->save();
 			//we need to jsonecode something, as not doing so, can provoke an 

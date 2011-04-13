@@ -66,11 +66,15 @@ class SubjectController extends Controller
 
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
-		Yii::import('ext.EGeoIP');
-		$geoIp = new EGeoIP();
-		$geoIp->locate($_SERVER['REMOTE_ADDR']);
-		//http://www.iso.org/iso/english_country_names_and_code_elements
-		$country=Country::model()->find('code=:code', array(':code'=>$geoIp->countryCode)); 
+		$country_id = 0;
+		if($_SERVER['REMOTE_ADDR'] != '127.0.0.1'){
+			Yii::import('ext.EGeoIP');
+			$geoIp = new EGeoIP();
+			$geoIp->locate($_SERVER['REMOTE_ADDR']);
+			//http://www.iso.org/iso/english_country_names_and_code_elements
+			$country=Country::model()->find('code=:code', array(':code'=>$geoIp->countryCode));
+			if($country) $country_id = $country->id;
+		}
 		
 		if(isset($_POST['Subject']))
 		{
@@ -79,13 +83,13 @@ class SubjectController extends Controller
 			$model->user_id=(Yii::app()->user->id) ? Yii::app()->user->id : 1;
 			$model->time_submitted = SiteLibrary::utc_time();
 			$model->user_ip = $_SERVER['REMOTE_ADDR'];
-			$model->user_country_id = $country->id;
+			$model->user_country_id = $country_id;
 			
 			if($model->save())
 				$this->redirect(array('view','id'=>$model->id));
 		}
 		
-		if(! $model->country_id) $model->country_id = $country->id;
+		if(! $model->country_id) $model->country_id = $country_id;
 		
 		$this->render('create',array(
 			'model'=>$model,

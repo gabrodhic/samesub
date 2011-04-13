@@ -56,20 +56,17 @@ class Comment extends CActiveRecord
 		
 		$this->time = SiteLibrary::utc_time();
 		$this->user_ip = $_SERVER['REMOTE_ADDR'];
+		$country_id = 0;
+		if($_SERVER['REMOTE_ADDR'] != '127.0.0.1'){
+			Yii::import('ext.EGeoIP');
+			$geoIp = new EGeoIP();
+			$geoIp->locate($_SERVER['REMOTE_ADDR']);
+			//http://www.iso.org/iso/english_country_names_and_code_elements
+			$country=Country::model()->find('code=:code', array(':code'=>$geoIp->countryCode));
+			if($country) $country_id = $country->id;
+		}
+		$this->country_id = $country_id;
 	
-		$live_subject = Yii::app()->db->createCommand()->select('subject_id_1, (comment_sequence+1)as next_sequence')->from('live_subject')->queryRow();
-		//print_r($live_subject);return;
-		Yii::app()->db->createCommand()->insert('live_comment', array(
-		'comment_sequence'=>$live_subject['next_sequence'],
-		'comment_text'=>$this->comment,
-		));
-		Yii::app()->db->createCommand()->update('live_subject', array(
-		'last_comment_number'=>Yii::app()->db->getLastInsertID(),
-		'comment_sequence'=>$live_subject['next_sequence'],
-		));
-		
-		$this->sequence = $live_subject['next_sequence'];
-		$this->subject_id = $live_subject['subject_id_1'];
 		return true;
 	}
 	/**
@@ -92,6 +89,7 @@ class Comment extends CActiveRecord
 			'id' => 'ID',
 			'user_id' => 'User',
 			'user_ip' => 'User ip',
+			'country_id' => 'Country',
 			'subject_id' => 'Subject',
 			'time' => 'Time',
 			'comment' => 'Comment',
@@ -112,6 +110,7 @@ class Comment extends CActiveRecord
 		$criteria->compare('id',$this->id,true);
 		$criteria->compare('user_id',$this->user_id);
 		$criteria->compare('user_ip',$this->user_ip);
+		$criteria->compare('country_id',$this->country_id);
 		$criteria->compare('subject_id',$this->subject_id);
 		$criteria->compare('time',$this->time);
 		$criteria->compare('comment',$this->comment,true);
