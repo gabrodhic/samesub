@@ -12,6 +12,14 @@ $this->menu=array(
 
 <h1>Add Subject</h1>
 
+<?php if(Yii::app()->user->hasFlash('subject_added')): ?>
+
+<div class="flash-success">
+	<?php echo Yii::app()->user->getFlash('subject_added'); ?>
+</div>
+
+<?php else: ?>
+
 <div class="form">
 
 <?php $form=$this->beginWidget('CActiveForm', array(
@@ -46,7 +54,7 @@ $this->menu=array(
 		<?php echo $form->error($model,'text'); ?>
 	</div>
 	<div class="row">
-		<?php echo $form->labelEx($model,'Insert video embed code'); ?>
+		<?php echo $form->labelEx($model,'video'); ?>
 		<?php echo $form->textArea($model,'video',array('rows'=>6, 'cols'=>50)); ?>
 		<?php echo $form->error($model,'video'); ?>
 	</div>
@@ -104,3 +112,4 @@ $("#Subject_content_type_id").change(function (){ show_content_input();});
 
 </script>
 </div><!-- form -->
+<?php endif; ?>

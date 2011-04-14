@@ -408,6 +408,7 @@ class Subject extends CActiveRecord
 			'time_moderated' => 'Time Moderated',
 			'priority_id' => 'Priority',
 			'show_time' => 'Show Time',
+			'video'=>'Video embed code',
 		);
 	}
 

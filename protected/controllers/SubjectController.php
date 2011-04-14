@@ -85,8 +85,10 @@ class SubjectController extends Controller
 			$model->user_ip = $_SERVER['REMOTE_ADDR'];
 			$model->user_country_id = $country_id;
 			
-			if($model->save())
-				$this->redirect(array('view','id'=>$model->id));
+			if($model->save()){
+				Yii::app()->user->setFlash('subject_added','Subject succesfully submitted!. Your subject has just been sended to a moderator for its approval. If your subject gets approved, you should wait at least for two subjects to change on the live stream(homepage) before your content is shown.');
+				$this->refresh();
+			}
 		}
 		
 		if(! $model->country_id) $model->country_id = $country_id;
