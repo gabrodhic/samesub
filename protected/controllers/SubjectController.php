@@ -2,11 +2,6 @@
 
 class SubjectController extends Controller
 {
-	/**
-	 * @var string the default layout for the views. Defaults to '//layouts/column2', meaning
-	 * using two-column layout. See 'protected/views/layouts/column2.php'.
-	 */
-	public $layout='//layouts/column2';
 
 	/**
 	 * @return array action filters
@@ -250,7 +245,9 @@ class SubjectController extends Controller
 		$comment_number = (int)$comment_number;
 		$data = NULL;
 		//In this for is where all the comet(long polling) magic occurs
-		for ($i = 1; $i <= 10; $i++) {
+		//TODO:conflict with session component(maybe cus of cookies). All other simultanous request done to a 
+		//page will not be compleated until this finish. So, smaller wait time and more request its recomended here
+		for ($i = 1; $i <= 3; $i++) {
 			if ( $data = Subject::getLiveData($subject_id_2,$comment_number,true) )
 			{
 				echo $data;

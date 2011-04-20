@@ -3,7 +3,7 @@
 html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, font, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, dl, dt, dd, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td { margin: 0; padding: 0; border: 0; outline: 0; font-family: inherit; vertical-align: baseline; }
 body { background: white; }
 /* @group Baseline Styles */
-body { font: normal 13px Trebuchet MS, Arial, Helvetica, sans-serif; color: 686868; }
+body { font: normal 13px Trebuchet MS, Arial, Helvetica, sans-serif; color: #686868; }
 p { margin: 0; padding: 0 0 1.2em 0; }
 /* Text font styles*/
 h2 { font-size: 36px; letter-spacing: -1px; padding: 0 0 14px 0;  color: #686868}
@@ -23,6 +23,9 @@ ol { margin-top: 0; margin-bottom: 0; padding-top: 0; padding-bottom: 1.2em; }
 img { border: 0; }
 
 .clear_both{
+margin:0px;
+padding:0px;
+height:1px;
 clear: both;
 }
 .center {text-align: center;}
@@ -69,6 +72,7 @@ padding-right:10px;
 padding-left:10px;
 }
 
+
 .content_image{
 max-width:600px;
 width:100%;
@@ -112,7 +116,7 @@ font-size: 18px;
 background-color:#1C75CE;
 }
 
-.navigation .selected {
+.navigation .active {
 background-color:#1C75CE;
 }
 
@@ -120,10 +124,12 @@ background-color:#1C75CE;
 font-weight:bold;
 }
 .page_hrline{
-color:#c00;
-background-color:#F3F3F3;
+color:#EEE;
+background-color:#EEE;
 height:1px;
 border:none;
+margin:0;
+padding:0;
 }
 
 #comments_board {
@@ -132,15 +138,48 @@ border:none;
 	bottom:1px;
 	top:1px;
 	
-	overflow: auto;
+	/*overflow: auto;*/
 	/*border: 1px dotted black;*/
 
+}
+.comment_board_entry{
+margin-bottom:7px;
+padding: 0px;
+/*height:55px;*/
+}
+.left_comment{
+/*float:left;*/
+margin-right:6px
+}
+.right_comment{
+top:0px;
+}
+.comment_number{
+/*font-size:26px;*/
+background-color: grey;
+color: white;
+}
+.comment_country{
+/*letter-spacing: 5px;
+font-size:16px;
+padding-top:5px;
+*/
+margin: 0 5px 0 5px;
+color:black;
+font-weight:bold;
+}
+.comment_text{
+}
+.comment_header{
+color:grey;
+font-weight:bold;
 }
 /* Footer Style */
 #footer {
 color:#686868;
-font-size:10px;
-text-align:left;
+font-size:12px;
+font-weight:bold;
+text-align:right;
 }
 
 

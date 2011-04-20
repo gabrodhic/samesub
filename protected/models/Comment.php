@@ -12,6 +12,7 @@
  */
 class Comment extends CActiveRecord
 {
+	public $update_live = false;
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @return Comment the static model class
@@ -54,18 +55,39 @@ class Comment extends CActiveRecord
 ///TODO:add userid. Issue, cant make use of user component while other request is open(subject/fetch)		$this->user_id=(Yii::app()->user->getId()) ? Yii::app()->user->getId() : 1;
 		$this->user_id = 0;
 		
-		$this->time = SiteLibrary::utc_time();
+		//$this->time = SiteLibrary::utc_time();
 		$this->user_ip = $_SERVER['REMOTE_ADDR'];
 		$country_id = 0;
+		$country_code = 'WW';
 		if($_SERVER['REMOTE_ADDR'] != '127.0.0.1'){
 			Yii::import('ext.EGeoIP');
 			$geoIp = new EGeoIP();
 			$geoIp->locate($_SERVER['REMOTE_ADDR']);
 			//http://www.iso.org/iso/english_country_names_and_code_elements
 			$country=Country::model()->find('code=:code', array(':code'=>$geoIp->countryCode));
-			if($country) $country_id = $country->id;
+			if($country) {$country_id = $country->id; $country_code = $country->code;}
 		}
 		$this->country_id = $country_id;
+		
+		$this->time = SiteLibrary::utc_time();
+		
+		if($this->update_live){
+			$live_subject = Yii::app()->db->createCommand()->select('subject_id_1, (comment_sequence+1)as next_sequence')->from('live_subject')->queryRow();
+			//print_r($live_subject);return;
+			Yii::app()->db->createCommand()->insert('live_comment', array(
+			'comment_sequence'=>$live_subject['next_sequence'],
+			'comment_text'=>$this->comment,
+			'comment_time'=>$this->time,
+			'comment_country'=>$country_code,
+			));
+			Yii::app()->db->createCommand()->update('live_subject', array(
+			'last_comment_number'=>Yii::app()->db->getLastInsertID(),
+			'comment_sequence'=>$live_subject['next_sequence'],
+			));
+		
+			$this->sequence = $live_subject['next_sequence'];
+			$this->subject_id = $live_subject['subject_id_1'];
+		}
 	
 		return true;
 	}

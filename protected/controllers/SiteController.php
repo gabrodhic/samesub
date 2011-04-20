@@ -32,7 +32,15 @@ class SiteController extends Controller
 		$information = Notification::getNotification();
 		$base_url = Yii::app()->getRequest()->getBaseUrl(true);
 		$utc_time = SiteLibrary::utc_time();
-		$this->renderPartial('index',array('information'=>$information,'base_url'=>$base_url,'utc_time'=>$utc_time));
+		
+		
+		$this->render('index',array('information'=>$information,'base_url'=>$base_url,'utc_time'=>$utc_time));
+		if(Yii::app()->session->get('site_loaded')){
+			//$this->render('index2',array('information'=>$information,'base_url'=>$base_url,'utc_time'=>$utc_time));
+		}else{
+			Yii::app()->session->add('site_loaded', 'yes');
+			//$this->renderPartial('index',array('information'=>$information,'base_url'=>$base_url,'utc_time'=>$utc_time));
+		}
 	}
 
 	/**

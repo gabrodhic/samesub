@@ -286,7 +286,7 @@ class Subject extends CActiveRecord
 		->queryAll();
 		
 		foreach ($live_comments as $live_comment){
-			$arr_comments[] = array('comment_text'=> htmlentities($live_comment['comment_text']), 'comment_sequence'=>$live_comment['comment_sequence'],'comment_number'=>$live_comment['comment_number']);
+			$arr_comments[] = array('comment_text'=> htmlentities($live_comment['comment_text']), 'comment_sequence'=>$live_comment['comment_sequence'],'comment_number'=>$live_comment['comment_number'],'comment_time'=>$live_comment['comment_time'],'comment_country'=>$live_comment['comment_country']);
 		}
 		$arr_data['comments']= $arr_comments;
 		
