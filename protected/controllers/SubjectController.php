@@ -273,9 +273,15 @@ class SubjectController extends Controller
 	public function actionIndex()
 	{
 		
-		$dataProvider=new CActiveDataProvider('Subject');
+		$model=new Subject('history');
+		$model->unsetAttributes();  // clear any default values
+		if(isset($_GET['Subject']))
+				$model->attributes=$_GET['Subject'];
+		
+		$model->show_time = ">:0";
+
 		$this->render('index',array(
-			'dataProvider'=>$dataProvider,
+			'model'=>$model,
 		));
 		
 	}
@@ -287,7 +293,7 @@ class SubjectController extends Controller
 	{
 		if(Yii::app()->user->checkAccess('subject_manage'))
 		{
-			$model=new Subject('search');
+			$model=new Subject('manage');
 			$model->unsetAttributes();  // clear any default values
 			if(isset($_GET['Subject']))
 				$model->attributes=$_GET['Subject'];

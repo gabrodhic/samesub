@@ -24,7 +24,11 @@
 		var utc_time = <?php echo SiteLibrary::utc_time();?>;
 		</script>
 	<?php
-		Yii::app()->clientScript->registerScriptFile(Yii::app()->request->baseUrl."/js/core.js", CClientScript::POS_END);
+		if (strtolower($this->id) == 'site' and strtolower($this->action->Id) == 'index'){
+			Yii::app()->clientScript->registerScriptFile(Yii::app()->request->baseUrl."/js/core.js", CClientScript::POS_END);
+		}else{
+			Yii::app()->clientScript->registerCoreScript('jquery');
+		}
 	}else{
 	?>
 		<script type="text/javascript">
@@ -50,7 +54,7 @@
 		#page{display:none;}
 		</style>
 	<?php
-		Yii::app()->clientScript->registerCoreScript('jquery');
+		
 	}
 	?>
 
@@ -123,3 +127,6 @@
 
 </body>
 </html>
+<?php
+if(! Yii::app()->session->get('site_loaded')) Yii::app()->session->add('site_loaded', 'yes');
+?>

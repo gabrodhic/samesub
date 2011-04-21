@@ -76,7 +76,8 @@ class Subject extends CActiveRecord
 			array('authorized', 'validateAuthorization', 'on'=>'authorize'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, user_id, user_ip, user_comment, title, urn, content_type_id, approved, authorized, content_id, country_id, moderator_id, moderator_ip, moderator_comment, time_submitted, time_moderated, priority_id, show_time', 'safe', 'on'=>'search'),
+			array('id, user_id, user_ip, user_comment, title, urn, content_type_id, approved, authorized, content_id, country_id, moderator_id, moderator_ip, moderator_comment, time_submitted, time_moderated, priority_id, show_time', 'safe', 'on'=>'manage'),
+			array('title, urn, content_type_id, country_id, time_submitted, priority_id, show_time', 'safe', 'on'=>'history'),
 		);
 	}
 	
@@ -376,6 +377,7 @@ class Subject extends CActiveRecord
 		//something like this should work, 
 		//but right now doesn't: var_dump( Subject::model()->with('type_content')->findByPk(30)->type_content->name);
 		return array(
+			'country'=>array(self::BELONGS_TO, 'Country', 'country_id'),
 			'priority_type'=>array(self::BELONGS_TO, 'Priority', 'priority_id'),
 			'content_type'=>array(self::BELONGS_TO, 'ContentType', 'content_type_id'),
 			'content_image'=>array(self::BELONGS_TO, 'ContentImage', 'content_id'),
@@ -416,8 +418,8 @@ class Subject extends CActiveRecord
 	 * Retrieves a list of models based on the current search/filter conditions.
 	 * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
 	 */
-	public function search()
-	{
+	public function search($default_sort='t.id DESC')
+	{//Notice t. = to model table.  http://www.yiiframework.com/doc/guide/1.1/en/database.arr#disambiguating-column-names
 		// Warning: Please modify the following code to remove attributes that
 		// should not be searched.
 
@@ -429,21 +431,26 @@ class Subject extends CActiveRecord
 		$criteria->compare('user_comment',$this->user_comment,true);
 		$criteria->compare('title',$this->title,true);
 		$criteria->compare('urn',$this->urn,true);
-		$criteria->compare('content_type_id',$this->content_type_id);
+		$criteria->compare('content_type_id',$this->content_type_id, true);
+		$criteria->compare('priority_id',$this->priority_id, true);
 		$criteria->compare('approved',$this->approved);
-		$criteria->compare('authorized',$this->approved);
+		$criteria->compare('authorized',$this->authorized);
 		$criteria->compare('content_id',$this->content_id);
-		$criteria->compare('country_id',$this->country_id);
+		$criteria->compare('country_id',$this->country_id, true);
 		$criteria->compare('moderator_id',$this->moderator_id);
 		$criteria->compare('moderator_ip',$this->moderator_ip,true);
 		$criteria->compare('moderator_comment',$this->moderator_comment,true);
 		$criteria->compare('time_submitted',$this->time_submitted);
 		$criteria->compare('time_moderated',$this->time_moderated);
-		$criteria->compare('priority_id',$this->priority_id);
+		//Disabled, Not needed anynmore, as we better use filter in view files
+		//$criteria->compare('priority_type.name',$this->priority_id, true);//Notice the relational name and not the table name, also notice that this has the user input value
 		$criteria->compare('show_time',$this->show_time);
+		
+		//$criteria->with=array('country','priority_type','content_type');//Disabled, Not needed anynmore, as we better use filter in view files
 
 		return new CActiveDataProvider(get_class($this), array(
 			'criteria'=>$criteria,
+			'sort'=>array('defaultOrder'=>$default_sort),
 		));
 	}
 }

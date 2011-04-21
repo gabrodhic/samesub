@@ -37,26 +37,48 @@ or <b>=</b>) at the beginning of each of your search values to specify how the c
 )); ?>
 </div><!-- search-form -->
 
-<?php $this->widget('zii.widgets.grid.CGridView', array(
+<?php 
+	$dataProvider=$model->search();
+	$dataProvider->pagination->pageSize=50;
+	$this->widget('zii.widgets.grid.CGridView', array(
 	'id'=>'subject-grid',
-	'dataProvider'=>$model->search(),
+	'dataProvider'=>$dataProvider,
 	'filter'=>$model,
 	'columns'=>array(
-		'id',
-		'user_id',
-		'country_id',
 		array(
-            'name'=>'urn',
-            'value'=>'substr($data->urn, 0,30)',
+            'name'=>'id',
+            'value'=>'$data->id',
+			'headerHtmlOptions'=>array('width'=>'25px'),
+			'sortable'=>true,
+        ),
+		array(
+            'name'=>'user_id',
+            'value'=>'$data->user_id',
+			'headerHtmlOptions'=>array('width'=>'25px'),
+			'sortable'=>true,
+        ),
+		array(
+            'name'=>'country_id',
+            'value'=>'$data->country->name',
+			'filter'=>CHtml::listData(Country::model()->findAll(),'id','name'),
+			'sortable'=>true,
+        ),
+		array(
+            'name'=>'title',
+			'headerHtmlOptions'=>array('width'=>'430px'),
         ),
 		array(
             'name'=>'priority_id',
             'value'=>'$data->priority_type->name',
+			'headerHtmlOptions'=>array('width'=>'50px'),
+			'filter'=>CHtml::listData(Priority::model()->findAll(),'id','name'),
 			'sortable'=>true,
         ),
 		array(
             'name'=>'content_type_id',
             'value'=>'$data->content_type->fullname',
+			'headerHtmlOptions'=>array('width'=>'50px'),
+			'filter'=>CHtml::listData(ContentType::model()->findAll(),'id','name'),
 			'sortable'=>true,
         ),
 		array(
@@ -69,18 +91,18 @@ or <b>=</b>) at the beginning of each of your search values to specify how the c
 			'name'=>'approved',
 			'type'=>'html',
 			'value'=>'CHtml::link(SiteHelper::yesno($data->approved),"moderate/".$data->id)',
+			'headerHtmlOptions'=>array('width'=>'30px'),
+			'filter'=>array('0'=>'No','1'=>'Yes'),
 			'sortable'=>true,
 		),
 		array(
 			'name'=>'authorized',
 			'type'=>'html',
 			'value'=>'CHtml::link(SiteHelper::yesno($data->authorized),"authorize/".$data->id)',
+			'headerHtmlOptions'=>array('width'=>'30px'),
+			'filter'=>array('0'=>'No','1'=>'Yes'),
 			'sortable'=>true,
 		),
 	),
-	'pager'=>array(
-		'class'=>'CLinkPager',
-        'pageSize'=>15,//TODO:Doesn't seems to work
-     ),
 	'enablePagination'=>true,
 )); ?>
