@@ -152,18 +152,22 @@ class InternalController extends Controller
 		
 		
 		$live_subject = Yii::app()->db->createCommand()->select('*')->from('live_subject')->queryRow();
+		
+		if( (int)Yii::app()->db->createCommand()->select('count(*) as num')->from('live_comment')->queryScalar() >25){
+			$command->delete('live_comment');
+			$command->update('live_subject', array(
+			'last_comment_number'=>0,
+			'comment_sequence'=>0,
+			));
+		}else{
+			$command->update('live_subject', array(
+			'subject_id_1'=>$live_subject['subject_id_2'],
+			'subject_id_2'=>$next_subject_id_2,
+			));
+		}
 
-		$command->update('live_subject', array(
-		'subject_id_1'=>$live_subject['subject_id_2'],
-		'last_comment_number'=>0,
-		'comment_sequence'=>0,
-		));
-		$command->delete('live_comment');
-		$command->update('live_subject', array(
-		'subject_id_2'=>$next_subject_id_2,
-		'last_comment_number'=>0,
-		'comment_sequence'=>0,
-		));
+		
+
 		
 		Subject::model()->updateByPk($next_subject_id_2, array('show_time'=>SiteLibrary::utc_time()));
 		echo 'Done setting next subject_id_2 : '.$next_subject_id_2;

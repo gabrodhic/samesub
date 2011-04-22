@@ -180,7 +180,7 @@ function get_Contents(callback){
 			 
 			 blink_page_title($("#content_div").attr("data-title"));
 			 $("#comments_board").attr("data-number", json.comment_number);
-			 $("#comments_board").html("Waiting for comments");
+			 if(json.comment_sequence == 0 ) $("#comments_board").html("Waiting for comments");
 			 count = 1;//reset the count
 			}else{
 			//alert(json.id);

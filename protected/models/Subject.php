@@ -323,6 +323,7 @@ class Subject extends CActiveRecord
 			$arr_data['user_comment_1'] = $subject_data->user_comment;
 			
 			$arr_data['comment_update'] = 'no';
+			$arr_data['comment_sequence'] = $live_subject['comment_sequence'];
 			
 			// If the subject cached in client its not the one to be showed, lets add it to the array also
 			if($subject_id_2 <> $live_subject['subject_id_2']){
