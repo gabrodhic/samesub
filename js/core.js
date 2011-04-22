@@ -155,7 +155,7 @@ function get_Contents(callback){
 				 //alert(arr_response1[4]);
 					$("#content_div").attr("data-id", json.id_1);//id
 					$("#content_div").attr("data-title", json.title_1);//title
-					$('#content_div').html(json.content_html_1);
+					$('#content_div').html(json.user_comment_1 + '<br>'+ json.content_html_1);
 					time_submitted = fromUnixTime(json.time_submitted_1);
 					$("#content_div").attr("data-info", '<b>Submitted UTC '+time_submitted.getHours()+':'+time_submitted.getMinutes()+'</b> | '+json.country_name_1);
 					
@@ -171,7 +171,7 @@ function get_Contents(callback){
 			 cache_div_id = json.id_2;
 			 //alert('cache bot'+cache_div_id);
 			 cache_div_title = json.title_2;
-			 cache_div_html = $('<div>').html(json.content_html_2);
+			 cache_div_html = json.user_comment_2 + '<br>' + $('<div>').html(json.content_html_2);
 			 time_submitted = fromUnixTime(json.time_submitted_2);
 			 cache_div_info = '<b>Submitted UTC '+time_submitted.getHours()+':'+time_submitted.getMinutes()+'</b> | '+json.country_name_2;
 			 
