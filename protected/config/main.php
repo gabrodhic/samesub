@@ -91,6 +91,7 @@ return array(
 	// using Yii::app()->params['paramName']
 	'params'=>array(
 		// this is used in contact page
-		'adminEmail'=>'webmaster@example.com',
+		'adminEmail'=>'samesub@samesub.com',
+		'contactEmail'=>'contact@samesub.com',
 	),
 );
