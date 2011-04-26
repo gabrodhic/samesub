@@ -85,6 +85,7 @@ function clock() {
 		ut.setSeconds(ut.getSeconds() + 1);
 	}else{
 		ut=new Date(utc_time * 1000);
+		ut.setHours(utc_hour,utc_min,utc_sec,0);
 	}
 	
 	var h,m,s;

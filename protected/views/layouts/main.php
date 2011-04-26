@@ -22,6 +22,9 @@
 		
 		var baseUrl = "<?php echo Yii::app()->getRequest()->getBaseUrl(true);?>";
 		var utc_time = <?php echo SiteLibrary::utc_time();?>;
+		var utc_hour = <?php echo date("h",SiteLibrary::utc_time()); ?>;
+		var utc_min = <?php echo date("i",SiteLibrary::utc_time()); ?>;
+		var utc_sec = <?php echo date("s",SiteLibrary::utc_time()); ?>;
 		</script>
 	<?php
 		if (strtolower($this->id) == 'site' and strtolower($this->action->Id) == 'index'){
