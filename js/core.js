@@ -84,7 +84,7 @@ function clock() {
 	if( typeof(ut) != 'undefined' ){
 		ut.setSeconds(ut.getSeconds() + 1);
 	}else{
-		ut=new Date(fromUnixTime(utc_time));
+		ut=new Date(utc_time * 1000);
 	}
 	
 	var h,m,s;

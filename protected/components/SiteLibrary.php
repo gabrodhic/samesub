@@ -13,6 +13,7 @@ class SiteLibrary extends CComponent
 	public function utc_time()
 	{
 		$utc_time = mktime(gmdate("H"), gmdate("i"), gmdate("s"), gmdate("m"), gmdate("d"), gmdate("Y"));
+		//this also works $gmtimenow = time() - (int)substr(date('O'),0,3)*60*60; 
 		return $utc_time;
 	}
 	
