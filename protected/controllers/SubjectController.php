@@ -84,9 +84,9 @@ class SubjectController extends Controller
 				Yii::app()->user->setFlash('subject_added','Subject succesfully submitted!. Your subject has just been sended to a moderator for its approval. If your subject gets approved, you should wait at least for two subjects to change on the live stream(homepage) before your content is shown.');
 				$this->refresh();
 			}
+		}else{
+			$model->country_id = $country_id;
 		}
-		
-		if(! $model->country_id) $model->country_id = $country_id;
 		
 		$this->render('create',array(
 			'model'=>$model,

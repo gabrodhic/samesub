@@ -67,7 +67,7 @@ $this->menu=array(
 
 	<div class="row">
 		<?php echo $form->labelEx($model,'country_id'); ?>
-		<?php echo CHtml::dropDownList('country_id',$model->country_id, CHtml::listData(Country::model()->findAll(),'id','name'), array('prompt'=>'Select Country')); ?> 
+		<?php echo $form->DropDownList($model, 'country_id', CHtml::listData(Country::model()->findAll(),'id','name'), array('prompt'=>'Select Country')); ?> 
 		<?php echo $form->error($model,'country_id'); ?>
 	</div>
 	

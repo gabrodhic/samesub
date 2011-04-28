@@ -242,9 +242,9 @@ class Subject extends CActiveRecord
 				$this->image=CUploadedFile::getInstance($this,'image');
 				if(get_class($this->image) <> 'CUploadedFile'){ $this->addError('image','No file received'); break; }
 				if($this->image->getHasError()){ $this->addError('image','Please select an image.');break; }
-				if($this->image->getSize() > (1024 * 1024 * 4)){  $this->addError('image','Please select an image smaller than 4MB.');break;}//4MB
+				if($this->image->getSize() > (1024 * 1024 * Yii::app()->params['max_image_size'])){  $this->addError('image','Please select an image smaller than 7MB.');break;}//MB
 				$types = array("image/jpg", "image/png", "image/gif", "image/jpeg");
-				if (! in_array(CFileHelper::getMimeType($this->image->getName()), $types)) $this->addError('image','File type '.CFileHelper::getMimeType($this->image->getName()).' not supported .Please select a valid image type.');//4MB
+				if (! in_array(CFileHelper::getMimeType($this->image->getName()), $types)) $this->addError('image','File type '.CFileHelper::getMimeType($this->image->getName()).' not supported .Please select a valid image type.');
 				break;
 			case 2:
 				//Text

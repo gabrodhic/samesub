@@ -1,5 +1,5 @@
 <?php
-$this->pageTitle=Yii::app()->name;
+$this->pageTitle=Yii::app()->name.": ".$information->live;
 ?>
 	<div id="header_bottom">
 		<div id="header_error">ERROR DIV</div>

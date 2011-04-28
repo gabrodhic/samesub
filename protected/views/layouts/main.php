@@ -4,7 +4,14 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<meta name="language" content="en" />
 	
-	
+	<script>
+		<?php $time = SiteLibrary::utc_time(); ?>
+		var baseUrl = "<?php echo Yii::app()->getRequest()->getBaseUrl(true);?>";
+		var utc_time = <?php echo $time;?>;
+		var utc_hour = <?php echo date("h",$time); ?>;
+		var utc_min = <?php echo date("i",$time); ?>;
+		var utc_sec = <?php echo date("s",$time); ?>;
+	</script>
 	<?php if(Yii::app()->session->get('site_loaded')){
 	?>
 		<!-- blueprint CSS framework -->
@@ -19,12 +26,6 @@
 		<link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/core.css" />
 		<script>
 		var preload_time_passed = 100;//no need to wait
-		
-		var baseUrl = "<?php echo Yii::app()->getRequest()->getBaseUrl(true);?>";
-		var utc_time = <?php echo SiteLibrary::utc_time();?>;
-		var utc_hour = <?php echo date("h",SiteLibrary::utc_time()); ?>;
-		var utc_min = <?php echo date("i",SiteLibrary::utc_time()); ?>;
-		var utc_sec = <?php echo date("s",SiteLibrary::utc_time()); ?>;
 		</script>
 	<?php
 		if (strtolower($this->id) == 'site' and strtolower($this->action->Id) == 'index'){
@@ -37,9 +38,6 @@
 		<script type="text/javascript">
 		var preload_time_passed = 0;
 		window.setTimeout(function () { preload_time_passed = 5;},5000);
-
-		var baseUrl = "<?php echo Yii::app()->getRequest()->getBaseUrl(true);?>";
-		var utc_time = <?php echo SiteLibrary::utc_time();?>;
 		
 		var element1 = document.createElement("link");
 		element1.type="text/css";
