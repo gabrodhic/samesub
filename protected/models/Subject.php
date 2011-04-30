@@ -134,7 +134,7 @@ class Subject extends CActiveRecord
 					$img_type = CFileHelper::getMimeType($this->image->getName());
 					$img_size = $this->image->getSize();
 					//The path should be changed as time passes so that directory isn't very full(ie:img/1, img/2...) 
-					$img_path = 'img/1';
+					$img_path = Yii::app()->params['img_path'];
 					
 					//If can't save the image in the db or in the disk, then invalidate
 					if(! Yii::app()->db->createCommand()
@@ -144,11 +144,31 @@ class Subject extends CActiveRecord
 						return false;				
 					}
 					$img_name = Yii::app()->db->getLastInsertID().'.'.$img_extension;
-					if(! $this->image->saveAs(Yii::app()->basePath . '/../'.$img_path.'/' . $img_name))
-					{
+					
+					//if(! $this->image->saveAs(Yii::app()->basePath . '/../'.$img_path.'/' . 'large_'.$img_name))
+					//{
+					//	$this->addError('image','We could not save the image in the disk.'); 
+					//	return false;				
+					//}
+					//WARNING: make sure you have at least ini_set("memory_limit","64M");
+					Yii::import('ext.EUploadedImage');
+					$this->image = EUploadedImage::getInstance($this,'image');
+					$this->image->maxWidth = 980;
+					$this->image->maxHeight = 750;
+					 
+					$this->image->thumb = array(
+						'maxWidth' => 480,	//Because we dont know if its viewing in landscape or portrait
+						'maxHeight' => 480, //we set bowth to a max of 800 instead of 480(no, lets make both 480)
+						//'dir' => Yii::app()->params['dirroot'] . '/'.$img_path,
+						'prefix' => 'small_',
+					);
+					 
+					if (! $this->image->saveAs(Yii::app()->params['webdir'].DIRECTORY_SEPARATOR.$img_path.DIRECTORY_SEPARATOR.$img_name)){
 						$this->addError('image','We could not save the image in the disk.'); 
-						return false;				
+						return false;
 					}
+					
+
 					break;
 				case 2:
 					//Text
