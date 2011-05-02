@@ -97,7 +97,7 @@
 					</div>
 				</div>
 				<div id="menu_right">
-					<span><a href="<? echo Yii::app()->getRequest()->getBaseUrl(true);?>/site/feedback">Contact us</a></span>
+					<span><a href="<? echo Yii::app()->getRequest()->getBaseUrl(true);?>/site/contact">Feedback</a></span>
 					
 					<?php if(strtolower(Yii::app()->controller->action->id) == 'index' and strtolower(Yii::app()->controller->id) == 'site')
 					echo '<span><b> | UTC NOW: </b></span><span id="utc_clock"></span>'; ?>
@@ -116,7 +116,7 @@
 	<div id="footer" class="bounded">
 		
 			<span style="margin-right:20px">&copy; <?php echo date('Y'); ?> Samesub</span>
-			<span><a href="<? echo Yii::app()->getRequest()->getBaseUrl(true);?>/site/feedback">Contact us</a></span>
+			<span><a href="<? echo Yii::app()->getRequest()->getBaseUrl(true);?>/site/contact">Contact us</a></span>
 			<span><b> | </b><a href="<? echo Yii::app()->getRequest()->getBaseUrl(true);?>/site/about">About</a></span>
 			<span><b> | </b><a href="<? echo Yii::app()->getRequest()->getBaseUrl(true);?>/site/faq">FAQ</a></span>
 			<span><b> | </b><a href="<? echo Yii::app()->getRequest()->getBaseUrl(true);?>/site/terms">Terms of Use</a></span>
