@@ -15,7 +15,12 @@ class SiteHelper extends CHtml
 	{
 		switch ($subject->content_type_id) {
 			case 1:
-				$html = '<img src="'.Yii::app()->getRequest()->getBaseUrl(true).'/'.$subject->content_image->path.'/'.$subject->content_image->id.'.'.$subject->content_image->extension.'" class="content_image">';//Yii::app()->getRequest()->getHostInfo().
+				$img_url = ($subject->content_image->url) ? $subject->content_image->url : Yii::app()->params['weburl'].'/'.$subject->content_image->path.'/'.$subject->content_image->id.'.'.$subject->content_image->extension;
+				$html = '<img src="'.$img_url.'" class="content_image">';//Yii::app()->getRequest()->getHostInfo().
+				if($subject->content_image->url){
+					$parsed_url = parse_url($subject->content_image->url);
+					$html .= "<br><span>Source: ". $parsed_url['scheme'].'://'.$parsed_url['host'];
+				}
 				break;
 			case 2:
 				$html = $subject->content_text->text;

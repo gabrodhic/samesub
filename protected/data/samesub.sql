@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Apr 22, 2011 at 10:48 AM
+-- Generation Time: May 02, 2011 at 02:23 PM
 -- Server version: 5.1.33
 -- PHP Version: 5.2.9
 
@@ -129,14 +129,48 @@ CREATE TABLE IF NOT EXISTS `comment` (
   KEY `user_id` (`user_id`),
   KEY `subject_id` (`subject_id`),
   KEY `country_id` (`country_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=2 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=36 ;
 
 --
 -- Dumping data for table `comment`
 --
 
 INSERT INTO `comment` (`id`, `user_id`, `user_ip`, `country_id`, `subject_id`, `time`, `sequence`, `comment`) VALUES
-(1, 0, '127.0.0.1', 0, 2, 1303446560, 1, 'hello world');
+(1, 0, '127.0.0.1', 0, 2, 1303446560, 1, 'hello world'),
+(2, 0, '127.0.0.1', 0, 2, 1303515499, 2, 'hey'),
+(3, 0, '127.0.0.1', 0, 2, 1303515518, 3, 'test'),
+(4, 0, '127.0.0.1', 0, 3, 1303515560, 1, 'second cont'),
+(5, 0, '127.0.0.1', 0, 4, 1303516504, 2, 'nice'),
+(6, 0, '127.0.0.1', 0, 4, 1303516505, 3, 'you'),
+(7, 0, '127.0.0.1', 0, 1, 1303518000, 4, 'more'),
+(8, 0, '127.0.0.1', 0, 4, 1303518740, 5, 'like'),
+(9, 0, '127.0.0.1', 0, 3, 1303518759, 6, 'another'),
+(10, 0, '127.0.0.1', 0, 2, 1303518874, 1, 'dime'),
+(11, 0, '127.0.0.1', 0, 2, 1303518882, 2, 'liek'),
+(12, 0, '127.0.0.1', 0, 2, 1303518883, 3, 'wise'),
+(13, 0, '127.0.0.1', 0, 2, 1303518885, 4, 'the en'),
+(14, 0, '127.0.0.1', 0, 2, 1303518886, 5, 'of '),
+(15, 0, '127.0.0.1', 0, 2, 1303518889, 6, 'the inmortal'),
+(16, 0, '127.0.0.1', 0, 2, 1303518891, 7, 'is '),
+(17, 0, '127.0.0.1', 0, 2, 1303518892, 8, 'when'),
+(18, 0, '127.0.0.1', 0, 1, 1303518927, 1, 'ok'),
+(19, 0, '127.0.0.1', 0, 1, 1303518928, 2, 'and'),
+(20, 0, '127.0.0.1', 0, 1, 1303518929, 3, ' now'),
+(21, 0, '127.0.0.1', 0, 4, 1303518952, 4, 'jajaj'),
+(22, 0, '127.0.0.1', 0, 2, 1303520728, 5, 'yes'),
+(23, 0, '127.0.0.1', 0, 2, 1303520741, 6, 'more'),
+(24, 0, '127.0.0.1', 0, 2, 1303520744, 7, 'reall'),
+(25, 0, '127.0.0.1', 0, 2, 1303520746, 8, 'nooo'),
+(26, 0, '127.0.0.1', 0, 3, 1303520811, 1, 'lie'),
+(27, 0, '127.0.0.1', 0, 3, 1303520814, 2, 'wise'),
+(28, 0, '127.0.0.1', 0, 3, 1303520817, 3, 'or'),
+(29, 0, '127.0.0.1', 0, 2, 1303583558, 4, 'hye'),
+(30, 0, '127.0.0.1', 0, 2, 1303583565, 5, 'ьщку'),
+(31, 0, '127.0.0.1', 0, 2, 1303583671, 6, 'гфт фыв'),
+(32, 0, '127.0.0.1', 0, 2, 1303583746, 7, 'кув'),
+(33, 0, '127.0.0.1', 0, 2, 1303584754, 8, 'щшыуадоо94атрваия'),
+(34, 0, '127.0.0.1', 0, 2, 1303588596, 9, '8ывартлыва'),
+(35, 0, '127.0.0.1', 0, 2, 1303588599, 10, 'тывф  ыва');
 
 -- --------------------------------------------------------
 
@@ -146,21 +180,44 @@ INSERT INTO `comment` (`id`, `user_id`, `user_ip`, `country_id`, `subject_id`, `
 
 CREATE TABLE IF NOT EXISTS `content_image` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `path` varchar(100) COLLATE utf8_unicode_ci NOT NULL COMMENT 'path where the image is located relative to the site root',
-  `extension` varchar(50) COLLATE utf8_unicode_ci NOT NULL COMMENT 'extension of the file name',
-  `type` varchar(20) COLLATE utf8_unicode_ci NOT NULL,
-  `size` int(11) NOT NULL,
+  `path` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'path where the image is located relative to the site root',
+  `extension` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'extension of the file name',
+  `type` varchar(20) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `size` int(11) DEFAULT NULL,
+  `url` varchar(250) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'if its external its url',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=4 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=26 ;
 
 --
 -- Dumping data for table `content_image`
 --
 
-INSERT INTO `content_image` (`id`, `path`, `extension`, `type`, `size`) VALUES
-(1, 'img/1', 'png', 'image/png', 1507676),
-(2, 'img/1', 'png', 'image/png', 710782),
-(3, 'img/1', 'png', 'image/png', 935291);
+INSERT INTO `content_image` (`id`, `path`, `extension`, `type`, `size`, `url`) VALUES
+(1, 'img/1', 'png', 'image/png', 1507676, NULL),
+(2, 'img/1', 'png', 'image/png', 710782, NULL),
+(3, 'img/1', 'png', 'image/png', 935291, NULL),
+(4, 'img/1', 'jpg', 'image/jpeg', 436858, NULL),
+(5, 'img/1', 'jpg', 'image/jpeg', 436858, NULL),
+(6, 'img/1', 'jpg', 'image/jpeg', 436858, NULL),
+(7, 'img/1', 'jpg', 'image/jpeg', 436858, NULL),
+(8, 'img/1', 'jpg', 'image/jpeg', 436858, NULL),
+(9, 'img/1', 'jpg', 'image/jpeg', 436858, NULL),
+(10, 'img/1', 'jpg', 'image/jpeg', 436858, NULL),
+(11, 'img/1', 'png', 'image/png', 598582, NULL),
+(12, 'img/1', 'png', 'image/png', 598582, NULL),
+(13, 'img/1', 'png', 'image/png', 598582, NULL),
+(14, 'img/1', 'png', 'image/png', 598582, NULL),
+(15, 'img/1', 'png', 'image/png', 598582, NULL),
+(16, 'img/1', 'png', 'image/png', 598582, NULL),
+(17, 'img/1', 'png', 'image/png', 598582, NULL),
+(18, 'img/1', 'jpg', 'image/jpeg', 436858, NULL),
+(19, 'img/1', 'jpg', 'image/jpeg', 436858, NULL),
+(20, 'img/1', 'png', 'image/png', 598582, NULL),
+(21, 'img/1', 'png', 'image/png', 598582, NULL),
+(22, 'img/1', 'jpg', 'image/jpeg', 436858, NULL),
+(23, NULL, NULL, NULL, NULL, 'http://sadfa.com'),
+(24, NULL, NULL, NULL, NULL, 'http://t3.gstatic.com/images?q=tbn:ANd9GcQJngVrS1JlefrgZNjLviUV4we6dzvSI1fR4DPnstlORi5heI3o'),
+(25, 'img/1', 'jpg', 'image/jpeg', 777835, NULL);
 
 -- --------------------------------------------------------
 
@@ -172,7 +229,7 @@ CREATE TABLE IF NOT EXISTS `content_text` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `text` text COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=3 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=7 ;
 
 --
 -- Dumping data for table `content_text`
@@ -180,7 +237,11 @@ CREATE TABLE IF NOT EXISTS `content_text` (
 
 INSERT INTO `content_text` (`id`, `text`) VALUES
 (1, 'Samesub is a space in which all internet users interact with a Same Subject synchronously.\r\nBecause all users interact with the same subject, that subject has to be representative to general needs of the users. That is why the main type of content will be news that draw attention globally, impact or general interest news, and of course, any unique and valuable content submitted by users.\r\n\r\nOur mission is to transmit one unique content at a time in a synchronous manner to all the world by every medium, format and language.\r\n'),
-(2, 'If you google "Repetitive Strain Injury", you will find that it is a situation in which you force your body to excert a position or preasure in a constant and repetitive manner.\r\n\r\nAs you might know, the body isn''t designed to be on such constant situation, since it makes damage to it. The human body was design to move, in fact, some physics phrase says something like that, "so that it can be energy(life) there most be movement". And you can see that principle in action in all the nature. So, go on stand up from that computer and move your body.');
+(2, 'If you google "Repetitive Strain Injury", you will find that it is a situation in which you force your body to excert a position or preasure in a constant and repetitive manner.\r\n\r\nAs you might know, the body isn''t designed to be on such constant situation, since it makes damage to it. The human body was design to move, in fact, some physics phrase says something like that, "so that it can be energy(life) there most be movement". And you can see that principle in action in all the nature. So, go on stand up from that computer and move your body.'),
+(3, 'test'),
+(4, 'test2'),
+(5, 'test3'),
+(6, 'test');
 
 -- --------------------------------------------------------
 
@@ -546,14 +607,23 @@ CREATE TABLE IF NOT EXISTS `live_comment` (
   `comment_country` varchar(200) COLLATE utf8_unicode_ci DEFAULT 'WW',
   PRIMARY KEY (`comment_number`),
   KEY `time` (`comment_time`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=2 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=36 ;
 
 --
 -- Dumping data for table `live_comment`
 --
 
 INSERT INTO `live_comment` (`comment_number`, `comment_sequence`, `comment_text`, `comment_time`, `comment_country`) VALUES
-(1, 1, 'hello world', 1303446560, 'WW');
+(26, 1, 'lie', 1303520811, 'WW'),
+(27, 2, 'wise', 1303520814, 'WW'),
+(28, 3, 'or', 1303520817, 'WW'),
+(29, 4, 'hye', 1303583558, 'WW'),
+(30, 5, 'ьщку', 1303583565, 'WW'),
+(31, 6, 'гфт фыв', 1303583671, 'WW'),
+(32, 7, 'кув', 1303583746, 'WW'),
+(33, 8, 'щшыуадоо94атрваия', 1303584754, 'WW'),
+(34, 9, '8ывартлыва', 1303588596, 'WW'),
+(35, 10, 'тывф  ыва', 1303588599, 'WW');
 
 -- --------------------------------------------------------
 
@@ -575,7 +645,7 @@ CREATE TABLE IF NOT EXISTS `live_subject` (
 --
 
 INSERT INTO `live_subject` (`id`, `subject_id_1`, `subject_id_2`, `last_comment_number`, `comment_sequence`) VALUES
-(1, 2, 3, 1, 1);
+(1, 19, 1, 35, 10);
 
 -- --------------------------------------------------------
 
@@ -707,18 +777,33 @@ CREATE TABLE IF NOT EXISTS `subject` (
   KEY `priority_id` (`priority_id`),
   KEY `subject_status` (`approved`),
   KEY `user_country_id` (`user_country_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=6 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=21 ;
 
 --
 -- Dumping data for table `subject`
 --
 
 INSERT INTO `subject` (`id`, `user_id`, `user_ip`, `user_comment`, `user_country_id`, `title`, `urn`, `content_type_id`, `content_id`, `country_id`, `language`, `moderator_id`, `moderator_ip`, `moderator_comment`, `moderator_country_id`, `authorizer_id`, `authorizer_ip`, `authorizer_country_id`, `time_submitted`, `time_moderated`, `time_authorized`, `priority_id`, `evaluating`, `approved`, `authorized`, `show_time`) VALUES
-(1, 2, '127.0.0.1', 'This our first official record on the database, finally!!. We are very happy, after all this time of development, testing, idea modeling, conceptualization, design and hard work, we are finally live.\r\nI hope that God allows us to make this dream.\r\nThank you all.', 0, 'so....what is samesub all about?', 'sowhat_is_samesub_all_about', 2, 1, '0', '0', 0, NULL, NULL, 0, 0, NULL, 0, 1303435728, 0, 0, 3, 0, 1, 1, 1303445208),
-(2, 2, '127.0.0.1', 'Hey, here I put our initial sketch for our web design on the homepage(live stream). As you can see, it changed a little bit from the current one. Anyway, hope you enjoy knowing a little bit from behind the scene of samesub.', 0, 'Samesub initial design: Our initial sketch', 'Samesub_initial_design_Our_initial_sketch', 1, 1, '0', '0', 0, NULL, '', 0, 0, NULL, 0, 1303439365, 0, 0, 3, 0, 1, 1, 1303445374),
-(3, 2, '127.0.0.1', 'I just got this effect last night while driving, took the camera, and there you are.', 0, 'Nice effect with neon lights', 'Nice_effect_with_neon_lights', 1, 2, '0', '0', 0, NULL, '', 0, 0, NULL, 0, 1303442985, 0, 0, 1, 0, 1, 1, 1303445388),
-(4, 2, '127.0.0.1', '', 0, 'Ladies and gentleman: MOTOGEAR MAN', 'Ladies_and_gentleman_MOTOGEAR_MAN', 1, 3, '0', '0', 0, NULL, '', 0, 0, NULL, 0, 1303444653, 0, 0, 1, 0, 1, 1, 0),
-(5, 2, '127.0.0.1', 'give it a try!', 0, 'My pc, Repetitive Strain Injury, and Life', 'My_pc_Repetitive_Strain_Injury_and_Life', 2, 2, '0', '0', 0, NULL, '', 0, 0, NULL, 0, 1303445181, 0, 0, 1, 0, 1, 1, 0);
+(1, 2, '127.0.0.1', 'This our first official record on the database, finally!!. We are very happy, after all this time of development, testing, idea modeling, conceptualization, design and hard work, we are finally live.\r\nI hope that God allows us to make this dream.\r\nThank you all.', 0, 'so....what is samesub all about?', 'sowhat_is_samesub_all_about', 2, 1, '0', '0', 0, NULL, NULL, 0, 0, NULL, 0, 1303435728, 0, 0, 3, 0, 1, 1, 1304366995),
+(2, 2, '127.0.0.1', 'Hey, here I put our initial sketch for our web design on the homepage(live stream). As you can see, it changed a little bit from the current one. Anyway, hope you enjoy knowing a little bit from behind the scene of samesub.', 0, 'Samesub initial design: Our initial sketch', 'Samesub_initial_design_Our_initial_sketch', 1, 1, '0', '0', 0, NULL, '', 0, 0, NULL, 0, 1303439365, 0, 0, 3, 0, 1, 1, 1303520922),
+(3, 2, '127.0.0.1', 'I just got this effect last night while driving, took the camera, and there you are.', 0, 'Nice effect with neon lights', 'Nice_effect_with_neon_lights', 1, 2, '0', '0', 0, NULL, '', 0, 0, NULL, 0, 1303442985, 0, 0, 1, 0, 1, 1, 1304366989),
+(4, 2, '127.0.0.1', '', 0, 'Ladies and gentleman: MOTOGEAR MAN', 'Ladies_and_gentleman_MOTOGEAR_MAN', 1, 3, '0', '0', 0, NULL, '', 0, 0, NULL, 0, 1303444653, 0, 0, 1, 0, 1, 1, 1304366982),
+(5, 2, '127.0.0.1', 'give it a try!', 0, 'My pc, Repetitive Strain Injury, and Life', 'My_pc_Repetitive_Strain_Injury_and_Life', 2, 2, '0', '0', 0, NULL, '', 0, 0, NULL, 0, 1303445181, 0, 0, 1, 0, 1, 1, 1304365697),
+(6, 1, '127.0.0.1', '', 0, 'test', 'test', 2, 3, '0', '0', 0, NULL, NULL, 0, 0, NULL, 0, 1303972381, 0, 0, 1, 0, 0, 0, 0),
+(7, 1, '127.0.0.1', '', 0, 'test2', 'test2', 2, 4, '0', '0', 0, NULL, NULL, 0, 0, NULL, 0, 1303972807, 0, 0, 1, 0, 0, 0, 0),
+(8, 1, '127.0.0.1', '', 0, 'test3', 'test3', 2, 5, '0', '0', 0, NULL, NULL, 0, 0, NULL, 0, 1303972836, 0, 0, 1, 0, 0, 0, 0),
+(9, 1, '127.0.0.1', '', 0, 'asd', 'asd', 2, 6, '123', '0', 0, NULL, NULL, 0, 0, NULL, 0, 1303973458, 0, 0, 1, 0, 0, 0, 0),
+(10, 1, '127.0.0.1', '', 0, 'test', 'test_2', 1, 6, '', '0', 0, NULL, NULL, 0, 0, NULL, 0, 1304096123, 0, 0, 1, 0, 0, 0, 0),
+(11, 1, '127.0.0.1', '', 0, 'hey', 'hey', 1, 11, '', '0', 0, NULL, NULL, 0, 0, NULL, 0, 1304101045, 0, 0, 1, 0, 0, 0, 0),
+(12, 1, '127.0.0.1', '', 0, 'yo', 'yo', 1, 12, '', '0', 0, NULL, NULL, 0, 0, NULL, 0, 1304101074, 0, 0, 1, 0, 0, 0, 0),
+(13, 1, '127.0.0.1', '', 0, 'yo', 'yo_2', 1, 16, '', '0', 0, NULL, NULL, 0, 0, NULL, 0, 1304103465, 0, 0, 1, 0, 0, 0, 0),
+(14, 1, '127.0.0.1', 'hh', 0, 'yo', 'yo_3', 1, 17, '', '0', 0, NULL, NULL, 0, 0, NULL, 0, 1304103512, 0, 0, 1, 0, 0, 0, 0),
+(15, 1, '127.0.0.1', '', 0, 'ye', 'ye', 1, 20, '', '0', 0, NULL, NULL, 0, 0, NULL, 0, 1304104192, 0, 0, 1, 0, 0, 0, 0),
+(16, 1, '127.0.0.1', '', 0, 'ye', 'ye_2', 1, 21, '', '0', 0, NULL, NULL, 0, 0, NULL, 0, 1304104226, 0, 0, 1, 0, 0, 0, 0),
+(17, 1, '127.0.0.1', '', 0, 'ye', 'ye_3', 1, 22, '', '0', 0, NULL, NULL, 0, 0, NULL, 0, 1304104411, 0, 0, 1, 0, 0, 0, 0),
+(18, 1, '127.0.0.1', '', 0, 'test gx', 'test_gx', 1, 23, '', '0', 0, NULL, NULL, 0, 0, NULL, 0, 1304364077, 0, 0, 1, 0, 0, 0, 0),
+(19, 1, '127.0.0.1', '', 0, 'image from mu url', 'image_from_mu_url', 1, 24, '', '0', 0, NULL, '', 0, 0, NULL, 0, 1304365400, 0, 0, 1, 0, 1, 1, 1304366992),
+(20, 2, '127.0.0.1', '', 0, 'pinguinos', 'pinguinos', 1, 25, '14', '0', 0, NULL, '', 0, 0, NULL, 0, 1304365644, 0, 0, 1, 0, 1, 1, 1304365691);
 
 -- --------------------------------------------------------
 

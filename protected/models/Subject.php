@@ -25,6 +25,7 @@
 class Subject extends CActiveRecord
 {
 	public $image;
+	public $image_url;
 	public $text;
 	public $video;
 	public $urn;
@@ -63,6 +64,7 @@ class Subject extends CActiveRecord
 			array('title', 'length', 'max'=>240, 'on'=>'add,update'),
 			array('user_comment', 'type', 'type'=>'string', 'on'=>'add,update'),			
 			array('image', 'safe', 'on'=>'add,update'),//So that it can be massively assigned, either way its gonna be validated by validateContentType
+			array('image_url', 'url', 'on'=>'add,update'),
 			array('text', 'safe', 'on'=>'add,update'),//So that it can be massively assigned, either way its gonna be validated by validateContentType
 			array('video', 'safe', 'on'=>'add,update'),//So that it can be massively assigned, either way its gonna be validated by validateContentType
 			array('content_type_id', 'validateContentType', 'on'=>'add'),
@@ -129,6 +131,15 @@ class Subject extends CActiveRecord
 			switch ($this->content_type_id) {
 				case 1:
 					//Image
+					if(strlen($this->image_url) > 2) {
+						if(! Yii::app()->db->createCommand()
+						->insert('content_image', array('url'=>$this->image_url)))
+						{
+							$this->addError('image','We could not save the image url in the database.'); 
+							return false;				
+						}
+						break;
+					}
 					//If there was an image in the post submitted, then save it in the disk and on its proper content table
 					$img_extension = ($this->image->getExtensionName()) ? $this->image->getExtensionName() : '';
 					$img_type = CFileHelper::getMimeType($this->image->getName());
@@ -260,11 +271,17 @@ class Subject extends CActiveRecord
 			case 1:
 				//Image
 				$this->image=CUploadedFile::getInstance($this,'image');
-				if(get_class($this->image) <> 'CUploadedFile'){ $this->addError('image','No file received'); break; }
-				if($this->image->getHasError()){ $this->addError('image','Please select an image.');break; }
-				if($this->image->getSize() > (1024 * 1024 * Yii::app()->params['max_image_size'])){  $this->addError('image','Please select an image smaller than 7MB.');break;}//MB
-				$types = array("image/jpg", "image/png", "image/gif", "image/jpeg");
-				if (! in_array(CFileHelper::getMimeType($this->image->getName()), $types)) $this->addError('image','File type '.CFileHelper::getMimeType($this->image->getName()).' not supported .Please select a valid image type.');
+				if(get_class($this->image) <> 'CUploadedFile'){
+					if(strlen($this->image_url) < 2) {
+						$this->addError('content_type_id','Please upload OR insert an image url.');
+						break; 
+					}
+				}else{
+					if($this->image->getHasError()){ $this->addError('image','Please select an image.');break; }
+					if($this->image->getSize() > (1024 * 1024 * Yii::app()->params['max_image_size'])){  $this->addError('image','Please select an image smaller than 7MB.');break;}//MB
+					$types = array("image/jpg", "image/png", "image/gif", "image/jpeg");
+					if (! in_array(CFileHelper::getMimeType($this->image->getName()), $types)) $this->addError('image','File type '.CFileHelper::getMimeType($this->image->getName()).' not supported .Please select a valid image type.');
+				}
 				break;
 			case 2:
 				//Text

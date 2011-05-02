@@ -44,9 +44,16 @@ $this->menu=array(
 	</div>
 	
 	<div class="row">
+		<label>Please upload an image from your computer OR paste a url on the field bellow.</label>
 		<?php echo $form->labelEx($model,'image'); ?>		
 		<?php echo $form->FileField($model, 'image');?>
 		<?php echo $form->error($model,'image'); ?>
+	</div>
+	
+	<div class="row">
+		<?php echo $form->labelEx($model,'image_url'); ?>		
+		<?php echo $form->textField($model,'image_url',array('size'=>80,'maxlength'=>250));?>
+		<?php echo $form->error($model,'image_url'); ?>
 	</div>
 	<div class="row">
 		<?php echo $form->labelEx($model,'text'); ?>
@@ -89,17 +96,17 @@ function show_content_input(){
 	switch($("#Subject_content_type_id").val())
 	{
 	case '1':
-	  $("#Subject_image").parent().show();
+	  $("#Subject_image,#Subject_image_url").parent().show();
 	  $("#Subject_text").parent().hide();
 	  $("#Subject_video").parent().hide();
 	  break;
 	case '2':
-	  $("#Subject_image").parent().hide();
+	  $("#Subject_image,#Subject_image_url").parent().hide();
 	  $("#Subject_text").parent().show();
 	  $("#Subject_video").parent().hide();
 	  break;
 	case '3':
-	  $("#Subject_image").parent().hide();
+	  $("#Subject_image,#Subject_image_url").parent().hide();
 	  $("#Subject_text").parent().hide();
 	  $("#Subject_video").parent().show();
 	  break;
