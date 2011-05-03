@@ -417,6 +417,7 @@ class Subject extends CActiveRecord
 		//something like this should work, 
 		//but right now doesn't: var_dump( Subject::model()->with('type_content')->findByPk(30)->type_content->name);
 		return array(
+			'comments' => array(self::HAS_MANY, 'Comment', 'subject_id', 'order'=>'comments.id DESC'),
 			'country'=>array(self::BELONGS_TO, 'Country', 'country_id'),
 			'priority_type'=>array(self::BELONGS_TO, 'Priority', 'priority_id'),
 			'content_type'=>array(self::BELONGS_TO, 'ContentType', 'content_type_id'),

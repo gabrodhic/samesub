@@ -66,7 +66,8 @@ The following list shows all the subjects that has been placed in the live strea
         ),
 		array(
             'name'=>'title',
-			
+			'type'=>'html',
+			'value'=>'CHtml::link($data->title,"view/".$data->id)',
         ),
 
 	),
