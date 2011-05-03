@@ -297,9 +297,13 @@ class SubjectController extends Controller
 			$model->unsetAttributes();  // clear any default values
 			if(isset($_GET['Subject']))
 				$model->attributes=$_GET['Subject'];
-
+			
+			$live_subject = Yii::app()->db->createCommand()
+			->select('*')
+			->from('live_subject')
+			->queryRow();
 			$this->render('manage',array(
-				'model'=>$model,
+				'model'=>$model,'live_subject'=>$live_subject,
 			));
 		}else
 		{

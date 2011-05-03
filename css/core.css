@@ -182,6 +182,13 @@ font-weight:bold;
 text-align:right;
 }
 
+.row_red{
+background-color:red !important;
+}
+.row_pink{
+background-color:pink !important;
+}
+
 
 
 

@@ -28,6 +28,7 @@ The following list shows all the subjects that has been placed in the live strea
 	'id'=>'subject-grid',
 	'dataProvider'=>$dataProvider,
 	'filter'=>$model,
+	'rowCssClass'=>'something',//we just want to not implement the default css
 	'columns'=>array(
 		/*array(
             'name'=>'time_submitted',
