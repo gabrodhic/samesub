@@ -37,7 +37,7 @@ or <b>=</b>) at the beginning of each of your search values to specify how the c
 )); ?>
 </div><!-- search-form -->
 
-<p>Legend: <span class="row_red">RED</span> => Live NOW,  <span class="row_pink">PINK</span> => Comming up</p>
+<p>Legend: <span class="row_red">RED</span> => Live NOW,  <span class="row_yellow">YELLOW</span> => Comming up</p>
 <?php 
 	$dataProvider=$model->search();
 	$dataProvider->pagination->pageSize=50;
@@ -52,7 +52,7 @@ or <b>=</b>) at the beginning of each of your search values to specify how the c
 			'id'=>$live_subject["subject_id_1"].'_'.$live_subject["subject_id_2"],//id its just a temporal space for the $live_subject variable since we cant access it on the cssexpression
             'value'=>'$data->id',
 			'headerHtmlOptions'=>array('width'=>'25px'),
-			'cssClassExpression'=>'($data->id == substr($this->id, 0, strpos($this->id, "_"))) ? row_red : (($data->id == substr(strrchr($this->id, "_"), 1 )) ? row_pink : something)',
+			'cssClassExpression'=>'($data->id == substr($this->id, 0, strpos($this->id, "_"))) ? row_red : (($data->id == substr(strrchr($this->id, "_"), 1 )) ? row_yellow : something)',
 			'sortable'=>true,
         ),
 		array(
