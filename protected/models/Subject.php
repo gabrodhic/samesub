@@ -358,7 +358,7 @@ class Subject extends CActiveRecord
 			//				->queryRow();
 			$arr_data['content_html_1'] = SiteHelper::subject_content($subject_data);
 			$arr_data['content_data_1'] = (array) Subject::subject_content($subject_data)->getAttributes();
-			$arr_data['user_comment_1'] = $subject_data->user_comment;
+			$arr_data['user_comment_1'] = SiteHelper::formatted($subject_data->user_comment);
 			
 			$arr_data['comment_update'] = 'no';
 			$arr_data['comment_sequence'] = $live_subject['comment_sequence'];
@@ -378,7 +378,7 @@ class Subject extends CActiveRecord
 				
 				$arr_data['content_html_2'] = SiteHelper::subject_content($subject_data);
 				$arr_data['content_data_2'] = (array) Subject::subject_content($subject_data)->getAttributes();
-				$arr_data['user_comment_2'] = $subject_data->user_comment;
+				$arr_data['user_comment_2'] = SiteHelper::formatted($subject_data->user_comment);
 			}
 			
 			//print_r($arr_data);

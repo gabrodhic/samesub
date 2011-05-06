@@ -23,13 +23,23 @@ class SiteHelper extends CHtml
 				}
 				break;
 			case 2:
-				$html = $subject->content_text->text;
+				$html = SiteHelper::formatted($subject->content_text->text);
 				break;
 			case 3:
-				$html = $subject->content_video->embed_code;
+				$html = SiteHelper::formatted($subject->content_video->embed_code);
 				break;
 		}
 		return $html;
+	}
+	
+	/**
+	 * Formats a string with all its html properties
+	 * @param strin $value the value
+	 * @return string the correspondent html string
+	 */
+	public function formatted($value)
+	{
+		return nl2br($value);
 	}
 	
 	/**

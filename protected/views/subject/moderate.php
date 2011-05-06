@@ -45,11 +45,11 @@ $this->menu=array(
 	</div>
 	<div class="row">
 		<?php echo $form->labelEx($model,'user_comment'); ?>
-		<?php echo $model->user_comment; ?>
+		<?php echo SiteHelper::formatted($model->user_comment); ?>
 	</div>
 	<div class="row">
 		<?php echo $form->labelEx($model,'User Comment code'); ?>
-		<?php echo CHtml::encode($model->user_comment); ?>
+		<?php echo CHtml::encode(SiteHelper::formatted($model->user_comment)); ?>
 	</div>
 	<div class="row">
 		<?php echo $form->labelEx($model,'moderator_comment'); ?>

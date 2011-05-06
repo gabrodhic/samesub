@@ -40,7 +40,7 @@ $this->breadcrumbs=array(
 	</div>
 	<div class="row">
 		<?php echo $form->labelEx($model,'user_comment'); ?>
-		<?php echo $model->user_comment; ?>
+		<?php echo SiteHelper::formatted($model->user_comment); ?>
 	</div>
 	
 
