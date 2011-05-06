@@ -123,8 +123,8 @@ class InternalController extends Controller
 			
 			$live_subject = Yii::app()->db->createCommand()->select('*')->from('live_subject')->queryRow();
 			$shown_subjects =  Yii::app()->db->createCommand()->select('*')->from('subject')
-			->where('id<>:id1 AND id<>:id2 AND show_time>:show_time', 
-			array(':id1'=>$live_subject['subject_id_1'], ':id2'=>$live_subject['subject_id_2'],':show_time'=>0))
+			->where('id<>:id1 AND id<>:id2 AND show_time>:show_time AND authorized=:authorized', 
+			array(':id1'=>$live_subject['subject_id_1'], ':id2'=>$live_subject['subject_id_2'],':show_time'=>0, 'authorized'=>1))
 			->queryAll();
 //			Subject::model()->findAll(
 //				array( 	'condition'=>array('AND','id<>:id1','id<>:id2','show_time>:show_time'),

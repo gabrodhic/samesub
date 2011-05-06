@@ -110,8 +110,9 @@ class Subject extends CActiveRecord
 		//If its being modified
 		if(! $this->getIsNewRecord()){
 			//Invalidate any change if the subject has been showed while it was being modified
-			if(Subject::model()->findByPk($this->id,'show_time > :show_time', array(':show_time'=>0))){
-				$this->addError('title','Subject has been showed. You can not modify it.');
+			if( Yii::app()->db->createCommand("SELECT * FROM live_subject WHERE subject_id_1 = {$this->id} OR subject_id_2 = {$this->id}")->queryRow())
+			{
+				$this->addError('title','Right now this subject is either in the comming up queue or in the live-now stream. You can not modify it.');
 				return false;
 			}
 			//Generate the urn for this subject
