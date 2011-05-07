@@ -20,6 +20,14 @@ class SiteController extends Controller
 			),
 		);
 	}
+	/**
+	 * Renders a javascript file.
+	 */
+	public function actionJs($id)
+	{
+		header('Content-Type: application/javascript');//by default is set to text/html for a normal view file, so we set it to JS because some browsers may complain
+		$this->renderPartial('js/'.$id);
+	}
 
 	/**
 	 * This is the default 'index' action that is invoked

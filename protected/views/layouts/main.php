@@ -29,7 +29,7 @@
 		</script>
 	<?php
 		if (strtolower($this->id) == 'site' and strtolower($this->action->Id) == 'index'){
-			Yii::app()->clientScript->registerScriptFile(Yii::app()->request->baseUrl."/js/core.js", CClientScript::POS_END);
+			Yii::app()->clientScript->registerScriptFile(Yii::app()->request->baseUrl."/site/js/core", CClientScript::POS_END);
 		}else{
 			Yii::app()->clientScript->registerCoreScript('jquery');
 		}
@@ -46,7 +46,7 @@
 		document.getElementsByTagName("head")[0].appendChild(element1);
 
 		var element2 = document.createElement("script");
-		element2.src = baseUrl+"/js/core.js";
+		element2.src = baseUrl+"/site/js/core";
 		element2.type="text/javascript";
 		document.getElementsByTagName("head")[0].appendChild(element2);
 
