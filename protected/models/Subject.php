@@ -346,6 +346,7 @@ class Subject extends CActiveRecord
 		}else{		
 			$subject_data = Subject::model()->findByPk($live_subject['subject_id_1']);
 			$arr_data['id_1'] = $subject_data->id;
+			$arr_data['urn_1'] = $subject_data->urn;
 			$arr_data['title_1'] = $subject_data->title;
 			$arr_data['content_type_id_1'] = $subject_data->content_type_id;
 			$arr_data['time_submitted_1'] = $subject_data->time_submitted;
@@ -369,6 +370,7 @@ class Subject extends CActiveRecord
 				
 				//Add it to the cached data Array also, client needs it
 				$arr_data['id_2']= $subject_data->id;
+				$arr_data['urn_2']= $subject_data->urn;
 				$arr_data['title_2']= $subject_data->title;			
 				$arr_data['content_type_id_2']= $subject_data->content_type_id;
 				$arr_data['time_submitted_2'] = $subject_data->time_submitted;

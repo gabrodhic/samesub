@@ -33,6 +33,7 @@ $this->breadcrumbs=array(
 	
 
 <?php $this->endWidget(); ?>
+<?php echo SiteHelper::share_links($model->urn,$model->title); ?>
 <h4>Comments:</h4>
 
 <?php foreach($model->comments as $comment): ?>

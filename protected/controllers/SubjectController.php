@@ -45,6 +45,11 @@ class SubjectController extends Controller
 	 */
 	public function actionView($id)
 	{
+		if(! is_int($id)){
+			$model = Subject::model()->find('urn=:urn', array(':urn'=>$id));
+			if($model) $id = $model->id;
+			
+		}
 		$model=$this->loadModel($id);
 		if(! $model->authorized){//only managers can "view" unauthorized subjects
 			if(! Yii::app()->user->checkAccess('subject_manage'))

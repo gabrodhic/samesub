@@ -62,4 +62,20 @@ class SiteHelper extends CHtml
 		return ($value) ? 'On' : 'Off';
 	}
 	
+	/**
+	 * Generates a set of buttons to share content to external sites
+	 * @param string $urn the urn to generate a url to send to external sites
+	 * @param string $title the title to send to external sites
+	 */
+	public function share_links($urn,$title)
+	{
+		$share_html = '<br>Share:<br><a href="http://api.addthis.com/oexchange/0.8/forward/facebook/offer?url='. Yii::app()->params['weburl'].'/sub/'.$urn.'&title='.$title.'&pubid='.Yii::app()->params['addthis_pubid'].'" rel="nofollow"><img src="http://cache.addthiscdn.com/icons/v1/thumbs/facebook.gif"></a>';
+		$share_html .= '&nbsp;<a href="http://api.addthis.com/oexchange/0.8/forward/twitter/offer?url='. Yii::app()->params['weburl'].'/sub/'.$urn.'&title='.$title.'&pubid='.Yii::app()->params['addthis_pubid'].'" rel="nofollow"><img src="http://cache.addthiscdn.com/icons/v1/thumbs/twitter.gif"></a>';
+		$share_html .= '&nbsp;<a href="http://api.addthis.com/oexchange/0.8/forward/email/offer?url='. Yii::app()->params['weburl'].'/sub/'.$urn.'&title='.$title.'&pubid='.Yii::app()->params['addthis_pubid'].'" rel="nofollow"><img src="http://cache.addthiscdn.com/icons/v1/thumbs/email.gif"></a>';
+		$share_html .= '&nbsp;<a href="http://api.addthis.com/oexchange/0.8/forward/google/offer?url='. Yii::app()->params['weburl'].'/sub/'.$urn.'&title='.$title.'&pubid='.Yii::app()->params['addthis_pubid'].'" rel="nofollow"><img src="http://cache.addthiscdn.com/icons/v1/thumbs/google.gif"></a>';
+		$share_html .= '&nbsp;<a href="http://api.addthis.com/oexchange/0.8/offer?url='. Yii::app()->params['weburl'].'/sub/'.$urn.'&title='.$title.'&pubid='.Yii::app()->params['addthis_pubid'].'" rel="nofollow"><img src="http://cache.addthiscdn.com/icons/v1/thumbs/menu.gif"></a>';
+		 
+		return $share_html;
+	}
+	
 }

@@ -140,6 +140,7 @@ function get_Contents(callback){
 	//alert('etro');
 	count++;
 	var d = new Date();
+	var share_html = '';
 	ajax_request(
 		baseUrl+"/subject/fetch",
 		"comment_number="+$("#comments_board").attr("data-number")+"&subject_id_2="+cache_div_id+"&time="+d.getTime(),
@@ -156,7 +157,12 @@ function get_Contents(callback){
 				 //alert(arr_response1[4]);
 					$("#content_div").attr("data-id", json.id_1);//id
 					$("#content_div").attr("data-title", json.title_1);//title
-					$('#content_div').html(json.user_comment_1 + '<br>'+ json.content_html_1);
+					share_html = '<br>Share:<br><a href="http://api.addthis.com/oexchange/0.8/forward/facebook/offer?url='+ baseUrl+'/sub/'+json.urn_1+'" rel="nofollow"><img src="http://cache.addthiscdn.com/icons/v1/thumbs/facebook.gif"></a>';
+					share_html += '&nbsp;<a href="http://api.addthis.com/oexchange/0.8/forward/twitter/offer?url='+ baseUrl+'/sub/'+json.urn_1+'" rel="nofollow"><img src="http://cache.addthiscdn.com/icons/v1/thumbs/twitter.gif"></a>';
+					share_html += '&nbsp;<a href="http://api.addthis.com/oexchange/0.8/forward/email/offer?url='+ baseUrl+'/sub/'+json.urn_1+'" rel="nofollow"><img src="http://cache.addthiscdn.com/icons/v1/thumbs/email.gif"></a>';
+					share_html += '&nbsp;<a href="http://api.addthis.com/oexchange/0.8/forward/google/offer?url='+ baseUrl+'/sub/'+json.urn_1+'" rel="nofollow"><img src="http://cache.addthiscdn.com/icons/v1/thumbs/google.gif"></a>';
+					share_html += '&nbsp;<a href="http://api.addthis.com/oexchange/0.8/offer?url='+ baseUrl+'/sub/'+json.urn_1+'" rel="nofollow"><img src="http://cache.addthiscdn.com/icons/v1/thumbs/menu.gif"></a>';
+					$('#content_div').html(json.user_comment_1 + '<br>'+ json.content_html_1+ share_html);
 					time_submitted = fromUnixTime(json.time_submitted_1);
 					$("#content_div").attr("data-info", '<b>Submitted UTC '+time_submitted.getHours()+':'+time_submitted.getMinutes()+'</b> | '+json.country_name_1);
 					
@@ -171,8 +177,13 @@ function get_Contents(callback){
 			 //alert('id2'+json.id_2);
 			 cache_div_id = json.id_2;
 			 //alert('cache bot'+cache_div_id);
+			share_html = '<br>Share:<br><a href="http://api.addthis.com/oexchange/0.8/forward/facebook/offer?url='+ baseUrl+'/sub/'+json.urn_2+'" rel="nofollow"><img src="http://cache.addthiscdn.com/icons/v1/thumbs/facebook.gif"></a>';
+			share_html += '&nbsp;<a href="http://api.addthis.com/oexchange/0.8/forward/twitter/offer?url='+ baseUrl+'/sub/'+json.urn_2+'" rel="nofollow"><img src="http://cache.addthiscdn.com/icons/v1/thumbs/twitter.gif"></a>';
+			share_html += '&nbsp;<a href="http://api.addthis.com/oexchange/0.8/forward/email/offer?url='+ baseUrl+'/sub/'+json.urn_2+'" rel="nofollow"><img src="http://cache.addthiscdn.com/icons/v1/thumbs/email.gif"></a>';
+			share_html += '&nbsp;<a href="http://api.addthis.com/oexchange/0.8/forward/google/offer?url='+ baseUrl+'/sub/'+json.urn_2+'" rel="nofollow"><img src="http://cache.addthiscdn.com/icons/v1/thumbs/google.gif"></a>';
+			share_html += '&nbsp;<a href="http://api.addthis.com/oexchange/0.8/offer?url='+ baseUrl+'/sub/'+json.urn_2+'" rel="nofollow"><img src="http://cache.addthiscdn.com/icons/v1/thumbs/menu.gif"></a>';
 			 cache_div_title = json.title_2;
-			 cache_div_html = json.user_comment_2 + '<br>' + $('<div>').html(json.content_html_2);
+			 cache_div_html = json.user_comment_2 + '<br>' + $('<div>').html(json.content_html_2) + share_html;
 			 time_submitted = fromUnixTime(json.time_submitted_2);
 			 cache_div_info = '<b>Submitted UTC '+time_submitted.getHours()+':'+time_submitted.getMinutes()+'</b> | '+json.country_name_2;
 			 
