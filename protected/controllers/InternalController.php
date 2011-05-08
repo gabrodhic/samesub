@@ -105,12 +105,13 @@ class InternalController extends Controller
 		}
 
  		//Find authorized subjects that hasn't been shown
-		$un_shown_subjects =  Yii::app()->db->createCommand()
+		$un_shown_subject =  Yii::app()->db->createCommand()
 		->select('*')
 		->from('subject')
 		->where('approved=:approved AND authorized=:authorized AND show_time=:show_time',
 		array(':approved'=>1,':authorized'=>1,':show_time'=>0))
-		->queryAll(); //print_r($un_shown_subjects);
+		->order('priority_id DESC , time_submitted ASC')
+		->queryRow(); //print_r($un_shown_subjects);
 		//Subject::model()->findAll(
 		//array( 	'condition'=>'approved=:approved AND authorized=:authorized AND show_time=:show_time',
 			//	'params'=>array(':approved'=>1,':authorized'=>1,':show_time'=>0),
@@ -118,34 +119,27 @@ class InternalController extends Controller
 			//));
 		
 
-		if(! $un_shown_subjects){
+		if(! $un_shown_subject){
 			echo 'No un shown subjects.<br>';
 			
 			$live_subject = Yii::app()->db->createCommand()->select('*')->from('live_subject')->queryRow();
-			$shown_subjects =  Yii::app()->db->createCommand()->select('*')->from('subject')
+			$shown_subject =  Yii::app()->db->createCommand()->select('*')->from('subject')
 			->where('id<>:id1 AND id<>:id2 AND show_time>:show_time AND authorized=:authorized', 
 			array(':id1'=>$live_subject['subject_id_1'], ':id2'=>$live_subject['subject_id_2'],':show_time'=>0, 'authorized'=>1))
-			->queryAll();
+			->order('show_time ASC')
+			->queryRow();//we take the first, thats the oldest one that has been shown
 //			Subject::model()->findAll(
 //				array( 	'condition'=>array('AND','id<>:id1','id<>:id2','show_time>:show_time'),
 //				'params'=>array(':id1'=>$live_subject->subject_id_1,':id2'=>$live_subject->subject_id_2,':show_time'=>0),
 //				'order'=>'id ASC'
 //			));			
-			print_r($shown_subjects);
-			$rand_num = mt_rand(1,(count($shown_subjects)-1));//Select a random record in the while, so that no content repeated
-			
-			foreach ($shown_subjects as $shown_subject) 
-			{
-				$i++; 
-				if ($i == $rand_num )
-				{
-					$next_subject_id_2 = $shown_subject['id'];
-					break;
-				}
-			}
+			print_r($shown_subject);
+
+			$next_subject_id_2 = $shown_subject['id'];
+
 		}else{
 			echo 'Yes unshown subjects.<br>';
-			$next_subject_id_2 = $un_shown_subjects[0]['id'];
+			$next_subject_id_2 = $un_shown_subject['id'];
 		}
 
 
