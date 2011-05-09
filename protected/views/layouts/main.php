@@ -117,10 +117,10 @@
 		
 			<span style="margin-right:20px">&copy; <?php echo date('Y'); ?> Samesub</span>
 			<span><a href="<? echo Yii::app()->getRequest()->getBaseUrl(true);?>/site/contact">Contact us</a></span>
-			<span><b> | </b><a href="<? echo Yii::app()->getRequest()->getBaseUrl(true);?>/site/about">About</a></span>
-			<span><b> | </b><a href="<? echo Yii::app()->getRequest()->getBaseUrl(true);?>/site/faq">FAQ</a></span>
-			<span><b> | </b><a href="<? echo Yii::app()->getRequest()->getBaseUrl(true);?>/site/terms">Terms of Use</a></span>
-			<span><b> | </b><a href="<? echo Yii::app()->getRequest()->getBaseUrl(true);?>/site/privacy">Privacy Statement</a></span>
+			<span><b> | </b><a href="<? echo Yii::app()->getRequest()->getBaseUrl(true);?>/site/page/view/about">About</a></span>
+			<span><b> | </b><a href="<? echo Yii::app()->getRequest()->getBaseUrl(true);?>/site/page/view/faq">FAQ</a></span>
+			<span><b> | </b><a href="<? echo Yii::app()->getRequest()->getBaseUrl(true);?>/site/page/view/terms">Terms of Use</a></span>
+			<span><b> | </b><a href="<? echo Yii::app()->getRequest()->getBaseUrl(true);?>/site/page/view/privacy">Privacy Statement</a></span>
 		<br/>
 	</div>
 
