@@ -13,9 +13,13 @@ $this->menu=array(
 <h1>Add Subject</h1>
 
 <?php if(Yii::app()->user->hasFlash('subject_added')): ?>
-
+<br>
 <div class="flash-success">
 	<?php echo Yii::app()->user->getFlash('subject_added'); ?>
+</div>
+
+<div class="flash-success">
+	<?php echo Yii::app()->user->getFlash('subject_added_info'); ?>
 </div>
 
 <?php else: ?>

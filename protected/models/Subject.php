@@ -390,7 +390,41 @@ class Subject extends CActiveRecord
 	
 	}
 
-
+	/**
+	 * Gets the prognostic about the subject(s) to be shown
+	 * @param integer $id (optional) of the subject to get pronostic. If null, search for all subjects to be shown.
+	 * @param string $format (optional) desired to return the time to wait(minutes, date)
+	 * @return mixed Array with the wait time and wait position for each subject or the id received
+	 */
+	public function getPrognostic($id=NULL, $format="minutes")
+	{
+		//TODO:we need to add a field to the subject table, someone called like SPAM to differentiate un_authorized from deleted subs
+		//in this WHERE we should add that, something like : AND spam <> 1
+		$un_shown_subjects =  Yii::app()->db->createCommand()
+		->select('*')
+		->from('subject')
+		->where('show_time=:show_time',
+		array(':show_time'=>0))
+		->order('priority_id DESC , time_submitted ASC')
+		->queryAll(); //print_r($un_shown_subjects);
+		
+		$prognostic = array();
+		$wait_time = 10;//This is the minimun: ~5 min for actual subject being shown, and 5 minutes for the cached subject
+		$i = 0;
+		foreach($un_shown_subjects as $un_shown_subject){
+			$i++;
+			$wait_time = $wait_time + 5;//each subject displays for 5 min
+			$wait = ($format == "minutes") ? $wait_time : (SiteLibrary::utc_time() + ($wait_time*60));//minutes to seconds
+			if($id){
+				
+				if($id == $un_shown_subject['id'])	return array('time'=>$wait,'position'=>$i);
+			}else{
+				$prognostic[$un_shown_subject['id']] = array('time'=>$wait,'position'=>$i);
+			}
+		}
+		return $prognostic;
+	}
+	
 	/**
 	 * @return object containing the content related to a subject.
 	 */

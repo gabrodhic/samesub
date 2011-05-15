@@ -94,7 +94,10 @@ class SubjectController extends Controller
 			$model->user_country_id = $country_id;
 			
 			if($model->save()){
-				Yii::app()->user->setFlash('subject_added','Subject succesfully submitted!. Your subject has just been sended to a moderator for its approval. If your subject gets approved, you should wait at least for two subjects to change on the live stream(homepage) before your content is shown.');
+				$wait = Subject::getPrognostic($model->id);
+				Yii::app()->user->setFlash('subject_added','Subject succesfully submitted!. Your subject has just been sended to a moderator for its approval. If your subject gets approved, it will go to the homepage(livestram) on an estimated time.');
+				
+				Yii::app()->user->setFlash('subject_added_info','Here is your prognostic: your subject is on position <b>'.$wait['position'].'</b> of the queue and has a wating time of <b>'.$wait['time'].'</b> minutes approximately.');
 				$this->refresh();
 			}
 		}else{
