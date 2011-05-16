@@ -399,12 +399,10 @@ class Subject extends CActiveRecord
 	 */
 	public function getPrognostic($id=NULL, $format="minutes")
 	{
-		//TODO:we need to add a field to the subject table, someone called like SPAM to differentiate un_authorized from deleted subs
-		//in this WHERE we should add that, something like : AND spam <> 1
 		$un_shown_subjects =  Yii::app()->db->createCommand()
 		->select('*')
 		->from('subject')
-		->where('show_time=:show_time',
+		->where('show_time=:show_time AND deleted=0',
 		array(':show_time'=>0))
 		->order('priority_id DESC , time_submitted ASC')
 		->queryAll(); //print_r($un_shown_subjects);

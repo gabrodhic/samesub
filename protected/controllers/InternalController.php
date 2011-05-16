@@ -108,7 +108,7 @@ class InternalController extends Controller
 		$un_shown_subject =  Yii::app()->db->createCommand()
 		->select('*')
 		->from('subject')
-		->where('approved=:approved AND authorized=:authorized AND show_time=:show_time',
+		->where('approved=:approved AND authorized=:authorized AND show_time=:show_time AND deleted=0',
 		array(':approved'=>1,':authorized'=>1,':show_time'=>0))
 		->order('priority_id DESC , time_submitted ASC')
 		->queryRow(); //print_r($un_shown_subjects);
@@ -124,7 +124,7 @@ class InternalController extends Controller
 			
 			$live_subject = Yii::app()->db->createCommand()->select('*')->from('live_subject')->queryRow();
 			$shown_subject =  Yii::app()->db->createCommand()->select('*')->from('subject')
-			->where('id<>:id1 AND id<>:id2 AND show_time>:show_time AND authorized=:authorized', 
+			->where('id<>:id1 AND id<>:id2 AND show_time>:show_time AND authorized=:authorized AND deleted=0', 
 			array(':id1'=>$live_subject['subject_id_1'], ':id2'=>$live_subject['subject_id_2'],':show_time'=>0, 'authorized'=>1))
 			->order('show_time ASC')
 			->queryRow();//we take the first, thats the oldest one that has been shown
