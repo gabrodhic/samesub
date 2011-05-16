@@ -69,7 +69,7 @@ or <b>=</b>) at the beginning of each of your search values to specify how the c
         ),
 		array(
             'name'=>'title',
-			'headerHtmlOptions'=>array('width'=>'430px'),
+			'headerHtmlOptions'=>array('width'=>'410px'),
         ),
 		array(
             'name'=>'priority_id',
@@ -95,7 +95,7 @@ or <b>=</b>) at the beginning of each of your search values to specify how the c
 			'name'=>'approved',
 			'type'=>'html',
 			'value'=>'CHtml::link(SiteHelper::yesno($data->approved),"moderate/".$data->id)',
-			'headerHtmlOptions'=>array('width'=>'30px'),
+			'headerHtmlOptions'=>array('width'=>'20px'),
 			'filter'=>array('0'=>'No','1'=>'Yes'),
 			'sortable'=>true,
 		),
@@ -103,7 +103,14 @@ or <b>=</b>) at the beginning of each of your search values to specify how the c
 			'name'=>'authorized',
 			'type'=>'html',
 			'value'=>'CHtml::link(SiteHelper::yesno($data->authorized),"authorize/".$data->id)',
-			'headerHtmlOptions'=>array('width'=>'30px'),
+			'headerHtmlOptions'=>array('width'=>'20px'),
+			'filter'=>array('0'=>'No','1'=>'Yes'),
+			'sortable'=>true,
+		),
+		array(
+			'name'=>'deleted',
+			'value'=>'SiteHelper::yesno($data->deleted)',
+			'headerHtmlOptions'=>array('width'=>'20px'),
 			'filter'=>array('0'=>'No','1'=>'Yes'),
 			'sortable'=>true,
 		),
