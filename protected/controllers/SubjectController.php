@@ -318,7 +318,7 @@ class SubjectController extends Controller
 			->select('*')
 			->from('live_subject')
 			->queryRow();
-			if(! isset($model->deleted)) $model->deleted = 0;//Set to view only NOT deleted subjects by default(notice isset insted of a simple if)
+			if(! isset($model->disabled)) $model->disabled = 0;//Set to view only NOT disabled subjects by default(notice isset insted of a simple if)
 			$this->render('manage',array(
 				'model'=>$model,'live_subject'=>$live_subject,
 			));

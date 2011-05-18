@@ -69,7 +69,7 @@ class Subject extends CActiveRecord
 			array('video', 'safe', 'on'=>'add,update'),//So that it can be massively assigned, either way its gonna be validated by validateContentType
 			array('content_type_id', 'validateContentType', 'on'=>'add'),
 
-			array('deleted', 'numerical', 'integerOnly'=>true, 'on'=>'moderate,authorize'),
+			array('disabled', 'numerical', 'integerOnly'=>true, 'on'=>'moderate,authorize'),
 			
 			array('approved', 'numerical', 'integerOnly'=>true, 'on'=>'moderate'),
 			array('moderator_comment', 'length', 'max'=>240, 'on'=>'moderate'),
@@ -79,7 +79,7 @@ class Subject extends CActiveRecord
 			array('authorized', 'validateAuthorization', 'on'=>'authorize'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, user_id, user_ip, user_comment, title, urn, content_type_id, approved, authorized, deleted, content_id, country_id, moderator_id, moderator_ip, moderator_comment, time_submitted, time_moderated, priority_id, show_time', 'safe', 'on'=>'manage'),
+			array('id, user_id, user_ip, user_comment, title, urn, content_type_id, approved, authorized, disabled, content_id, country_id, moderator_id, moderator_ip, moderator_comment, time_submitted, time_moderated, priority_id, show_time', 'safe', 'on'=>'manage'),
 			array('title, urn, content_type_id, country_id, time_submitted, priority_id, show_time', 'safe', 'on'=>'history'),
 		);
 	}
@@ -402,7 +402,7 @@ class Subject extends CActiveRecord
 		$un_shown_subjects =  Yii::app()->db->createCommand()
 		->select('*')
 		->from('subject')
-		->where('show_time=:show_time AND deleted=0',
+		->where('show_time=:show_time AND disabled=0',
 		array(':show_time'=>0))
 		->order('priority_id DESC , time_submitted ASC')
 		->queryAll(); //print_r($un_shown_subjects);
@@ -512,7 +512,7 @@ class Subject extends CActiveRecord
 		$criteria->compare('priority_id',$this->priority_id, true);
 		$criteria->compare('approved',$this->approved);
 		$criteria->compare('authorized',$this->authorized);
-		$criteria->compare('deleted',$this->deleted);
+		$criteria->compare('disabled',$this->disabled);
 		$criteria->compare('content_id',$this->content_id);
 		$criteria->compare('country_id',$this->country_id, true);
 		$criteria->compare('moderator_id',$this->moderator_id);

@@ -62,9 +62,9 @@ $this->menu=array(
 		<?php echo $form->error($model,'priority_id'); ?>
 	</div>
 	<div class="row">
-		<?php echo $form->labelEx($model,'deleted'); ?>
-		<?php echo $form->DropDownList($model, 'deleted',array('0'=>'No', '1'=>'Yes')); ?>
-		<?php echo $form->error($model,'deleted'); ?>
+		<?php echo $form->labelEx($model,'disabled'); ?>
+		<?php echo $form->DropDownList($model, 'disabled',array('0'=>'No', '1'=>'Yes')); ?>
+		<?php echo $form->error($model,'disabled'); ?>
 	</div>
 	<div class="row">
 		<?php echo $form->labelEx($model,'approved'); ?>
