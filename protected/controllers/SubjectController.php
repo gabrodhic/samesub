@@ -295,6 +295,11 @@ class SubjectController extends Controller
 				$model->attributes=$_GET['Subject'];
 		
 		$model->show_time = ">:0";
+		$live_subject = Yii::app()->db->createCommand()
+			->select('*')
+			->from('live_subject')
+			->queryRow();
+		$model->id = "<>".$live_subject['subject_id_2'];//Do not display the cached subject(the next subject that its gonna be showed)
 
 		$this->render('index',array(
 			'model'=>$model,
