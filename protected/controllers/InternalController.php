@@ -158,10 +158,20 @@ class InternalController extends Controller
 			'subject_id_1'=>$live_subject['subject_id_2'],
 			'subject_id_2'=>$next_subject_id_2,
 			));
+			//TEMPORAL:Refill the live_comments table with old comments about this subject if this subject is repeated
+			$past_comments = Yii::app()->db->createCommand()->select('code,time,comment,sequence')->from('comment t1')->where('subject_id ='.$live_subject['subject_id_2'])
+			->leftJoin('country t2', 'country_id=t2.id')->order('time ASC')->queryAll();
+			echo "<br>gggg";print_r($past_comments);
+			$i = 0;
+			foreach($past_comments as $past_comment){
+				$i++;
+				$country_code = ($past_comment['code']) ? $past_comment['code'] : "WW";
+				$command->insert('live_comment',array('comment_country'=>$country_code,'comment_time'=>$past_comment['time'],'comment_text'=>$past_comment['comment'],'comment_sequence'=>$i));//we neet to use our own sequence because there might be repeated numbers
+			}
+			if($i > 0)$command->update('live_subject', array('last_comment_number'=>Yii::app()->db->getLastInsertID(),'comment_sequence'=>$i,));
+			
+			
 		
-
-		
-
 		
 		Subject::model()->updateByPk($next_subject_id_2, array('show_time'=>SiteLibrary::utc_time()));
 		echo 'Done setting next subject_id_2 : '.$next_subject_id_2;
