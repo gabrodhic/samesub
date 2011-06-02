@@ -260,21 +260,16 @@ class SubjectController extends Controller
 		$subject_id_2 =  (int)$subject_id_2;
 		$comment_number = (int)$comment_number;
 		$data = NULL;
-		//In this for is where all the comet(long polling) magic occurs
-		//TODO:conflict with session component(maybe cus of cookies). All other simultanous request done to a 
-		//page will not be compleated until this finish. So, smaller wait time and more request its recomended here
-		for ($i = 1; $i <= 3; $i++) {
-			if ( $data = Subject::getLiveData($subject_id_2,$comment_number,true) )
-			{
+		if ( $data = Subject::getLiveData($subject_id_2,$comment_number,false) )
+		{
 				echo $data;
 				die();
-			}
 		}
-
-		//Time has gone, user its updated, respone 0
-		echo json_encode(array('id_1'=>'0'));
-		die();
-
+		else{
+			//Time has gone, user its updated, respone 0
+			echo json_encode(array('id_1'=>'0'));
+			die();
+		}
 		
 		//$dataProvider=new CActiveDataProvider('Subject');
 		//$this->render('index',array(
