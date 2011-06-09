@@ -77,22 +77,22 @@ function fromUnixTime(timeStamp){
 }
 
 var tick;
-var ut;
+var clock_time;
 
 function clock() {
   
-	if( typeof(ut) != 'undefined' ){
-		ut.setSeconds(ut.getSeconds() + 1);
+	if( typeof(clock_time) != 'undefined' ){
+		clock_time.setSeconds(clock_time.getSeconds() + 1);
 	}else{
-		ut=new Date(utc_time * 1000);
-		ut.setHours(utc_hour,utc_min,utc_sec,0);
+		clock_time=new Date(utc_time * 1000);
+		clock_time.setHours(utc_hour,utc_min,utc_sec,0);
 	}
 	
 	var h,m,s;
 	var time="        ";
-	h=ut.getHours();
-	m=ut.getMinutes();
-	s=ut.getSeconds();
+	h=clock_time.getHours();
+	m=clock_time.getMinutes();
+	s=clock_time.getSeconds();
 	if(s<=9) s="0"+s;
 	if(m<=9) m="0"+m;
 	if(h<=9) h="0"+h;
@@ -129,144 +129,226 @@ function ajax_request(url,data,bsend,suc,err,method,dt){
 }
 		
 
+
 var count = 0;
+var comment_number = "";//this is the comment sequence, notice we cast it as string for length in pad with zero
+var last_displayed_comment = -1;//position in the iteration of comments
+var epoch_time = 0;
+var cached = false;
+var reset_page = false;
+var reset_comment =false;
+var pending_sub = true;
+var pending_comment = false;
 var cache_div_id = 0;
 var cache_div_title;
-var cache_div_html;
 var cache_div_info;
+var cache_display_time = 0;
 var time_submitted;
+		
+		
+function display_elements(obj_json){
+	//document.write('ct'+ (clock_time.getTime()/1000) +'<br>');
+	//document.write('ut'+obj_json.current_time+'<br>');
+		//alert('disp');
+	//$("#content_div").prepend(epoch_time+'a<br>');
+	//$("#content_div").prepend(cache_display_time+'b<br>');
+
+	if(cache_div_id == 0){
+		reset_page=true;
+		reset_comment = true;
+		$("#content_div").attr("data-id", obj_json.id_1);//id
+		$("#content_div").attr("data-title", obj_json.title_1);//title
+		share_html = '<?php echo SiteHelper::share_links("'+obj_json.urn_1+'","'+obj_json.title_1+'"); ?>';
+		$('#content_div').html(obj_json.user_comment_1 + '<br>'+ obj_json.content_html_1+ share_html);
+		time_submitted = fromUnixTime(obj_json.time_submitted_1);
+		$("#content_div").attr("data-info", '<b>Submitted UTC '+time_submitted.getHours()+':'+time_submitted.getMinutes()+'</b> | '+obj_json.country_name_1);
+		//$("#comments_board").html("Waiting for comments");
+	}else{
+		if(cached == true){
+			if(epoch_time >= cache_display_time){
+				pending_sub=false;
+				reset_page = true;
+				reset_comment = true;
+				cached = false;//We resete cached after we display for the new element
+				//$("#comments_board").html("Waiting for comments");
+				if(obj_json.comments_2.length > 0){
+					//obj_json.comments = [];
+					//obj_json.comments = obj_json.comments_2;
+					pending_comment = true;
+					last_displayed_comment=-1;
+					//alert('entro if');
+					
+				}
+				load_comments(obj_json.comments_2);
+				
+				$("#content_div").attr("data-id", cache_div_id);
+				$("#content_div").attr("data-title", cache_div_title);
+				$("#content_div").html($('#cache_html').html());
+				$("#content_div").attr("data-info", cache_div_info);
+			}
+		}
+	}
+	
+	if(cached==false && pending_sub ==true){
+		
+		cached = true;
+		cache_div_id = obj_json.id_2;
+		//alert('cache bot'+cache_div_id);
+		share_html = '<?php echo SiteHelper::share_links("'+obj_json.urn_2+'","'+obj_json.title_2+'"); ?>';
+		cache_div_title = obj_json.title_2;
+		$('#cache_html').html(  obj_json.user_comment_2 + '<br>' + obj_json.content_html_2 + share_html);
+		time_submitted = fromUnixTime(obj_json.time_submitted_2);
+		cache_div_info = '<b>Submitted UTC '+time_submitted.getHours()+':'+time_submitted.getMinutes()+'</b> | '+obj_json.country_name_2;
+		cache_display_time = obj_json.display_time_2;
+	
+	}
+	
+	if(reset_page == true){
+	
+		$("#header_title").html($("#content_div").attr("data-title"));
+		$("#header_info").html($("#content_div").attr("data-info"));
+
+		blink_page_title($("#content_div").attr("data-title"));
+		//$("#comments_board").attr("data-number", obj_json.comment_number);
+		//$("#comments_board").html("Waiting for comments");
+		count = 1;//reset the count
+	}
+
+	
+	
+	
+	
+	
+	reset_page=false;
+	//Dont do the timeout if there are no more elements in the obj_json variable to be shown
+	//if((clock_time.getTime()/1000) <= (obj_json.current_time+5))	setTimeout(function (){display_elements(obj_json);},3000);
+	if(pending_sub == true) setTimeout(function (){display_elements(obj_json);},1000);
+}
+
+function load_comments(comments){
+	//alert('entro comm');
+	
+	if(reset_comment == true) {
+		$("#comments_board").html("Waiting for comments");
+		comment_number = 0;
+	}
+	if(pending_comment == true){
+		var new_line = "";
+		var style = "";
+
+
+		if(comments.length > 0){
+			if(reset_comment == true) {
+				$("#comments_board").html("");//Clear the waiting for comments message
+				last_displayed_comment = -1;
+				
+			}
+		}
+		for(var i=0; i<comments.length; i++) {
+			//alert('entro comm for'+i+'/'+last_displayed_comment);
+			//if(next_comment != undefined) {
+			//	if (next_comment != i)continue;
+			//}
+			
+			//var value = comments[i]['comment_sequence'];
+			comment_number = comments[i]['comment_sequence'].toString();//cast it as string
+			//alert('for comment'+i+'/'+last_displayed_comment);
+			//Display all elements which have a display_time equal or smaller than the current time
+			if( ( comments[i]['display_time'] <= epoch_time) && ((i > last_displayed_comment)) ){
+				last_displayed_comment = i;
+				//alert('for comment if');
+				//alert(comment_number+' /'+comment_number.length);
+				if((comments.length-1) == last_displayed_comment) {pending_comment = false;}//zero based array
+				// If its set to reset we load all comments at a time, else one comment at a time
+				//if(reset_page == true )
+				pad_w_zero = '';
+				
+				if(comment_number.length < 2)pad_w_zero = '0'; ///pad_w_zero
+				if(reset_comment == false ) { style = "background-color:#FFFF99";}
+				new_line = '<div class="comment_board_entry" id="'+comment_number+'" style="'+style+'">';
+				//new_line += '<div class="left_comment">';
+				//new_line += '<div class="comment_number">'+pad_w_zero+comments[i]['comment_sequence']+'</div>';
+				//new_line += '<div></div>';
+				//new_line += '</div>';
+				//new_line += '<div class="right_comment">';
+				
+				new_line += '<div class="comment_header">';
+				new_line += '<span class="comment_number">'+pad_w_zero+comment_number+'</span>';
+				new_line += '<span class="comment_country">'+comments[i]['comment_country']+'</span>';
+				comment_time = fromUnixTime(comments[i]['comment_time']);
+				new_line += '<span class="comment_time">'+ comment_time.getHours()+':'+comment_time.getMinutes()+':'+comment_time.getSeconds() +' UTC</span>';
+				new_line += '</div>';
+				new_line += '<div class="comment_text">'+ comments[i]['comment_text']+'</div>';
+				
+				new_line += '</div>';
+				
+				$("#comments_board").prepend(new_line);
+				
+				if(reset_comment == false ){
+					$("#"+comment_number).fadeTo("slow",0.5, function () {
+						$(this).css("background-color", "white");
+						$(this).fadeTo("slow",1.0);
+					});
+				}
+				
+				//$("#comments_board").scrollTop = $("#comments_board").scrollHeight;
+				$("#comments_board").attr({ scrollTop: $("#comments_board").attr("scrollHeight") });
+			
+			}
+
+		}
+		if(comments.length > 0 && reset_comment == true)  reset_comment = false;
+		
+	}
+	if(pending_comment == true) setTimeout(function (){load_comments(comments);},1000);
+}
+
+
+function epoch_timer(){
+//if(reset != undefined)
+
+epoch_time = epoch_time+1;
+tick_timer=window.setTimeout("epoch_timer()",1000); 
+
+}
+
 
 function get_Contents(callback){
 	//alert('etro');
+	if(cache_div_id == 0) {
+		reset_comment = true; 
+		load_comments();//this is just to reset
+	}
 	count++;
 	var d = new Date();
-	var share_html = '';
 	ajax_request(
 		baseUrl+"/subject/fetch",
-		"comment_number="+$("#comments_board").attr("data-number")+"&subject_id_2="+cache_div_id+"&time="+d.getTime(),
+		"comment_number="+comment_number+"&subject_id_2="+cache_div_id+"&time="+d.getTime(),
 		function(){},
 		function(json){
 			//alert(json.id);
-			if(json.id_1 == '0')   { 
-				var cc = setTimeout("get_Contents()",5000);//there is nothing new, lets make the request again and wait return;//Jquery supresses continue;(because we are in function or some)
-				return;
-				}
-			if(json.comment_update == 'no'){
-				//alert('no update');
-			if(typeof( json.id_1 ) != 'undefined' ){//(isSet)If the server determineed to send show_content
-				 //alert(arr_response1[4]);
-					$("#content_div").attr("data-id", json.id_1);//id
-					$("#content_div").attr("data-title", json.title_1);//title
-					share_html = '<?php echo SiteHelper::share_links("'+json.urn_1+'","'+json.title_1+'"); ?>';
-					$('#content_div').html(json.user_comment_1 + '<br>'+ json.content_html_1+ share_html);
-					time_submitted = fromUnixTime(json.time_submitted_1);
-					$("#content_div").attr("data-info", '<b>Submitted UTC '+time_submitted.getHours()+':'+time_submitted.getMinutes()+'</b> | '+json.country_name_1);
-					
-			 }else{
-				 //alert('content updated');
-					$("#content_div").attr("data-id", cache_div_id);
-					$("#content_div").attr("data-title", cache_div_title);
-					$("#content_div").html(cache_div_html);
-					$("#content_div").attr("data-info", cache_div_info);
-
-			 }
-			 //alert('id2'+json.id_2);
-			 cache_div_id = json.id_2;
-			 //alert('cache bot'+cache_div_id);
-			share_html = '<?php echo SiteHelper::share_links('json.urn_2','json.title_2'); ?>';
-			 cache_div_title = json.title_2;
-			 cache_div_html = json.user_comment_2 + '<br>' + $('<div>').html(json.content_html_2) + share_html;
-			 time_submitted = fromUnixTime(json.time_submitted_2);
-			 cache_div_info = '<b>Submitted UTC '+time_submitted.getHours()+':'+time_submitted.getMinutes()+'</b> | '+json.country_name_2;
-			 
-			 $("#header_title").html($("#content_div").attr("data-title"));
-			 $("#header_info").html($("#content_div").attr("data-info"));
-			 
-			 blink_page_title($("#content_div").attr("data-title"));
-			 $("#comments_board").attr("data-number", json.comment_number);
-			 $("#comments_board").html("Waiting for comments");
-			 count = 1;//reset the count
-			}else{
-			//alert(json.id);
-			//alert(json.comment_text);
-			//$("#comments_board").attr("data-number", json.comment_number);
-			//pad_w_cero = '';
-			//if(json.comment_sequence.length < 2)pad_w_cero = '0'; ///pad_w_cero
-			//$("#comments_board").append(pad_w_cero+json.comment_sequence + ": " + json.comment_text + "<br>");
-			}
-			function load_comments(next_comment){
-				var new_line = "";
-				var style = "";
-				for(var i=0; i<json.comments.length; i++) {
-					if(next_comment != undefined) {
-						if (next_comment != i)continue;
+			if(json.new_sub != 0 || json.new_comment != 0 ){
+				//alert('si');
+				
+				if(json.new_sub != 0) {
+					if(epoch_time == 0){
+						epoch_time = json.current_time;
+						epoch_timer();
 					}
-					var value = json.comments[i]['comment_sequence'];
-					if(json.comments[i]['comment_sequence'] == '1') $("#comments_board").html("");//Clear the waiting for comments message
-					$("#comments_board").attr("data-number", json.comments[i]['comment_number']);
-					pad_w_cero = '';
-					if(json.comments[i]['comment_sequence'].length < 2)pad_w_cero = '0'; ///pad_w_cero
-					if(count > 1 ) { style = "background-color:#FFFF99";}
-					new_line = '<div class="comment_board_entry" id="'+json.comments[i]['comment_sequence']+'" style="'+style+'">';
-					//new_line += '<div class="left_comment">';
-					//new_line += '<div class="comment_number">'+pad_w_cero+json.comments[i]['comment_sequence']+'</div>';
-					//new_line += '<div></div>';
-					//new_line += '</div>';
-					//new_line += '<div class="right_comment">';
-					
-					new_line += '<div class="comment_header">';
-					new_line += '<span class="comment_number">'+pad_w_cero+json.comments[i]['comment_sequence']+'</span>';
-					new_line += '<span class="comment_country">'+json.comments[i]['comment_country']+'</span>';
-					comment_time = fromUnixTime(json.comments[i]['comment_time']);
-					new_line += '<span class="comment_time">'+ comment_time.getHours()+':'+comment_time.getMinutes()+':'+comment_time.getSeconds() +' UTC</span>';
-					new_line += '</div>';
-					new_line += '<div class="comment_text">'+ json.comments[i]['comment_text']+'</div>';
-					
-					new_line += '</div>';
-					
-					$("#comments_board").prepend(new_line);
+					pending_sub=true;
+					display_elements(json);
 				}
-			}
-			if(count == 1 ){
-				load_comments();
-			}else{
-				//if its not the first time loaded
-				function inject_comments(next_item){
-					if(! json.comments.length) return;
-					//for(var c=0; c<json.comments.length; c++) {
-					//	if(next_item != undefined) {
-					//		if (next_item > json.comments.length) return;
-					//		if (next_item != c)continue;
-					//	}
-						if(next_item === undefined) next_item = 0;
-						load_comments(next_item);
-						//$("#"+json.comments[next_item]['comment_sequence']).animate({"margin-top": "0px"}, 2000,"",
-							//function(){
-								//alert('sad');
-						$("#"+json.comments[next_item]['comment_sequence']).fadeTo("slow",0.5, function () {
-							$(this).css("background-color", "white");
-							$(this).fadeTo("slow",1.0);
-								
-							next_item++;
-							
-							if (next_item < json.comments.length) {
-								inject_comments(next_item);//we need to do this since if we place it just in a for without recursiveness, it will overlap
-							}
-							});
-							//});
-						//$("#"+json.comments[i]['comment_sequence']).css('background-color','#FFFF99;
-					//	
-					//}
+				if(json.new_comment != 0){
+					pending_comment=true;
+					last_displayed_comment = -1;//reset displaying
+					load_comments(json.comments);
 				}
-				inject_comments();
+				
+
+				
 			}
-			
-			//$("#comments_board").scrollTop = $("#comments_board").scrollHeight;
-			$("#comments_board").attr({ scrollTop: $("#comments_board").attr("scrollHeight") });
-			
-			
 			if(callback != undefined) callback();
-			var aa = setTimeout("get_Contents()",10000);//Everythig loaded ok, lets make a new request to watch for new changes
+			var aa = setTimeout("get_Contents()",<?php echo Yii::app()->params['request_interval'];?>000);//(add the javascript milliseconds) Everythig loaded ok, lets make a new request to watch for new changes
 		
 		},
 		function(){
@@ -274,7 +356,7 @@ function get_Contents(callback){
 			$("#header_error").text("There was an error getting data from the server to your device. Please check your internet connection. Retrying in 10 seconds.");
 			$("#header_error").show();
 			var ba = setTimeout(function(){$("#header_error").hide()},8000);
-			var bb = setTimeout("get_Contents()",10000);//There was an error loading content, lets make a new request to try to get content again
+			var bb = setTimeout("get_Contents()",<?php echo Yii::app()->params['request_interval'];?>000);//There was an error loading content, lets make a new request to try to get content again
 		}
 	);
 	

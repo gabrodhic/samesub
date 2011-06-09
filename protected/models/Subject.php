@@ -307,10 +307,13 @@ class Subject extends CActiveRecord
 	 * 
 	 * 
 	 */
-	public function getLiveData($subject_id_2, $comment_number,$sleep=false)
+	public function getLiveData($subject_id_2=0, $comment_number,$sleep=false)
     {
 		$arr_data = array();
 		$arr_comments = array();
+		$arr_comments_2 = array();
+		$arr_data['new_comment']=0;
+		$arr_data['new_sub']=0;
 		//TODO: Store the whole subject record and its content as an array on the live_subject table
 		$live_subject = Yii::app()->db->createCommand()
 		->select('*')
@@ -321,12 +324,13 @@ class Subject extends CActiveRecord
 		$live_comments = Yii::app()->db->createCommand()
 		->select('*')
 		->from('live_comment')
-		->where('comment_number > :comment_number', array(':comment_number'=>$comment_number))
+		->where('comment_sequence > :comment_number', array(':comment_number'=>$comment_number))
 		->order('comment_number ASC')
 		->queryAll();
 		
 		foreach ($live_comments as $live_comment){
-			$arr_comments[] = array('comment_text'=> CHtml::encode($live_comment['comment_text']), 'comment_sequence'=>$live_comment['comment_sequence'],'comment_number'=>$live_comment['comment_number'],'comment_time'=>$live_comment['comment_time'],'comment_country'=>$live_comment['comment_country']);
+			$arr_data['new_comment']++;
+			$arr_comments[] = array('display_time'=>($live_comment['comment_time']+Yii::app()->params['request_interval']),'comment_text'=> CHtml::encode($live_comment['comment_text']), 'comment_sequence'=>$live_comment['comment_sequence'],'comment_number'=>$live_comment['comment_number'],'comment_time'=>$live_comment['comment_time'],'comment_country'=>$live_comment['comment_country']);
 		}
 		$arr_data['comments']= $arr_comments;
 		
@@ -337,57 +341,90 @@ class Subject extends CActiveRecord
 			if($comment_number <> $live_subject['last_comment_number']){
 				$arr_data['comment_update'] = 'yes';
 				$arr_data['id_1'] = 'somevalue';
+				$arr_data['id_2'] = 'somevalue';
 				$arr_data['ttt'] = $comment_number."...". $live_subject['last_comment_number'];
-				return json_encode($arr_data);
+				
 				//die();
 			}
 			
 			if($sleep) {sleep(1);}
-			return false;
-		}else{		
-			$subject_data = Subject::model()->findByPk($live_subject['subject_id_1']);
-			$arr_data['id_1'] = $subject_data->id;
-			$arr_data['urn_1'] = $subject_data->urn;
-			$arr_data['title_1'] = $subject_data->title;
-			$arr_data['content_type_id_1'] = $subject_data->content_type_id;
-			$arr_data['time_submitted_1'] = $subject_data->time_submitted;
-			$country = Country::model()->findByPk($subject_data->country_id);
-			$arr_data['country_code_1'] = ($country->code) ? $country->code : 'WW';
-			$arr_data['country_name_1'] = ($country->name) ? $country->name : 'WORLD';
-			//$content_data = Yii::app()->db->createCommand()
-			//				->select('*')
-			//				->from('content_'. ContentType::model()->findByPk($subject_data->content_type_id)->name)
-			//				->queryRow();
-			$arr_data['content_html_1'] = SiteHelper::subject_content($subject_data);
-			$arr_data['content_data_1'] = (array) Subject::subject_content($subject_data)->getAttributes();
-			$arr_data['user_comment_1'] = SiteHelper::formatted($subject_data->user_comment);
+			//return false;
+		}else{
+			if($subject_id_2== 0){
+				$subject_data = Subject::model()->findByPk($live_subject['subject_id_1']);
+				$arr_data['id_1'] = $subject_data->id;
+				$arr_data['urn_1'] = $subject_data->urn;
+				$arr_data['title_1'] = $subject_data->title;
+				$arr_data['content_type_id_1'] = $subject_data->content_type_id;
+				$arr_data['time_submitted_1'] = $subject_data->time_submitted;
+				$country = Country::model()->findByPk($subject_data->country_id);
+				$arr_data['country_code_1'] = ($country->code) ? $country->code : 'WW';
+				$arr_data['country_name_1'] = ($country->name) ? $country->name : 'WORLD';
+
+				$arr_data['content_html_1'] = SiteHelper::subject_content($subject_data);
+				$arr_data['content_data_1'] = (array) Subject::subject_content($subject_data)->getAttributes();
+				$arr_data['user_comment_1'] = SiteHelper::formatted($subject_data->user_comment);
+				$arr_data['new_sub']++;
+			}
 			
 			$arr_data['comment_update'] = 'no';
 			$arr_data['comment_sequence'] = $live_subject['comment_sequence'];
+			$arr_data['new_sub']++;
+			$arr_data['current_time'] = SiteLibrary::utc_time();
 			
-			// If the subject cached in client its not the one to be showed, lets add it to the array also
-			if($subject_id_2 <> $live_subject['subject_id_2']){
-				$subject_data = Subject::model()->findByPk($live_subject['subject_id_2']);
+			
+			$subject_data = Subject::model()->findByPk($live_subject['subject_id_2']);
+			
+			//Add it to the cached data Array also, client needs it
+			$arr_data['id_2']= $subject_data->id;
+			$arr_data['urn_2']= $subject_data->urn;
+			$arr_data['title_2']= $subject_data->title;			
+			$arr_data['content_type_id_2']= $subject_data->content_type_id;
+			$arr_data['time_submitted_2'] = $subject_data->time_submitted;
+			$country = Country::model()->findByPk($subject_data->country_id);
+			$arr_data['country_code_2'] = ($country->code) ? $country->code : 'WW';
+			$arr_data['country_name_2'] = ($country->name) ? $country->name : 'WORLD';
+			
+			$arr_data['content_html_2'] = SiteHelper::subject_content($subject_data);
+			$arr_data['content_data_2'] = (array) Subject::subject_content($subject_data)->getAttributes();
+			$arr_data['user_comment_2'] = SiteHelper::formatted($subject_data->user_comment);
+			
+			$arr_data['display_time_2'] = ($subject_data->show_time + (Yii::app()->params['subject_interval']*60));
+			
+			
+			//TEMPORAL TODO:lets add the old comments(if any) for the cached subeject
+			$comments_2 = Yii::app()->db->createCommand()->select('code,time,comment,sequence')->from('comment t1')->where('subject_id ='.$live_subject['subject_id_2'])
+			->leftJoin('country t2', 'country_id=t2.id')->order('time ASC')->queryAll();
+			$i = 0;
+			foreach($comments_2 as $comment_2){
+				$i++;//we need to use a counter for the sequence as one same sequence mith be repeated if the sub was repeated(TEMPORAL)
+				$country_code = ($comment_2['code']) ? $comment_2['code'] : "WW";
 				
-				//Add it to the cached data Array also, client needs it
-				$arr_data['id_2']= $subject_data->id;
-				$arr_data['urn_2']= $subject_data->urn;
-				$arr_data['title_2']= $subject_data->title;			
-				$arr_data['content_type_id_2']= $subject_data->content_type_id;
-				$arr_data['time_submitted_2'] = $subject_data->time_submitted;
-				$country = Country::model()->findByPk($subject_data->country_id);
-				$arr_data['country_code_2'] = ($country->code) ? $country->code : 'WW';
-				$arr_data['country_name_2'] = ($country->name) ? $country->name : 'WORLD';
-				
-				$arr_data['content_html_2'] = SiteHelper::subject_content($subject_data);
-				$arr_data['content_data_2'] = (array) Subject::subject_content($subject_data)->getAttributes();
-				$arr_data['user_comment_2'] = SiteHelper::formatted($subject_data->user_comment);
+				$arr_comments_2[] = array('display_time'=>($comment_2['time']+Yii::app()->params['request_interval']),
+				'comment_text'=> CHtml::encode($comment_2['comment']), 'comment_sequence'=>$i,
+				'comment_time'=>$comment_2['time'],'comment_country'=>$country_code);
 			}
 			
-			//print_r($arr_data);
-			return json_encode($arr_data);
-			//die;
+			/*
+			$comments_2 = Yii::app()->db->createCommand()
+			->select('*')
+			->from('comment')
+			->where('subject_id = :subject_id', array(':subject_id'=>$live_subject['subject_id_2']))
+			->order('sequence ASC')
+			->queryAll();
+			Yii::app()->db->createCommand()->select('code,time,comment,sequence')->from('comment t1')->where('subject_id ='.$live_subject['subject_id_2'])
+			->leftJoin('country t2', 'country_id=t2.id')->order('time ASC')->queryAll();
+			
+			foreach ($comments_2 as $comment_2){
+				//$arr_data['new_comment']++;
+				$arr_comments_2[] = array('display_time'=>($comment_2['time']+Yii::app()->params['request_interval']),'comment_text'=> CHtml::encode($comment_2['comment']), 'comment_sequence'=>$live_comment['sequence'],'comment_time'=>$live_comment['time'],'comment_country'=>$live_comment['comment_country']);
+			}
+			*/
+			$arr_data['comments_2']= $arr_comments_2;
+			
+			
 		}
+		return json_encode($arr_data);
 	
 	}
 
@@ -408,11 +445,11 @@ class Subject extends CActiveRecord
 		->queryAll(); //print_r($un_shown_subjects);
 		
 		$prognostic = array();
-		$wait_time = 10;//This is the minimun: ~5 min for actual subject being shown, and 5 minutes for the cached subject
+		$wait_time = (Yii::app()->params['subject_interval'] * 2);//This is the minimun: 1 for actual subject being shown, and 2  for the cached subject
 		$i = 0;
 		foreach($un_shown_subjects as $un_shown_subject){
 			$i++;
-			$wait_time = $wait_time + 5;//each subject displays for 5 min
+			$wait_time = $wait_time + Yii::app()->params['subject_interval'];//each subject displays for Yii::app()->params['subject_interval'] minutes
 			$wait = ($format == "minutes") ? $wait_time : (SiteLibrary::utc_time() + ($wait_time*60));//minutes to seconds
 			if($id){
 				

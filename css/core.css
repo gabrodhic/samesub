@@ -71,6 +71,9 @@ padding-right:10px;
 #comments_container{
 padding-left:10px;
 }
+#cache_html{
+display:none;
+}
 
 
 .content_image{

@@ -265,11 +265,11 @@ class SubjectController extends Controller
 				echo $data;
 				die();
 		}
-		else{
+		//else{
 			//Time has gone, user its updated, respone 0
-			echo json_encode(array('id_1'=>'0'));
-			die();
-		}
+		//	echo json_encode(array('new_comment'=>'0','new_sub'=>'0'));
+		//	die();
+		//}
 		
 		//$dataProvider=new CActiveDataProvider('Subject');
 		//$this->render('index',array(
