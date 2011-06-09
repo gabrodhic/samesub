@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: May 16, 2011 at 07:14 PM
+-- Generation Time: Jun 08, 2011 at 06:06 PM
 -- Server version: 5.1.33
 -- PHP Version: 5.2.9
 
@@ -298,7 +298,7 @@ CREATE TABLE `subject` (
   evaluating tinyint(4) NOT NULL DEFAULT '0',
   approved tinyint(4) NOT NULL DEFAULT '0',
   authorized tinyint(4) NOT NULL DEFAULT '0',
-  deleted tinyint(4) NOT NULL DEFAULT '0',
+  disabled tinyint(4) NOT NULL DEFAULT '0',
   show_time int(11) NOT NULL DEFAULT '0' COMMENT 'time when the running thread shows the content',
   PRIMARY KEY (id),
   UNIQUE KEY urn (urn),
