@@ -77,11 +77,11 @@ function fromUnixTime(timeStamp){
 }
 
 var tick;
-var clock_time;
+var clock_time = null;
 
 function clock() {
   
-	if( typeof(clock_time) != 'undefined' ){
+	if( clock_time != null ){
 		clock_time.setSeconds(clock_time.getSeconds() + 1);
 	}else{
 		clock_time=new Date(utc_time * 1000);
@@ -129,27 +129,48 @@ function ajax_request(url,data,bsend,suc,err,method,dt){
 }
 		
 
+var request_count =0;
 
-var count = 0;
-var comment_number = "";//this is the comment sequence, notice we cast it as string for length in pad with zero
-var last_displayed_comment = -1;//position in the iteration of comments
-var epoch_time = 0;
-var cached = false;
-var reset_page = false;
-var reset_comment =false;
-var pending_sub = true;
-var pending_comment = false;
-var cache_div_id = 0;
+var comment_number;
+var last_comment_number;
+var last_displayed_comment;
+var epoch_time;
+var cached;
+var reset_page;
+var reset_comment;
+var pending_sub;
+var pending_comment;
+var cache_div_id;
 var cache_div_title;
 var cache_div_info;
-var cache_display_time = 0;
+var cache_display_time;
 var time_submitted;
-		
+
+function reset_fetching(){
+
+	comment_number = 0;
+	last_comment_number = 0;
+	last_displayed_comment = -1;//position in the iteration of comments
+	epoch_time = 0;
+	cached = false;
+	reset_page = false;
+	reset_comment =true;
+	pending_sub = true;
+	pending_comment = false;
+	cache_div_id = 0;
+	cache_div_title = "";
+	cache_div_info = "";
+	cache_display_time = 0;
+	//time_submitted;
+	
+	
+	load_comments();//this is just to reset
+
+}
 		
 function display_elements(obj_json){
 	//document.write('ct'+ (clock_time.getTime()/1000) +'<br>');
 	//document.write('ut'+obj_json.current_time+'<br>');
-		//alert('disp');
 	//$("#content_div").prepend(epoch_time+'a<br>');
 	//$("#content_div").prepend(cache_display_time+'b<br>');
 
@@ -193,7 +214,6 @@ function display_elements(obj_json){
 		
 		cached = true;
 		cache_div_id = obj_json.id_2;
-		//alert('cache bot'+cache_div_id);
 		share_html = '<?php echo SiteHelper::share_links("'+obj_json.urn_2+'","'+obj_json.title_2+'"); ?>';
 		cache_div_title = obj_json.title_2;
 		$('#cache_html').html(  obj_json.user_comment_2 + '<br>' + obj_json.content_html_2 + share_html);
@@ -211,7 +231,6 @@ function display_elements(obj_json){
 		blink_page_title($("#content_div").attr("data-title"));
 		//$("#comments_board").attr("data-number", obj_json.comment_number);
 		//$("#comments_board").html("Waiting for comments");
-		count = 1;//reset the count
 	}
 
 	
@@ -231,6 +250,7 @@ function load_comments(comments){
 	if(reset_comment == true) {
 		$("#comments_board").html("Waiting for comments");
 		comment_number = 0;
+		last_comment_number = 0;
 	}
 	if(pending_comment == true){
 		var new_line = "";
@@ -238,19 +258,16 @@ function load_comments(comments){
 
 
 		if(comments.length > 0){
+			last_comment_number = comments[(comments.length-1)]['comment_sequence'];//the last sequence
 			if(reset_comment == true) {
 				$("#comments_board").html("");//Clear the waiting for comments message
 				last_displayed_comment = -1;
 				
 			}
 		}
-		for(var i=0; i<comments.length; i++) {
-			//alert('entro comm for'+i+'/'+last_displayed_comment);
-			//if(next_comment != undefined) {
-			//	if (next_comment != i)continue;
-			//}
-			
+		for(var i=0; i<comments.length; i++) {			
 			//var value = comments[i]['comment_sequence'];
+			
 			comment_number = comments[i]['comment_sequence'].toString();//cast it as string
 			//alert('for comment'+i+'/'+last_displayed_comment);
 			//Display all elements which have a display_time equal or smaller than the current time
@@ -266,11 +283,6 @@ function load_comments(comments){
 				if(comment_number.length < 2)pad_w_zero = '0'; ///pad_w_zero
 				if(reset_comment == false ) { style = "background-color:#FFFF99";}
 				new_line = '<div class="comment_board_entry" id="'+comment_number+'" style="'+style+'">';
-				//new_line += '<div class="left_comment">';
-				//new_line += '<div class="comment_number">'+pad_w_zero+comments[i]['comment_sequence']+'</div>';
-				//new_line += '<div></div>';
-				//new_line += '</div>';
-				//new_line += '<div class="right_comment">';
 				
 				new_line += '<div class="comment_header">';
 				new_line += '<span class="comment_number">'+pad_w_zero+comment_number+'</span>';
@@ -305,36 +317,45 @@ function load_comments(comments){
 
 
 function epoch_timer(){
-//if(reset != undefined)
 
-epoch_time = epoch_time+1;
-tick_timer=window.setTimeout("epoch_timer()",1000); 
+	epoch_time = epoch_time+1;
+	tick_timer=window.setTimeout("epoch_timer()",1000); 
 
 }
 
 
+
 function get_Contents(callback){
 	//alert('etro');
-	if(cache_div_id == 0) {
-		reset_comment = true; 
-		load_comments();//this is just to reset
+	if(request_count == 0) {
+		reset_fetching();
+		
 	}
-	count++;
+	
 	var d = new Date();
 	ajax_request(
 		baseUrl+"/subject/fetch",
-		"comment_number="+comment_number+"&subject_id_2="+cache_div_id+"&time="+d.getTime(),
+		"comment_number="+last_comment_number+"&subject_id_2="+cache_div_id+"&time="+d.getTime(),
 		function(){},
 		function(json){
-			//alert(json.id);
+			//If there are 2 new subs it means this is the first request or the client lost connection
+			//So, lets reset everything
+			if(json.new_sub == 2) reset_fetching();
+			
+			if(epoch_time < json.current_time){
+				epoch_time = json.current_time;//Update the epoch_time whenever the client time has get delayed
+				//most probably that the clock also is slow, so lets update it also
+				utc_hour=json.current_time_h;
+				utc_min=json.current_time_m;
+				utc_sec=json.current_time_s;
+				clock_time.setHours(utc_hour,utc_min,utc_sec,0);
+			}
+
+			if(request_count == 0) epoch_timer();
 			if(json.new_sub != 0 || json.new_comment != 0 ){
 				//alert('si');
 				
 				if(json.new_sub != 0) {
-					if(epoch_time == 0){
-						epoch_time = json.current_time;
-						epoch_timer();
-					}
 					pending_sub=true;
 					display_elements(json);
 				}
@@ -347,18 +368,25 @@ function get_Contents(callback){
 
 				
 			}
+			
+			
 			if(callback != undefined) callback();
 			var aa = setTimeout("get_Contents()",<?php echo Yii::app()->params['request_interval'];?>000);//(add the javascript milliseconds) Everythig loaded ok, lets make a new request to watch for new changes
 		
 		},
 		function(){
 			if(callback != undefined) callback();
-			$("#header_error").text("There was an error getting data from the server to your device. Please check your internet connection. Retrying in 10 seconds.");
-			$("#header_error").show();
-			var ba = setTimeout(function(){$("#header_error").hide()},8000);
-			var bb = setTimeout("get_Contents()",<?php echo Yii::app()->params['request_interval'];?>000);//There was an error loading content, lets make a new request to try to get content again
+			setTimeout(function(){
+				$("#header_error").text("There was an error getting data from the server to your device. Please check your internet connection. Retrying in 10 seconds.");
+				$("#header_error").show();
+				}
+			,5000);
+			
+			var ba = setTimeout(function(){$("#header_error").hide()},10000);
+			var bb = setTimeout("get_Contents()",<?php echo Yii::app()->params['request_interval'];?>000 + 5000);//There was an error loading content, lets make a new request to try to get content again
 		}
 	);
+	request_count++;
 	
 
 	

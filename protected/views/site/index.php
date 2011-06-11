@@ -13,7 +13,7 @@ $this->pageTitle=Yii::app()->name.": ".$information->live;
 	<div id="left_container">
 		<div id="header_info"></div>
 		<div id="content_div"></div>
-		<div id="cache_html"></div>
+		<div id="cache_html" style="display:none; visibility:hidden;"></div>
 	</div>
 	<div id="right_container">
 		<div id="comments_container">

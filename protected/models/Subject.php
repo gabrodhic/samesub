@@ -350,7 +350,7 @@ class Subject extends CActiveRecord
 			if($sleep) {sleep(1);}
 			//return false;
 		}else{
-			if($subject_id_2== 0){
+			if($subject_id_2 != $live_subject['subject_id_1']){
 				$subject_data = Subject::model()->findByPk($live_subject['subject_id_1']);
 				$arr_data['id_1'] = $subject_data->id;
 				$arr_data['urn_1'] = $subject_data->urn;
@@ -370,7 +370,7 @@ class Subject extends CActiveRecord
 			$arr_data['comment_update'] = 'no';
 			$arr_data['comment_sequence'] = $live_subject['comment_sequence'];
 			$arr_data['new_sub']++;
-			$arr_data['current_time'] = SiteLibrary::utc_time();
+			
 			
 			
 			$subject_data = Subject::model()->findByPk($live_subject['subject_id_2']);
@@ -424,6 +424,11 @@ class Subject extends CActiveRecord
 			
 			
 		}
+		$utc_time = SiteLibrary::utc_time();
+		$arr_data['current_time'] = $utc_time;
+		$arr_data['current_time_h'] = date("H",$utc_time);
+		$arr_data['current_time_m'] = date("i",$utc_time);
+		$arr_data['current_time_s'] = date("s",$utc_time);
 		return json_encode($arr_data);
 	
 	}
