@@ -110,7 +110,7 @@ if (event.keyCode == '13') {
 	if ($('#comment_textarea').val().length > 0){
 		ajax_request(
 			baseUrl+"/comment/push",
-			"text="+$("#comment_textarea").val(),
+			{text: $("#comment_textarea").val()},//we neet to format it this way: http://stackoverflow.com/questions/5707619/uncomprehensible-jquery-ajax-behavior-when-data-contains-consecutive-question
 			function(){ $("#comment_textarea").val('');},
 			function(){ },
 			function(){$("#comment_textarea").val('NOT SENT'); },
