@@ -34,6 +34,20 @@ clear: both;
 width:980px; 
 margin: 0 auto;
 }
+
+.button {
+color: white;
+font-weight: bold;
+padding: 4px 10px 4px 10px;
+text-decoration: none;
+font-size: 18px;
+background-color:#777777;
+}
+
+.button:hover {
+background-color:#1C75CE;
+}
+
 #logo{
 float:left;
 }
@@ -57,12 +71,12 @@ font-size: 24px;
 
 #left_container{
 float:left;
-width:60%;
+width:588px;/*60%*/
 /*background-color:red;*/
 }
 #right_container{
 float:right;
-width:40%;
+width:392px;/*40%*/
 /*background-color:blue;*/
 }
 #content_div{
@@ -70,6 +84,7 @@ padding-right:10px;
 }
 #comments_container{
 padding-left:10px;
+padding-top:10px;
 }
 #cache_html{
 display:none;
@@ -80,10 +95,35 @@ display:none;
 max-width:550px;
 /*width:100%;*/
 }
+#comments_form{
+float:left;
+}
+#status_board{
+width:385px;
+float:right;
+}
 #comment_textarea{
 margin: 0; padding: 0; border: 1px solid grey;
-width:100%;
+width:500px;
 overflow:hidden; 
+}
+#send_comment{
+float:left; 
+margin-left: 5px;
+padding: 6px 10px 6px 10px;
+cursor:pointer;
+}
+
+#comment_status{
+float:left;
+margin-right: 15px;
+font-weight:bold;
+background-color: #0099CC;
+color:white;
+/*visibility:hidden;*/
+}
+#comment_timer{
+float:right;
 }
 
 #menu_left{

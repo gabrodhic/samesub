@@ -4,10 +4,17 @@ $this->pageTitle=Yii::app()->name.": ".$information->live;
 	<div id="header_bottom">
 		<div id="header_error">ERROR DIV</div>
 		<div id="header_title"></div>
-		<div style="background-color:white">
-		<form id="CommentAddForm" method="post" action="<?php echo Yii::app()->getRequest()->getBaseUrl(true);?>/comment/add">		
-				<div class="textwrapper"><textarea id="comment_textarea" name="Comment[comment]" rows="2"></textarea></div>
-		</form>
+		<div id="header_board">
+			<div id="comments_form">
+				<form id="CommentAddForm" method="post" action="<?php echo Yii::app()->getRequest()->getBaseUrl(true);?>/comment/add">		
+					<div style="float:left"><textarea id="comment_textarea" name="Comment[comment]" rows="2"></textarea></div>
+					<div id="send_comment" class="button">Send</div>
+				</form>
+			</div>
+			<div id="status_board">
+				<div id="comment_status"></div>
+				<div id="comment_timer"></div>
+			</div>
 		</div>
 	</div>
 	<div id="left_container">
