@@ -26,7 +26,19 @@ class SiteHelper extends CHtml
 				$html = SiteHelper::formatted($subject->content_text->text);
 				break;
 			case 3:
-				$html = SiteHelper::formatted($subject->content_video->embed_code);
+				//would be nice to use yii validator to see if its an url but: http://code.google.com/p/yii/issues/detail?id=1324
+				if(SiteLibrary::valid_url($subject->content_video->embed_code)){//if its an url
+					$parsed_url = parse_url($subject->content_video->embed_code);
+					if(stripos($parsed_url['host'], 'youtube.com')){//and its from youtube
+						//get the V value $parsed_url['query'];
+						$query_arr = SiteLibrary::parse_url_query($parsed_url['query']);
+						if (array_key_exists('v', $query_arr)) {
+							$html = '<iframe width="425" height="349" src="http://www.youtube.com/embed/'.$query_arr['v'].'" frameborder="0" allowfullscreen></iframe>';
+						}
+					}
+				}else{
+					$html = SiteHelper::formatted($subject->content_video->embed_code);
+				}
 				break;
 		}
 		return $html;

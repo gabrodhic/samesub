@@ -17,4 +17,22 @@ class SiteLibrary extends CComponent
 		return $utc_time;
 	}
 	
+	public function parse_url_query($query){
+		$var  = explode('&', $query); 
+		$arr  = array(); 
+
+		foreach($var as $val) 
+		{ 
+			$x          = explode('=', $val); 
+			$arr[$x[0]] = $x[1]; 
+		} 
+		unset($val, $x, $var); 
+		return $arr; 
+	}
+	
+	function valid_url($url)
+	{
+		return preg_match('|^http(s)?://[a-z0-9-]+(.[a-z0-9-]+)*(:[0-9]+)?(/.*)?$|i', $url);
+	}
+	
 }
