@@ -6,6 +6,7 @@ body { background: white; }
 body { font: normal 13px Trebuchet MS, Arial, Helvetica, sans-serif; color: #686868; }
 p { margin: 0; padding: 0 0 1.2em 0; }
 /* Text font styles*/
+h1 { font-size: 24px;}
 h2 { font-size: 36px; letter-spacing: -1px; padding: 0 0 14px 0;  color: #686868}
 h3 { font-size: 24px; letter-spacing: -1px; padding: 0 0 14px 0; color: #999; }
 h4 { font-size: 18px; letter-spacing: -1px; padding: 0 0 5px 0; color: #686868; }
@@ -65,9 +66,7 @@ text-align: center;
 font-size: 18px;
 display:none;
 }
-#header_title {
-font-size: 24px;
-}
+
 
 #left_container{
 float:left;

@@ -282,7 +282,7 @@ function display_elements(obj_json){
 	
 	if(reset_page == true){
 	
-		$("#header_title").html($("#content_div").attr("data-title"));
+		$("#header_title h1").html($("#content_div").attr("data-title"));
 		$("#header_info").html($("#content_div").attr("data-info"));
 
 		blink_page_title($("#content_div").attr("data-title"));

@@ -1,9 +1,9 @@
 <?php
-$this->pageTitle=Yii::app()->name.": ".$information->live;
+$this->pageTitle=$information->live;
 ?>
 	<div id="header_bottom">
 		<div id="header_error">ERROR DIV</div>
-		<div id="header_title"></div>
+		<div id="header_title"><h1></h1></div>
 		<div id="header_board">
 			<div id="comments_form">
 				<form id="CommentAddForm" method="post" action="<?php echo Yii::app()->getRequest()->getBaseUrl(true);?>/comment/add">		
