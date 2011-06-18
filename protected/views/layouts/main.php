@@ -13,8 +13,7 @@
 		var utc_min = <?php echo date("i",$time); ?>;
 		var utc_sec = <?php echo date("s",$time); ?>;
 	</script>
-	<?php if(Yii::app()->session->get('site_loaded')){
-	?>
+	<?php if(strtolower($this->id) != 'site' or strtolower($this->action->Id) != 'index'){	?>
 		<!-- blueprint CSS framework -->
 		<link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/screen.css" media="screen, projection" />
 		<link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/print.css" media="print" />
@@ -25,18 +24,12 @@
 		<link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/main.css" />
 		<link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/form.css" />
 		<link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/core.css" />
-		<script>
-		var preload_time_passed = 100;//no need to wait
-		</script>
 	<?php
-		if (strtolower($this->id) == 'site' and strtolower($this->action->Id) == 'index'){
-			Yii::app()->clientScript->registerScriptFile(Yii::app()->request->baseUrl."/site/js/core", CClientScript::POS_END);
-		}else{
-			Yii::app()->clientScript->registerCoreScript('jquery');
-		}
+		Yii::app()->clientScript->registerCoreScript('jquery');		
 	}else{
 	?>
 		<script type="text/javascript">
+		
 		var preload_time_passed = 0;
 		window.setTimeout(function () { preload_time_passed = 5;},5000);
 		
@@ -53,7 +46,7 @@
 
 		</script>
 		<style>
-		#page{display:none;}
+		
 		</style>
 	<?php
 		
@@ -65,7 +58,8 @@
 <body>
 <noscript>Your browser does NOT support javascript or has it disabled. Please click <?php echo CHtml::link('here',Yii::app()->getRequest()->getBaseUrl(true).'/index/noscript'); ?> if you want to use this site without javascript or enable the javascript feature in your browser and reload the page.</noscript>
 
-<?php if(! Yii::app()->session->get('site_loaded')){
+<?php 
+if( Yii::app()->session->get('site_loaded') != "yes" and (strtolower($this->id) == 'site' and strtolower($this->action->Id) == 'index')){
 ?>
 <div id="preload" style="position:fixed; width: 680px; left: 50%; margin:20px 0px 0px -340px;font-family: Trebuchet MS, Arial, Helvetica, sans-serif;">
 	<div style="font-size: 12px;"><b>NOW: </b><?php echo $this->pageTitle;?></div>
@@ -76,9 +70,15 @@
 	<div style="margin:50px 0px 0px 0px; font-size: 16px;">Page is loading, get ready ...</div>
 </div>
 <?php 
+}else{
+?>
+<script>
+preload_time_passed = 5;
+</script>
+<?php
 }
 ?>
-<div id="page">
+<div id="page" <?php echo (Yii::app()->session->get('site_loaded') != "yes" and (strtolower($this->id) == 'site' and strtolower($this->action->Id) == 'index')) ? 'style="display:none;"' : '';?>>
 	<div id="header" class="bounded">
 		<div id="header_top"></div>
 		<div id="header_middle">
@@ -129,5 +129,5 @@
 </body>
 </html>
 <?php
-if(! Yii::app()->session->get('site_loaded')) Yii::app()->session->add('site_loaded', 'yes');
+if( Yii::app()->session->get('site_loaded') != "yes") Yii::app()->session->add('site_loaded', 'yes');
 ?>
