@@ -497,6 +497,7 @@ class Subject extends CActiveRecord
 		return array(
 			'comments' => array(self::HAS_MANY, 'Comment', 'subject_id', 'order'=>'comments.id DESC'),
 			'country'=>array(self::BELONGS_TO, 'Country', 'country_id'),
+			'user_country'=>array(self::BELONGS_TO, 'Country', 'user_country_id'),
 			'priority_type'=>array(self::BELONGS_TO, 'Priority', 'priority_id'),
 			'content_type'=>array(self::BELONGS_TO, 'ContentType', 'content_type_id'),
 			'content_image'=>array(self::BELONGS_TO, 'ContentImage', 'content_id'),
@@ -514,6 +515,7 @@ class Subject extends CActiveRecord
 			'id' => 'ID',
 			'user_id' => 'User',
 			'user_ip' => 'User Ip',
+			'user_country_id' => 'User Country',
 			'user_comment' => 'User Comment',
 			'title' => 'Title',
 			'urn' => 'Urn',

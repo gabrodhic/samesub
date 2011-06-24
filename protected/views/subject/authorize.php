@@ -30,7 +30,10 @@ $this->menu=array(
 		<?php echo $form->labelEx($model,'title'); ?>
 		<?php echo CHtml::encode($model->title); ?>
 	</div>
-
+	<div class="row">
+		<?php echo $form->labelEx($model,'country_id'); ?>
+		<?php echo CHtml::encode($model->country->name); ?>
+	</div>
 	<div class="row">
 		<?php echo $form->labelEx($model,'content_type_id'); ?>
 		<?php echo CHtml::encode($model->content_type->fullname); ?> 
@@ -42,6 +45,10 @@ $this->menu=array(
 	<div class="row">
 		<?php echo $form->labelEx($model,'Content code'); ?>
 		<?php echo CHtml::encode(SiteHelper::subject_content($model)); ?>
+	</div>
+	<div class="row">
+		<?php echo $form->labelEx($model,'user_country_id'); ?>
+		<?php echo CHtml::encode($model->user_country->name); ?>
 	</div>
 	<div class="row">
 		<?php echo $form->labelEx($model,'user_comment'); ?>
