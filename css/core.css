@@ -6,7 +6,7 @@ body { background: white; }
 body { font: normal 13px Trebuchet MS, Arial, Helvetica, sans-serif; color: #686868; }
 p { margin: 0; padding: 0 0 1.2em 0; }
 /* Text font styles*/
-h1 { font-size: 24px; letter-spacing: -1px; padding: 0 0 5px 0; color: #686868; font-weight: bold;}
+h1 { font-size: 28px; letter-spacing: -1px; padding: 0 0 2px 0; color: #686868; font-weight: normal;}
 h2 { font-size: 36px; letter-spacing: -1px; padding: 0 0 14px 0;  color: #686868}
 h3 { font-size: 24px; letter-spacing: -1px; padding: 0 0 14px 0; color: #999; }
 h4 { font-size: 18px; letter-spacing: -1px; padding: 0 0 5px 0; color: #686868; }
@@ -94,12 +94,14 @@ display:none;
 max-width:550px;
 /*width:100%;*/
 }
-#comments_form{
+#board_left{
 float:left;
+width:580px;
 }
-#status_board{
+#board_right{
 width:385px;
 float:right;
+padding-top:19px;
 }
 #comment_textarea{
 margin: 0; padding: 0; border: 1px solid grey;
@@ -107,23 +109,41 @@ width:500px;
 overflow:hidden; 
 }
 #send_comment{
-float:left; 
-margin-left: 5px;
-padding: 6px 10px 6px 10px;
+float:right;
+padding: 6px 14px 6px 14px;
 cursor:pointer;
 }
 
-#comment_status{
+#header_info{
 float:left;
-margin-right: 15px;
+}
+#comment_status{
+float:right;
 font-weight:bold;
 background-color: #0099CC;
 color:white;
 /*visibility:hidden;*/
 }
 #comment_timer{
-float:right;
+float:left;
 }
+#comments_title{
+font-size: 16px;
+font-weight:bold;
+padding-bottom:18px;
+}
+
+#previous_left{
+float:left;
+width:77px;
+font-size: 11px;
+}
+
+#previous_right, #previous_right a{
+float:left;
+font-size: 11px;
+}
+
 
 #menu_left{
 float:left;
@@ -218,6 +238,7 @@ font-weight:bold;
 }
 /* Footer Style */
 #footer {
+padding-top:10px;
 color:#686868;
 font-size:12px;
 font-weight:bold;

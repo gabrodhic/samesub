@@ -20,6 +20,37 @@
 //Evaluate ifis necesary to add the jquery blink plugin: https://github.com/fcarriedo/jquery-blink
 //$('selector').blink({maxBlinks: 60, blinkPeriod: 1000, speed: 'slow', onMaxBlinks: function(){}, onBlink: function(){}});
 
+/*
+* USAGE:
+* $('.element').typewriter( speed, callback );
+* www.labs.skengdon.com/typewriter/
+*/
+;(function($){
+	$.fn.typewriter = function( speed, callback ) {
+		if ( typeof callback !== 'function' ) callback = function(){};
+		var write = function( e, text, time ) {
+			var next = $(e).text().length + 1;
+			if ( next <= text.length ) {
+				$(e).text( text.substr( 0, next ) );
+				setTimeout( function( ) {
+					write( e, text, time );
+				}, time);
+			} else {
+				e.callback();
+			}
+		};
+		return this.each(function() {
+			this.callback = callback;
+			var text = $(this).text();
+			var time = speed/text.length;
+			
+			$(this).text('');
+			
+			write( this, text, time )
+		});
+	}
+}(jQuery));
+
 
 
 // We start our code bellow this line.
@@ -108,6 +139,32 @@ function clock() {
 	tick=window.setTimeout("clock()",1000); 
 }
 clock();
+
+
+/**
+ * Convert number of seconds into time object
+ * http://codeaid.net/javascript/convert-seconds-to-hours-minutes-and-seconds-(javascript)
+ *
+ * @param integer secs Number of seconds to convert
+ * @return object
+ */
+function secondsToTime(secs)
+{
+    var hours = Math.floor(secs / (60 * 60));
+   
+    var divisor_for_minutes = secs % (60 * 60);
+    var minutes = Math.floor(divisor_for_minutes / 60);
+ 
+    var divisor_for_seconds = divisor_for_minutes % 60;
+    var seconds = Math.ceil(divisor_for_seconds);
+   
+    var obj = {
+        "h": hours,
+        "m": minutes,
+        "s": seconds
+    };
+    return obj;
+}
 
 //Cause enter keypress submit the text on the text area
 $('#comment_textarea').keypress(function(event) {
@@ -209,7 +266,7 @@ function display_elements(obj_json){
 		share_html = '<?php echo SiteHelper::share_links("'+obj_json.urn_1+'","'+obj_json.title_1+'"); ?>';
 		$('#content_div').html(obj_json.user_comment_1 + '<br>'+ obj_json.content_html_1+ share_html);
 		time_submitted = fromUnixTime(obj_json.time_submitted_1);
-		$("#content_div").attr("data-info", '<b>Submitted UTC '+time_submitted.getHours()+':'+time_submitted.getMinutes()+'</b> | '+obj_json.country_name_1);
+		$("#content_div").attr("data-info", '<b>'+obj_json.country_name_1+'</b> '+ time_submitted.getHours()+':'+time_submitted.getMinutes()+' UTC | ');
 		//$("#comments_board").html("Waiting for comments");
 	}else{
 		if(cached == true){
@@ -228,40 +285,73 @@ function display_elements(obj_json){
 					
 				}
 				load_comments(obj_json.comments_2);
+
+				var new_title = ($("#header_title h1").html().length >45) ? $("#header_title h1").html().substring(0,45) + '...' : $("#header_title h1").html();
+				$("#previous_right").html('<a title="'+$("#header_title h1").html().replace(/"/g,'')+'" href="'+$('#urn_link').attr('href')+'">'+new_title+'</a>');
 				
+				$("#comments_title").attr("style", "");
+				$("#comments_title").html('Latest user comments:');
+				$("#comment_timer").attr("style", "");
+				$("#comment_timer").html('');
+						
 				$("#content_div").attr("data-id", cache_div_id);
 				$("#content_div").attr("data-title", cache_div_title);
 				$("#content_div").html($('#cache_html').html());
 				$("#content_div").attr("data-info", cache_div_info);
-			}
-			countdown = (cache_display_time-epoch_time);
-			if(countdown <= 120){//when to start the countdown
-				$("#comment_timer").fadeTo("fast", 1.0);//notice, this is just to reset it to original opacity
-				if(countdown > 60){
-					$("#comment_timer").css("color", "black");
-					$("#comment_timer").html('Remaining: '+countdown.toString() + 's');
-				}else{
-					if(countdown > 55){
-						$("#comment_timer").css("color", "black");
-						$("#comment_timer").html('Comments closing...');
-					}else if(countdown > 12){
-						$("#comment_timer").css("color", "black");
-						$("#comment_timer").html(countdown.toString());
-					}else if(countdown > 10){
-						$("#comment_timer").css("color", "red");
-						$("#comment_timer").html('Comments CLOSED');
-					}else if(countdown > 2){
-						$("#comment_timer").css("color", "red");
-						$("#comment_timer").html(countdown.toString());
-						$("#comment_textarea").attr('disabled',true);
-						
-					}else{
-						$("#comment_timer").css("color", "black");
-						$("#comment_timer").html('Changing to next sub');
+				
+			}else{
+				countdown = (cache_display_time-epoch_time);
+				if(countdown <= 300 && countdown >=0){//when to start the countdown
+					if(countdown == 120){
+						var backup_title = $("#header_title h1").html();
+						$("#header_title h1").attr("style", "color:#1C75CE");
+						$("#header_title h1").html('Subject is changing in 2 minutes, comments close in 1 minute 50 seconds');
+						$('#header_title h1').typewriter( 2000, function(){
+							setTimeout(function(){$("#header_title h1").html(backup_title); $("#header_title h1").attr("style", "");},4000);
+						});
 					}
 					
-					//var tt = (cache_display_time-epoch_time);
-					$("#comment_timer").fadeTo("slow", 0.0);
+					if(countdown > 60){
+						$("#comment_timer").css("color", "#686868");
+						hms = secondsToTime(countdown);
+						$("#comment_timer").html('<span>Time remaining: </span><span>'+ hms.m + 'min ' +  hms.s + 's</span>');
+					}else{
+						$("#comment_timer").html('<span>Time remaining: </span><span>'+countdown.toString()+ ' seconds</span>');
+						
+						if(countdown > 55){
+							$("#comments_title").fadeTo("fast", 1.0);//notice, this is just to reset it to original opacity
+							$("#comments_title").css("color", "black");
+							$("#comments_title").html('Comments closing...');
+							$("#comments_title").fadeTo("medium", 0.0);
+						}else if(countdown > 12){
+							$("#comments_title").attr("style", "");
+							$("#comments_title").html('People, make your conclusions:');
+							
+							$("#comment_timer  span:nth-child(2)").css("color", "black");//only the second span
+							setTimeout(function (){$("#comment_timer  span:nth-child(2)").css("color", "white");},500);
+							//$("#comment_timer").fadeTo("fast", 1.0);//notice, this is just to reset it to original opacity
+							//$("#comment_timer").css("color", "black");
+							//$("#comment_timer").html(countdown.toString() + 'seconds);
+							//$("#comment_timer").fadeTo("medium", 0.0);
+						}else if(countdown > 10){
+							$("#comments_title").attr("style", "color:red");//notice, we are overriding the style property fully cleans all other previous styles by jquery(opacity, filter, etc)							
+							$("#comments_title").html('Comments CLOSED');
+							
+							$("#comment_timer").css("color", "black");
+							
+						}else if(countdown > 2){
+							$("#comment_timer").attr("style", "color:red");
+							//$("#comment_timer").html(countdown.toString() + 'seconds');
+							$("#comment_textarea").attr('disabled',true);
+							
+						}else{
+							$("#comment_timer").attr("style", "");
+							$("#comment_timer").html('Changing to next subject');
+						}
+						
+						//var tt = (cache_display_time-epoch_time);
+						
+					}
 				}
 			}
 		}
@@ -275,7 +365,7 @@ function display_elements(obj_json){
 		cache_div_title = obj_json.title_2;
 		$('#cache_html').html(  obj_json.user_comment_2 + '<br>' + obj_json.content_html_2 + share_html);
 		time_submitted = fromUnixTime(obj_json.time_submitted_2);
-		cache_div_info = '<b>Submitted UTC '+time_submitted.getHours()+':'+time_submitted.getMinutes()+'</b> | '+obj_json.country_name_2;
+		cache_div_info = '<b>'+obj_json.country_name_2+'</b> '+ time_submitted.getHours()+':'+time_submitted.getMinutes()+' UTC | ';
 		cache_display_time = obj_json.display_time_2;
 	
 	}
@@ -286,8 +376,18 @@ function display_elements(obj_json){
 		$("#header_info").html($("#content_div").attr("data-info"));
 
 		blink_page_title($("#content_div").attr("data-title"));
-		$("#comment_timer").html('');
+		//$("#comment_timer").html('');
 		$("#comment_textarea").attr('disabled',false);
+		
+		var title_1 = (obj_json.last_sub_1_title.length >45) ? obj_json.last_sub_1_title.substring(0,45) + '...' : obj_json.last_sub_1_title;
+		var title_2 = (obj_json.last_sub_2_title.length >45) ? obj_json.last_sub_2_title.substring(0,45) + '...' : obj_json.last_sub_2_title;
+		
+		if(request_count == 0) {
+			$("#previous_right").html('<a title="'+obj_json.last_sub_1_title.replace(/"/g,'')+'" href="<?php echo Yii::app()->params['weburl'];?>/sub/'+obj_json.last_sub_1_urn+'">'+ title_1 + '</a>');
+			$("#previous_right").append('<br>' + '<a title="'+obj_json.last_sub_2_title.replace(/"/g,'')+'" href="<?php echo Yii::app()->params['weburl'];?>/sub/'+obj_json.last_sub_2_urn+'">'+ title_2 + '</a>');
+		}else{
+			$("#previous_right").append('<br>' + '<a title="'+obj_json.last_sub_1_title.replace(/"/g,'')+'" href="<?php echo Yii::app()->params['weburl'];?>/sub/'+obj_json.last_sub_1_urn+'">'+ title_1 + '</a>');
+		}
 		//$("#comments_board").attr("data-number", obj_json.comment_number);
 		//$("#comments_board").html("Waiting for comments");
 	}

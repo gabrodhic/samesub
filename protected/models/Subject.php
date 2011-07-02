@@ -422,6 +422,20 @@ class Subject extends CActiveRecord
 			*/
 			$arr_data['comments_2']= $arr_comments_2;
 			
+			//Send the last two previous subjects
+			$last_subs = Yii::app()->db->createCommand()
+			->select('*')
+			->from('subject')
+			->where('show_time>:show_time AND id <>:id1 AND id <>:id2',
+			array(':show_time'=>0,':id1'=>$live_subject['subject_id_1'], ':id2'=>$live_subject['subject_id_2']))
+			->order('show_time DESC')->limit(5)
+			->queryAll();
+			
+			$arr_data['last_sub_1_title'] = $last_subs[0]['title'];
+			$arr_data['last_sub_2_title'] = $last_subs[1]['title'];
+			$arr_data['last_sub_1_urn'] = $last_subs[0]['urn'];
+			$arr_data['last_sub_2_urn'] = $last_subs[1]['urn'];
+			
 			
 		}
 		$utc_time = SiteLibrary::utc_time();
