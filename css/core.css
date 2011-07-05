@@ -52,8 +52,10 @@ background-color:#1C75CE;
 #logo{
 float:left;
 }
-#header_top {
+#header_top, #header_top a{
 margin-top:10px;
+font-size:10px;
+text-align:right;
 }
 #header_bottom {
 padding-top:10px;

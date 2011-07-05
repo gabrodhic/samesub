@@ -80,7 +80,8 @@ preload_time_passed = 5;
 ?>
 <div id="page" <?php echo (Yii::app()->session->get('site_loaded') != "yes" and (strtolower($this->id) == 'site' and strtolower($this->action->Id) == 'index')) ? 'style="display:none;"' : '';?>>
 	<div id="header" class="bounded">
-		<div id="header_top"></div>
+		<div id="header_top"><?php if(strtolower($this->id) != 'site' or strtolower($this->action->Id) != 'index')
+		echo '<a href="'.Yii::app()->params['weburl'].'">LIVE: '. Notification::getNotification()->live. '</a>'; ?></div>
 		<div id="header_middle">
 			<div id="logo">HERE GOES THE LOGO</div>
 			<div id="main_menu">
