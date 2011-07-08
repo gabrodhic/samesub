@@ -4,12 +4,12 @@ $this->breadcrumbs=array(
 	$model->title=>array('view','id'=>$model->id),
 	'View',
 );
-
+$this->pageTitle=Yii::app()->name . ' - '. $model->title;
 ?>
 
 <h1><?php echo CHtml::encode($model->title); ?></h1>
 
-<div class="form">
+<div id="left_container" class="form">
 
 <?php $form=$this->beginWidget('CActiveForm', array(
 	'id'=>'subject-form',
@@ -53,3 +53,13 @@ $this->breadcrumbs=array(
 <?php endforeach; ?>
 
 </div><!-- form -->
+<div id="right_container">
+<div id="tags_container">
+	<h3 style="margin-right:10px;">tags:</h3>
+	<div id="tags_list">
+		<ul>
+		<?php foreach(SiteHelper::make_tags($model->title) as $tag) echo "<li>".$tag."</li>";?>
+		</ul>
+	</div>
+</div>
+</div>

@@ -254,6 +254,31 @@ background-color:red !important;
 background-color:yellow !important;
 }
 
+#tags_container{
+margin-top:20px;
+padding:5px;
+}
+#tags_list{
+list-style: disc;
+}
+#tags_list ul li{
+float:left;
+display:block;
+margin:5px;
+}
+
+
+#tags_list a{
+padding:5px;
+font-size:20px;
+font-weight:bold;
+}
+
+#tags_list a:hover { 
+text-decoration: none;
+background-color: #046381;
+color:white;
+}
 
 
 

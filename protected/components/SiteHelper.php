@@ -90,4 +90,27 @@ class SiteHelper extends CHtml
 		return $share_html;
 	}
 	
+	/**
+	 * Generates tags from a string
+	 * @param string $text the text to generate the tags from
+	 * @return array with the tags
+	 */
+	public function make_tags($text)
+	{
+		//First, lets generate a clean text(just letters, remove everything else)		
+		$text = ereg_replace("[^A-Za-z ]", " ", $text);//we cen't replace with empty as it would concatenate some strings (ie: hi:im me => hiim me)so we use whitespace
+		$text = preg_replace('/\s+/', ' ', $text);//now replace any sequence of whitespace greater than one, with only one
+		$text = trim($text);//we need to trim also as there can be white spaces at the end (ie: how are you? => 'how are you ')
+		//$text = str_replace(" ", " *", $text);
+		//And split to an array by whitespaces
+		$arr_text =  explode(" ", $text);
+		$arr_text = array_unique($arr_text);//remove any duplicate tag
+		function to_link(&$value, $key){
+			$value = '<a href="'.Yii::app()->params['weburl'].'/subject/index?'.urlencode('Subject[title]').'='.$value.'&ajax=subject-grid">&#32;&#149;&#32;'.$value.'</a>'; 
+		} 
+		
+		array_walk($arr_text, 'to_link');
+		return $arr_text;
+	}
+	
 }
