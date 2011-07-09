@@ -227,6 +227,9 @@ var cache_div_title;
 var cache_div_info;
 var cache_display_time;
 var time_submitted;
+var current_id;
+var current_title;
+var current_info;
 
 var countdown;
 
@@ -246,7 +249,13 @@ function reset_fetching(){
 	cache_div_info = "";
 	cache_display_time = 0;
 	//time_submitted;
+	current_id = '';
+	current_title = '';
+	current_info = '';
 	
+	$("#content_div_1").attr("style", "");
+	$("#content_div_2").attr("style", "display:none; visibility:hidden;");
+
 	
 	load_comments();//this is just to reset
 
@@ -261,12 +270,12 @@ function display_elements(obj_json){
 	if(cache_div_id == 0){
 		reset_page=true;
 		reset_comment = true;
-		$("#content_div").attr("data-id", obj_json.id_1);//id
-		$("#content_div").attr("data-title", obj_json.title_1);//title
+		current_id = obj_json.id_1;//id
+		current_title = obj_json.title_1;//title
 		share_html = '<?php echo SiteHelper::share_links("'+obj_json.urn_1+'","'+obj_json.title_1+'"); ?>';
-		$('#content_div').html(obj_json.user_comment_1 + '<br>'+ obj_json.content_html_1+ share_html);
+		$('#content_div_1').html(obj_json.user_comment_1 + '<br>'+ obj_json.content_html_1+ share_html);
 		time_submitted = fromUnixTime(obj_json.time_submitted_1);
-		$("#content_div").attr("data-info", '<b>'+obj_json.country_name_1+'</b> '+ time_submitted.getHours()+':'+time_submitted.getMinutes()+' UTC | ');
+		current_info = '<b>'+obj_json.country_name_1+'</b> '+ time_submitted.getHours()+':'+time_submitted.getMinutes()+' UTC | ';
 		//$("#comments_board").html("Waiting for comments");
 	}else{
 		if(cached == true){
@@ -294,10 +303,21 @@ function display_elements(obj_json){
 				$("#comment_timer").attr("style", "");
 				$("#comment_timer").html('');
 						
-				$("#content_div").attr("data-id", cache_div_id);
-				$("#content_div").attr("data-title", cache_div_title);
-				$("#content_div").html($('#cache_html').html());
-				$("#content_div").attr("data-info", cache_div_info);
+				current_id = cache_div_id;
+				current_title = cache_div_title;
+				if($("#content_div_1").css("display") == 'none'){
+					$("#content_div_1").css("display", "inline");
+					$("#content_div_1").css("visibility", "visible");
+					$("#content_div_2").css("display", "none");
+					$("#content_div_2").css("visibility", "hidden");
+					//$("#content_div").html($('#cache_html').html());
+				}else{
+					$("#content_div_1").css("display", "none");
+					$("#content_div_1").css("visibility", "hidden");
+					$("#content_div_2").css("display", "inline");
+					$("#content_div_2").css("visibility", "visible");
+				}
+				current_info = cache_div_info;
 				
 			}else{
 				countdown = (cache_display_time-epoch_time);
@@ -363,7 +383,13 @@ function display_elements(obj_json){
 		cache_div_id = obj_json.id_2;
 		share_html = '<?php echo SiteHelper::share_links("'+obj_json.urn_2+'","'+obj_json.title_2+'"); ?>';
 		cache_div_title = obj_json.title_2;
-		$('#cache_html').html(  obj_json.user_comment_2 + '<br>' + obj_json.content_html_2 + share_html);
+		if($("#content_div_1").css("display") == 'none'){
+			$("#content_div_1").html(  obj_json.user_comment_2 + '<br>' + obj_json.content_html_2 + share_html);
+			//$('#cache_html').html(  obj_json.user_comment_2 + '<br>' + obj_json.content_html_2 + share_html);
+		}else{
+			$("#content_div_2").html(  obj_json.user_comment_2 + '<br>' + obj_json.content_html_2 + share_html);
+		}
+		
 		time_submitted = fromUnixTime(obj_json.time_submitted_2);
 		cache_div_info = '<b>'+obj_json.country_name_2+'</b> '+ time_submitted.getHours()+':'+time_submitted.getMinutes()+' UTC | ';
 		cache_display_time = obj_json.display_time_2;
@@ -372,10 +398,10 @@ function display_elements(obj_json){
 	
 	if(reset_page == true){
 	
-		$("#header_title h1").html($("#content_div").attr("data-title"));
-		$("#header_info").html($("#content_div").attr("data-info"));
+		$("#header_title h1").html(current_title);
+		$("#header_info").html(current_info);
 
-		blink_page_title($("#content_div").attr("data-title"));
+		blink_page_title(current_title);
 		//$("#comment_timer").html('');
 		$("#comment_textarea").attr('disabled',false);
 		

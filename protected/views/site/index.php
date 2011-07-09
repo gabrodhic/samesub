@@ -28,8 +28,8 @@ $this->pageTitle=$information->live;
 		</div>
 	</div>
 	<div id="left_container">
-		<div id="content_div"></div>
-		<div id="cache_html" style="display:none; visibility:hidden;"></div>
+		<div id="content_div_1"></div>
+		<div id="content_div_2" style="display:none; visibility:hidden;"></div>
 	</div>
 	<div id="right_container">
 		<div id="comments_container">
