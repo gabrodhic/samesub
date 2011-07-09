@@ -537,7 +537,7 @@ class Subject extends CActiveRecord
 			'approved' => 'Approved',
 			'authorized' => 'Authorized',
 			'content_id' => 'Content',
-			'country_id' => 'Country of the Subject',
+			'country_id' => 'Country of Subject',
 			'moderator_id' => 'Moderator',
 			'moderator_ip' => 'Moderator Ip',
 			'moderator_comment' => 'Moderator Comment',

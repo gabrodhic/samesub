@@ -87,9 +87,13 @@ $this->menu=array(
 		<?php echo $form->DropDownList($model, 'priority_id',array('1'=>'Low', '2'=>'Medium','3'=>'High')); ?>
 		<?php echo $form->error($model,'priority_id'); ?>
 	</div>
-
+	
+	<div class="row">
+	By submitting this content you agree with the <a href="<?php echo $this->createUrl('site/page/view/terms');?>">Terms of Use</a>.
+	</div>
+	
 	<div class="row buttons">
-		<?php echo CHtml::submitButton($model->isNewRecord ? 'Create' : 'Save'); ?>
+		<?php echo CHtml::submitButton($model->isNewRecord ? 'Send' : 'Save'); ?>
 	</div>
 
 <?php $this->endWidget(); ?>
