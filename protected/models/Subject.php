@@ -324,7 +324,7 @@ class Subject extends CActiveRecord
 		$live_comments = Yii::app()->db->createCommand()
 		->select('*')
 		->from('live_comment')
-		->where('comment_sequence > :comment_number', array(':comment_number'=>$comment_number))
+		->where('comment_sequence > :comment_number AND subject_id = :subject_id', array(':comment_number'=>$comment_number, ':subject_id'=>$live_subject['subject_id_1']))
 		->order('comment_number ASC')
 		->queryAll();
 		

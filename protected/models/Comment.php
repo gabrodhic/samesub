@@ -76,6 +76,7 @@ class Comment extends CActiveRecord
 			//print_r($live_subject);return;
 			Yii::app()->db->createCommand()->insert('live_comment', array(
 			'comment_sequence'=>$live_subject['next_sequence'],
+			'subject_id'=>$live_subject['subject_id_1'],
 			'comment_text'=>$this->comment,
 			'comment_time'=>$this->time,
 			'comment_country'=>$country_code,
