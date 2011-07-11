@@ -26,17 +26,26 @@
 * www.labs.skengdon.com/typewriter/
 */
 ;(function($){
-	$.fn.typewriter = function( speed, callback ) {
+	$.fn.typewriter = function( speed, callback, time_before ) {
 		if ( typeof callback !== 'function' ) callback = function(){};
 		var write = function( e, text, time ) {
-			var next = $(e).text().length + 1;
-			if ( next <= text.length ) {
-				$(e).text( text.substr( 0, next ) );
-				setTimeout( function( ) {
-					write( e, text, time );
-				}, time);
-			} else {
+			//We add support for inactive tabs in Chrome. It is an issue of design of chrome itself. here:
+			//http://stackoverflow.com/questions/5927284/how-can-i-make-setinterval-also-work-when-a-tab-is-inactive-in-chrome?s=2b3e7c34-9910-4053-9e82-97dec0b55b17#new-answer
+			//http://codereview.chromium.org/6577021/diff/1/webkit/glue/webkit_constants.h
+			now = new Date();
+			var elapsedTime = (now.getTime() - time_before.getTime());
+			if(elapsedTime > (speed + 1000)){ //let's give a 1 second margin, IE: gets delayed some times on small milliseconds operations
 				e.callback();
+			}else{
+				var next = $(e).text().length + 1;
+				if ( next <= text.length ) {
+					$(e).text( text.substr( 0, next ) );
+					setTimeout( function( ) {
+						write( e, text, time );
+					}, time);
+				} else {
+					e.callback();
+				}
 			}
 		};
 		return this.each(function() {
@@ -325,10 +334,10 @@ function display_elements(obj_json){
 					if(countdown == 120){
 						var backup_title = $("#header_title h1").html();
 						$("#header_title h1").attr("style", "color:#1C75CE");
-						$("#header_title h1").html('Subject is changing in 2 minutes, comments close in 1 minute 50 seconds');
+						$("#header_title h1").html('Subject changes in 2 minutes, comments close in 1 minute 50 seconds');
 						$('#header_title h1').typewriter( 2000, function(){
 							setTimeout(function(){$("#header_title h1").html(backup_title); $("#header_title h1").attr("style", "");},4000);
-						});
+						}, new Date());						
 					}
 					
 					if(countdown > 60){
