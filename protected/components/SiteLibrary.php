@@ -35,4 +35,56 @@ class SiteLibrary extends CComponent
 		return preg_match('|^http(s)?://[a-z0-9-]+(.[a-z0-9-]+)*(:[0-9]+)?(/.*)?$|i', $url);
 	}
 	
+	/**
+	 * Translates a string from one language to another.
+	 * @param string $text the text to translate
+	 * @param string $from the language to translate from. Leave empty to try to auto-detect.
+	 * @param string $to the language to translate to. Default to English(en).
+	 * @return string the translated text
+	 */
+	public function translate($text, $from='', $to='en',$format='text/plain'){
+		//We'll be using the microsoft translator
+		//http://msdn.microsoft.com/en-us/library/ff512406.aspx
+		$url = 'http://api.microsofttranslator.com/V2/Ajax.svc/Translate?appId='.Yii::app()->params['bing_appid'].'&contentType='.$format.'&from='.$from.'&to='.$to.'&text='.urlencode($text);		
+		$data = self::fetch_url($url);
+		if($data){//If the request was valid
+			//Now let's examine that there was was not error translating the text
+			//the only way to do that is by checking if there is the following text in the response
+			//as the api returns a text containing this when there is an error
+			if( strrpos($data, ".V2_Json.Translate.") ) return false;
+			$data = trim($data,'"');
+		}
+		return $data;
+	}
+	
+	/**
+	 * 
+	 * Fetch a URL by doing a request and return the contents of the response
+	 * This two extensions can be used for more advanced features
+	 * http://www.yiiframework.com/extension/ehttpclient/
+	 * http://www.yiiframework.com/extension/curl
+	 * 
+	 * @param string $url the url to request 
+	 */
+	public function fetch_url($url){
+		
+		$response = null;
+		
+		if ( function_exists('curl_init') ) {
+		
+			$ch = curl_init();
+			curl_setopt($ch, CURLOPT_URL, $url);
+			curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+			curl_setopt($ch, CURLOPT_USERAGENT, 'Samesub');
+			$response = curl_exec($ch);
+			curl_close ($ch);
+			
+		} else if ( ini_get('allow_url_fopen') ) {
+			
+			$response = file_get_contents($url, 'r');
+		}
+		
+		return $response;
+	}
+	
 }
