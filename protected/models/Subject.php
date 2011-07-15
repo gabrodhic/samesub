@@ -225,11 +225,16 @@ class Subject extends CActiveRecord
 	 */
 	public function generateUrn($title)
     {
-	 
-		//First, lets generate a clean title(just numbers and letters, remove everything else)		
+		
+		//Translate the text to english as all urns should be english
+		if ($translated = SiteLibrary::translate($title)) $title = $translated;
+			
+		//then lets generate a clean title(just numbers and letters, remove everything else)		
 		$clean_title = ereg_replace("[^A-Za-z0-9 ]", "", $title);
-		//And replace whitespaces with underscores(this gives us the possible urn)
-		$possible_urn = str_replace(" ", "_", $clean_title);
+		$clean_title = strtolower($clean_title);
+		$clean_title = preg_replace('/\s+/', ' ', $clean_title);//replace any sequence of whitespace greater than one, with only one
+		//And replace whitespaces with dashes(this gives us the possible urn)
+		$possible_urn = str_replace(" ", "-", $clean_title);
 		//Verify that the obtained possible_urn its really unique on the database table 
 		//if not, generate one adding a sequence number to the possible_urn variable
 		//Make 50 attempts to find a unique urn

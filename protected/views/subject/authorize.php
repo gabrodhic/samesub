@@ -31,6 +31,10 @@ $this->menu=array(
 		<?php echo CHtml::encode($model->title); ?>
 	</div>
 	<div class="row">
+		<?php echo $form->labelEx($model,'urn'); ?>
+		<?php echo CHtml::encode($model->urn); ?>
+	</div>
+	<div class="row">
 		<?php echo $form->labelEx($model,'country_id'); ?>
 		<?php echo CHtml::encode($model->country->name); ?>
 	</div>
