@@ -280,7 +280,28 @@ background-color: #046381;
 color:white;
 }
 
+.field_verify{
+font-family:Arial;
+font-weight:bold;
+font-size:16px;
+color:black;
+}
 
-
+#column_left{
+width:170px;
+float:left;
+padding-right:15px;
+}
+#column_right{
+width:760px;
+float:left;
+padding-left:15px;
+/*border-left: 1px solid #E8E8E8;*/
+}
+#column_2_container{
+padding-top:10px;
+padding-bottom:200px;
+display:block;
+}
 
 

@@ -7,7 +7,8 @@ $this->breadcrumbs=array(
 
 <h1>Login</h1>
 
-<p>Please fill out the following form with your login credentials:</p>
+<p>Please enter your email and samesub password.</p>
+<p><a href="<?php echo Yii::app()->createUrl('user/register');?>">Register here</a> if you don't have an account.</p>
 
 <div class="form">
 <?php $form=$this->beginWidget('CActiveForm', array(
@@ -15,12 +16,11 @@ $this->breadcrumbs=array(
 	'enableAjaxValidation'=>true,
 )); ?>
 
-	<p class="note">Fields with <span class="required">*</span> are required.</p>
 
 	<div class="row">
-		<?php echo $form->labelEx($model,'username'); ?>
-		<?php echo $form->textField($model,'username'); ?>
-		<?php echo $form->error($model,'username'); ?>
+		<?php echo $form->labelEx($model,'email'); ?>
+		<?php echo $form->textField($model,'email'); ?>
+		<?php echo $form->error($model,'email'); ?>
 	</div>
 
 	<div class="row">
@@ -28,7 +28,7 @@ $this->breadcrumbs=array(
 		<?php echo $form->passwordField($model,'password'); ?>
 		<?php echo $form->error($model,'password'); ?>
 		<p class="hint">
-			Hint: You may login with <tt>demo/demo</tt> or <tt>admin/admin</tt>.
+			Forgot your password? <a href="">Click here</a>.
 		</p>
 	</div>
 

@@ -78,7 +78,7 @@ preload_time_passed = 5;
 <?php
 }
 ?>
-<div id="page" <?php echo (Yii::app()->session->get('site_loaded') != "yes" and (strtolower($this->id) == 'site' and strtolower($this->action->Id) == 'index')) ? 'style="display:none;"' : '';?>>
+<div id="page" class="container" <?php echo (Yii::app()->session->get('site_loaded') != "yes" and (strtolower($this->id) == 'site' and strtolower($this->action->Id) == 'index')) ? 'style="display:none;"' : '';?>>
 	<div id="header" class="bounded">
 		<div id="header_top"><?php if(strtolower($this->id) != 'site' or strtolower($this->action->Id) != 'index')
 		echo '<a href="'.Yii::app()->params['weburl'].'">LIVE: '. Notification::getNotification()->live. '</a>'; ?></div>
@@ -99,13 +99,16 @@ preload_time_passed = 5;
 				</div>
 				<div id="menu_right">
 					<span><a href="<? echo Yii::app()->getRequest()->getBaseUrl(true);?>/site/contact">Feedback</a></span>
-					
+					<span> | <?php echo (Yii::app()->user->isGuest) ? '<a href="'. Yii::app()->createUrl('site/login').'">Login</a>' :  '<a href="'. Yii::app()->createUrl('user').'">'.Yii::app()->user->name.'</a>| <span><a href="'. Yii::app()->createUrl('site/logout').'">Logout</a></span>';?></span>
 					<?php if(strtolower(Yii::app()->controller->action->id) == 'index' and strtolower(Yii::app()->controller->id) == 'site')
 					echo '<span><b> | UTC NOW: </b></span><span id="utc_clock"></span>'; ?>
 				</div>
 			</div>
 		</div>
 		<div class="clear_both"></div>
+		<?php $this->widget('zii.widgets.CBreadcrumbs', array(
+              'links'=>$this->breadcrumbs,
+		)); ?><!-- breadcrumbs -->
 	</div>
 	<div id="main_body" class="bounded">
 	

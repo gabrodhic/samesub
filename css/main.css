@@ -56,7 +56,7 @@ div.view
 div.breadcrumbs
 {
 	font-size: 0.9em;
-	padding: 5px 20px;
+	padding: 5px 1px 10px 1px;
 }
 
 div.breadcrumbs span
@@ -96,8 +96,8 @@ div.search-form
 {
 	font-size:0.9em;
 	margin: 0 0 15px 0;
-	padding: 5px 8px;
-	background:#EFFDFF;
+	/*padding: 5px 8px;*/
+	/*background:#EFFDFF;*/
 }
 
 .portlet-content ul
@@ -111,7 +111,8 @@ div.search-form
 
 .portlet-content li
 {
-	padding: 2px 0 4px 0px;
+	padding: 8px 0 8px 0px;
+	font: bold 16px Arial;
 }
 
 .operations
@@ -128,12 +129,12 @@ div.search-form
 
 .operations li a
 {
-	font: bold 12px Arial;
+	/*font: bold 12px Arial;*/
 	color: #0066A4;
 	display: block;
-	padding: 2px 0 2px 8px;
+	/*padding: 2px 0 2px 8px;*/
 	line-height: 15px;
-	text-decoration: none;
+	text-decoration: underline;
 }
 
 .operations li a:visited
@@ -143,5 +144,6 @@ div.search-form
 
 .operations li a:hover
 {
-	background: #80CFFF;
+	/*background: #80CFFF;*/
+	text-decoration: none;
 }

@@ -10,7 +10,7 @@
  * @property string $email
  * @property string $ip_created
  * @property string $ip_last_access
- * @property integer $user_state_id
+ * @property integer $user_status_id
  * @property integer $user_type_id
  * @property integer $time_created
  * @property integer $time_last_access
@@ -43,13 +43,13 @@ class User extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('username, password, email, ip_created, ip_last_access, time_created, time_last_access, time_modified', 'required'),
-			array('user_state_id, user_type_id, time_created, time_last_access, time_modified', 'numerical', 'integerOnly'=>true),
-			array('username, password, email', 'length', 'max'=>50),
-			array('ip_created, ip_last_access', 'length', 'max'=>20),
+			array('username, password, email', 'required'),
+			array('username, email', 'unique'),
+			array('email', 'email'),
+			array('username, password, email', 'length', 'max'=>50, 'min'=>3),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, username, password, email, ip_created, ip_last_access, user_state_id, user_type_id, time_created, time_last_access, time_modified', 'safe', 'on'=>'search'),
+			array('id, username, password, email, ip_created, ip_last_access, user_status_id, user_type_id, time_created, time_last_access, time_modified', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -71,12 +71,12 @@ class User extends CActiveRecord
 	{
 		return array(
 			'id' => 'ID',
-			'username' => 'Username',
+			'username' => 'Name',
 			'password' => 'Password',
 			'email' => 'Email',
 			'ip_created' => 'Ip Created',
 			'ip_last_access' => 'Ip Last Access',
-			'user_state_id' => 'User State',
+			'user_status_id' => 'User State',
 			'user_type_id' => 'User Type',
 			'time_created' => 'Time Created',
 			'time_last_access' => 'Time Last Access',
@@ -101,7 +101,7 @@ class User extends CActiveRecord
 		$criteria->compare('email',$this->email,true);
 		$criteria->compare('ip_created',$this->ip_created,true);
 		$criteria->compare('ip_last_access',$this->ip_last_access,true);
-		$criteria->compare('user_state_id',$this->user_state_id);
+		$criteria->compare('user_status_id',$this->user_status_id);
 		$criteria->compare('user_type_id',$this->user_type_id);
 		$criteria->compare('time_created',$this->time_created);
 		$criteria->compare('time_last_access',$this->time_last_access);
@@ -110,6 +110,19 @@ class User extends CActiveRecord
 		return new CActiveDataProvider(get_class($this), array(
 			'criteria'=>$criteria,
 		));
+	}
+	/**
+	 * Do some things prior to save
+	 * 
+	 */
+	public function beforeSave()
+    {
+		//If its a new record
+		if($this->getIsNewRecord()){
+			$this->salt = $this->generateSalt();
+			$this->password = $this->hashPassword($this->password, $this->salt);
+		}
+		return true;
 	}
 
 	/**
@@ -137,7 +150,7 @@ class User extends CActiveRecord
 	 * Generates a salt that can be used to generate a password hash.
 	 * @return string the salt
 	 */
-	protected function generateSalt()
+	public function generateSalt()
 	{
 		return uniqid('',true);
 	}
