@@ -71,6 +71,11 @@ class LoginForm extends CFormModel
 		{
 			$duration=$this->rememberMe ? 3600*24*30 : 0; // 30 days
 			Yii::app()->user->login($this->_identity,$duration);
+			$user=User::model()->findByPk($this->_identity->getId());
+			$user->scenario = 'login';//to control when to update record modified time
+			$user->ip_last_access=$_SERVER['REMOTE_ADDR'];;
+			$user->time_last_access=SiteLibrary::utc_time();
+			$user->save(); // Update the last access time
 			return true;
 		}
 		else

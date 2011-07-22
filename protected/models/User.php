@@ -136,6 +136,7 @@ class User extends CActiveRecord
 			$this->salt = $this->generateSalt();
 			$this->password = $this->hashPassword($this->password, $this->salt);
 		}
+		if($this->scenario != 'login') $this->time_modified = SiteLibrary::utc_time();//login also saves data
 		return true;
 	}
 
