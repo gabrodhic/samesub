@@ -29,12 +29,22 @@ class SiteHelper extends CHtml
 				//would be nice to use yii validator to see if its an url but: http://code.google.com/p/yii/issues/detail?id=1324
 				if(SiteLibrary::valid_url($subject->content_video->embed_code)){//if its an url
 					$parsed_url = parse_url($subject->content_video->embed_code);
+					$query_arr = SiteLibrary::parse_url_query($parsed_url['query']);
 					if(stripos($parsed_url['host'], 'youtube.com')){//and its from youtube
-						//get the V value $parsed_url['query'];
-						$query_arr = SiteLibrary::parse_url_query($parsed_url['query']);
+						//get the V value $parsed_url['query'];						
 						if (array_key_exists('v', $query_arr)) {
 							$html = '<iframe width="425" height="349" src="http://www.youtube.com/embed/'.$query_arr['v'].'" frameborder="0" allowfullscreen></iframe>';
 						}
+					}elseif(stripos($parsed_url['host'], 'dailymotion.com')){
+						//the code is before the first undersore for the video source(pending verify if thats the syntax for all cases)
+						if($last_code_pos = stripos($parsed_url['path'], '_')){
+							$video_code = substr($parsed_url['path'],1, $last_code_pos-1);
+							if($video_code)	$html = '<iframe frameborder="0" width="480" height="360" src="http://www.dailymotion.com/embed/'.$video_code.'"></iframe>';
+						}
+					}elseif(stripos($parsed_url['host'], 'vimeo.com')){
+						if($parsed_url['path'])
+						//nice, we can play with params here, title, portrait, etc
+						$html = '<iframe src="http://player.vimeo.com/video'.$parsed_url['path'].'?title=0&byline=0&portrait=0" width="400" height="225" frameborder="0"></iframe>';
 					}
 				}else{
 					$html = SiteHelper::formatted($subject->content_video->embed_code);
