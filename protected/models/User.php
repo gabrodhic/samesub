@@ -18,6 +18,9 @@
  */
 class User extends CActiveRecord
 {
+	public $oldpassword;
+	public $newpassword;
+	public $newpassword2;
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @return User the static model class
@@ -43,7 +46,10 @@ class User extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('username, password, email', 'required'),
+			array('username, password, email', 'required', 'on'=>'register'),
+			array('oldpassword, newpassword, newpassword2', 'required', 'on'=>'changepassword'),
+			array('newpassword', 'compare', 'compareAttribute'=>'newpassword2', 'on'=>'changepassword'),
+			array('oldpassword', 'validateOldPassword', 'on'=>'changepassword'),
 			array('username, email', 'unique'),
 			array('email', 'email'),
 			array('username, password, email', 'length', 'max'=>50, 'min'=>3),
@@ -53,6 +59,11 @@ class User extends CActiveRecord
 		);
 	}
 
+	public function validateOldPassword($attribute,$params){
+		if(! $this->validatePassword($this->oldpassword)) $this->addError('oldpassword','The old password is incorrect.');
+		
+	}
+	
 	/**
 	 * @return array relational rules.
 	 */
@@ -73,6 +84,9 @@ class User extends CActiveRecord
 			'id' => 'ID',
 			'username' => 'Name',
 			'password' => 'Password',
+			'oldpassword' => 'Old Password',
+			'newpassword' => 'New Password',
+			'newpassword2' => 'Retype New Password',
 			'email' => 'Email',
 			'ip_created' => 'Ip Created',
 			'ip_last_access' => 'Ip Last Access',

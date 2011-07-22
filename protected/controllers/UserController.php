@@ -34,7 +34,7 @@ class UserController extends Controller
 				'users'=>array('*'),
 			),
 			array('allow', // allow authenticated user to perform 'index' and 'update' actions
-				'actions'=>array('index','update'),
+				'actions'=>array('index','update','changepassword'),
 				'users'=>array('@'),
 			),
 			array('allow', // allow admin user to perform 'admin' and 'delete' actions
@@ -51,8 +51,8 @@ class UserController extends Controller
 		//.$this->action->Id
 		$this->menu=array(
 		array('label'=>'Welcome', 'url'=>array('index')),
-		//array('label'=>'Create User', 'url'=>array('create')),
 		array('label'=>'My Profile', 'url'=>array('update', 'id'=>Yii::app()->user->id)),
+		array('label'=>'Change Password', 'url'=>array('changepassword', 'id'=>Yii::app()->user->id)),
 		//array('label'=>'Manage User', 'url'=>array('admin')),
 		);
 		$filterChain->run();
@@ -70,6 +70,32 @@ class UserController extends Controller
 		));
 	}
 
+	/**
+	 * Change the current user password.
+	 * Musk ask the old password again.
+	 */
+	public function actionChangepassword($id)
+	{
+		$model=$this->loadModel($id);
+		$model->scenario='changepassword';
+		if(isset($_POST['User']))
+		{
+			
+			$model->attributes=$_POST['User'];
+			if(! $model->validatePassword($model->oldpassword)) $model->addError('oldpassword','The old password is incorrect.');
+			$model->salt = $model->generateSalt();//lets give it a new salt also, just in case
+			$model->password = $model->hashPassword($model->newpassword, $model->salt);
+			if($model->save()){
+				Yii::app()->user->setFlash('changepass_success','Your password has been changed successfully.');
+			}else{
+				$model->password=$_POST['User']['password'];
+			}
+		}
+
+		$this->render('changepassword',array(
+			'model'=>$model,
+		));
+	}
 	/**
 	 * Creates a new model.
 	 * If creation is successful, the browser will be redirected to the 'view' page.
