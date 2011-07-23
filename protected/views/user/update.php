@@ -1,18 +1,26 @@
-<?php
-$this->breadcrumbs=array(
-	'Users'=>array('index'),
-	$model->id=>array('view','id'=>$model->id),
-	'Update',
-);
+<h1>Profile Settings</h1>
+<?php if(Yii::app()->user->hasFlash('profile_success')): ?>
+<br>
+<div class=flash-success>
+	<?php echo Yii::app()->user->getFlash('profile_success') ?>
+</div>
+<?php else: ?>
+<div class="form">
 
-$this->menu=array(
-	array('label'=>'List User', 'url'=>array('index')),
-	array('label'=>'Create User', 'url'=>array('create')),
-	array('label'=>'View User', 'url'=>array('view', 'id'=>$model->id)),
-	array('label'=>'Manage User', 'url'=>array('admin')),
-);
-?>
+<?php $form=$this->beginWidget('CActiveForm', array(
+	'id'=>'user-form',
+	'enableAjaxValidation'=>false,
+)); ?>
+	<div class="row">
+		<?php echo $form->labelEx($model,'country_id'); ?>
+		<?php echo $form->DropDownList($model, 'country_id', CHtml::listData(Country::model()->findAll(),'id','name'), array('prompt'=>'Select Country')); ?> 
+		<?php echo $form->error($model,'country_id'); ?>
+	</div>
+	
+	<div class="row buttons">
+		<?php echo CHtml::submitButton('Update Settings'); ?>
+	</div>
 
-<h1>Update User <?php echo $model->id; ?></h1>
-
-<?php echo $this->renderPartial('_form', array('model'=>$model)); ?>
+<?php $this->endWidget(); ?>
+</div><!-- form -->
+<?php endif; ?>

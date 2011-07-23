@@ -1,10 +1,3 @@
-<?php
-$this->breadcrumbs=array(
-	'Users'=>array('index'),
-	'Welcome',
-);
-
-?>
 <h1>Hi <b><?php echo Yii::app()->user->getName(); ?></b>, welcome back!</h1>
 <?php if(Yii::app()->user->hasFlash('registration_success')){ ?>
 <br>

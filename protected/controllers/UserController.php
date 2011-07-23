@@ -49,12 +49,23 @@ class UserController extends Controller
 	
 	public function filterMenu($filterChain){
 		//.$this->action->Id
-		$this->menu=array(
-		array('label'=>'Welcome', 'url'=>array('index')),
-		array('label'=>'My Profile', 'url'=>array('update', 'id'=>Yii::app()->user->id)),
-		array('label'=>'Change Password', 'url'=>array('changepassword', 'id'=>Yii::app()->user->id)),
-		//array('label'=>'Manage User', 'url'=>array('admin')),
+		$arr_titles = array();
+		$arr_titles['index'] = 'Welcome';
+		$arr_titles['update'] = 'Profile Settings';
+		$arr_titles['changepassword'] = 'Change Password';
+		$this->breadcrumbs=array(
+		'User'=>array('index'),
+		$arr_titles[$this->action->Id] ,
 		);
+
+		$this->menu=array(
+		array('label'=>$arr_titles['index'], 'url'=>array('user/index')),//Note:we have to indicate the controller also, for the CMenu widget activateItems propoerty work properly
+		array('label'=>$arr_titles['update'], 'url'=>array('user/update', 'id'=>Yii::app()->user->id)),
+		array('label'=>$arr_titles['changepassword'], 'url'=>array('user/changepassword', 'id'=>Yii::app()->user->id)),
+		//array('label'=>'Manage User', 'url'=>array('admin')),		
+		);
+		SiteLibrary::remove_current_url_menu($this,$arr_titles);
+
 		$filterChain->run();
 	
 	}
@@ -188,7 +199,8 @@ class UserController extends Controller
 		{
 			$model->attributes=$_POST['User'];
 			if($model->save())
-				$this->redirect(array('view','id'=>$model->id));
+			Yii::app()->user->setFlash('profile_success','Profile Settings updated successfully');
+				//$this->redirect(array('index'));
 		}
 
 		$this->render('update',array(

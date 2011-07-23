@@ -86,5 +86,23 @@ class SiteLibrary extends CComponent
 		
 		return $response;
 	}
-	
+	/**
+	 * 
+	 * Remove the link from the current active menu
+	 * @param object &$that the current controller object that has the menu and the actions. We use that, because is by reference, and using this would make reference to this current library
+	 * @param array $arr_titles are the menu titles
+	 * Would be nice if Yii could make this, but the closest thing is just to add a class to the active item
+	 * but that doesn't removes the links as we want, and it applies the class to the <li> tag, not the <a, so its imposibble via css to remove the link
+	 * ie: $this->widget('zii.widgets.CMenu', array('activateItems'=>true,......			
+	 * http://www.yiiframework.com/doc/api/1.1/CMenu#activateItems-detail
+	 */	
+	public function remove_current_url_menu(&$that,$arr_titles){ 
+		
+		$count = 0;
+		foreach($that->menu as $arr_item)
+		{
+			if($arr_item['label'] == $arr_titles[$that->action->Id])  unset($that->menu[$count]['url']);
+			$count++;
+		}
+	}
 }

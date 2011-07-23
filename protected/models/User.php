@@ -52,6 +52,7 @@ class User extends CActiveRecord
 			array('oldpassword', 'validateOldPassword', 'on'=>'changepassword'),
 			array('username, email', 'unique'),
 			array('email', 'email'),
+			array('country_id', 'numerical'),
 			array('username, password, email', 'length', 'max'=>50, 'min'=>3),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
@@ -95,6 +96,7 @@ class User extends CActiveRecord
 			'time_created' => 'Time Created',
 			'time_last_access' => 'Time Last Access',
 			'time_modified' => 'Time Modified',
+			'country_id' => 'Country',
 		);
 	}
 
