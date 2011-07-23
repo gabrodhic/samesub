@@ -233,6 +233,7 @@ class Subject extends CActiveRecord
 		$clean_title = ereg_replace("[^A-Za-z0-9 ]", "", $title);
 		$clean_title = strtolower($clean_title);
 		$clean_title = preg_replace('/\s+/', ' ', $clean_title);//replace any sequence of whitespace greater than one, with only one
+		$clean_title = trim($clean_title);
 		//And replace whitespaces with dashes(this gives us the possible urn)
 		$possible_urn = str_replace(" ", "-", $clean_title);
 		//Verify that the obtained possible_urn its really unique on the database table 
