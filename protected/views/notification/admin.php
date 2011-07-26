@@ -43,8 +43,21 @@ or <b>=</b>) at the beginning of each of your search values to specify how the c
 	'filter'=>$model,
 	'columns'=>array(
 		'id',
-		'enabled',
-		'fixed',
+		'notification_type_id',
+		array(
+			'name'=>'enabled',
+			'type'=>'html',
+			'value'=>'SiteHelper::yesno($data->enabled)',
+			'filter'=>array('0'=>'No','1'=>'Yes'),
+			'sortable'=>true,
+		),
+		array(
+			'name'=>'fixed',
+			'type'=>'html',
+			'value'=>'SiteHelper::yesno($data->fixed)',
+			'filter'=>array('0'=>'No','1'=>'Yes'),
+			'sortable'=>true,
+		),
 		'message',
 		array(
 			'class'=>'CButtonColumn',

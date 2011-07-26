@@ -11,14 +11,23 @@
 
 	<div class="row">
 		<?php echo $form->labelEx($model,'enabled'); ?>
-		<?php echo $form->textField($model,'enabled'); ?>
+		<?php echo $form->DropDownList($model, 'enabled',array('0'=>'No', '1'=>'Yes')); ?>
 		<?php echo $form->error($model,'enabled'); ?>
 	</div>
 
 	<div class="row">
 		<?php echo $form->labelEx($model,'fixed'); ?>
-		<?php echo $form->textField($model,'fixed'); ?>
+		<?php echo $form->DropDownList($model, 'fixed',array('0'=>'No', '1'=>'Yes')); ?>
 		<?php echo $form->error($model,'fixed'); ?>
+	</div>
+	
+	<div class="row">
+		<?php echo $form->labelEx($model,'notification_type_id'); ?>
+		<?php echo $form->DropDownList($model, 'notification_type_id', CHtml::listData(Yii::app()->db->createCommand()
+    ->select('*')
+    ->from('notification_type')
+    ->queryAll(),'id','name')); ?> 
+		<?php echo $form->error($model,'notification_type_id'); ?>
 	</div>
 
 	<div class="row">

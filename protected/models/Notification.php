@@ -36,8 +36,8 @@ class Notification extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('fixed, message', 'required'),
-			array('enabled, fixed', 'numerical', 'integerOnly'=>true),
+			array('fixed, message, notification_type_id', 'required'),
+			array('enabled, fixed,notification_type_id', 'numerical', 'integerOnly'=>true),
 			array('message', 'length', 'max'=>250),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
@@ -45,20 +45,26 @@ class Notification extends CActiveRecord
 		);
 	}
 	/**
+	 * @param integer $type the type of notification requested, usually related to the space whe its gonna 
+	 * be placed. eg: 1 = welcome (first visit), 2 = headline (in the  top of the pages)
 	 * @return string A random or a fixed notification (depends on what is set on the database)
 	 */
-	public function getNotification()
+	public function getNotification($type=1)
 	{
 		//First we must return a notification that is set to fixed
 		$information = new stdClass;
-		if($note = Notification::model()->find('fixed=:fixed', array(':fixed'=>1))) $information->note = $note->message;		 
-		//If there is no fixed notification then return the live subject if it has a high priority
-		$live_subject = Yii::app()->db->createCommand()->select('*')->from('live_subject')->queryRow();
-		$subject_data =  Yii::app()->db->createCommand()->select('*')->from('subject')
-			->where('id=:id', 
-			array(':id'=>$live_subject['subject_id_1']))
-			->queryRow();
-		if($subject_data) $information->live = $subject_data['title'];
+		if($note = Notification::model()->find('fixed=:fixed AND notification_type_id=:notification_type_id',
+			array(':fixed'=>1,'notification_type_id'=>$type))) 
+			$information->note = $note->message;		 
+		if($type == 1){//we may also send other type of info depending of the type of notification requested
+			//If there is no fixed notification then return the live subject if it has a high priority
+			$live_subject = Yii::app()->db->createCommand()->select('*')->from('live_subject')->queryRow();
+			$subject_data =  Yii::app()->db->createCommand()->select('*')->from('subject')
+				->where('id=:id', 
+				array(':id'=>$live_subject['subject_id_1']))
+				->queryRow();
+			if($subject_data) $information->live = $subject_data['title'];
+		}
 		return $information;
 		//If nothing above is found then return a random notification
 		//$notifications = Yii::app()->db->createCommand()->select('id')->from(Notification::tableName())->queryAll();
@@ -75,6 +81,18 @@ class Notification extends CActiveRecord
 		return array(
 		);
 	}
+	/**
+	 * Do some things before save
+	 * 
+	 */
+	public function beforeSave()
+    {
+		
+		if($this->fixed == 1){
+			Notification::model()->updateAll(array('fixed'=>0),'notification_type_id=:notification_type_id',array(':notification_type_id'=>$this->notification_type_id));
+		}
+		return true;
+	}
 
 	/**
 	 * @return array customized attribute labels (name=>label)
@@ -85,6 +103,7 @@ class Notification extends CActiveRecord
 			'id' => 'ID',
 			'enabled' => 'Enabled',
 			'fixed' => 'Fixed',
+			'notification_type_id' => 'Notification Type',
 			'message' => 'Message',
 		);
 	}

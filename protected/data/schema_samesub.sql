@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Jul 20, 2011 at 11:02 PM
+-- Generation Time: Jul 25, 2011 at 11:09 PM
 -- Server version: 5.1.33
 -- PHP Version: 5.2.9
 
@@ -236,9 +236,23 @@ CREATE TABLE message (
 
 CREATE TABLE notification (
   id int(11) NOT NULL AUTO_INCREMENT,
+  notification_type_id smallint(6) NOT NULL DEFAULT '1',
   enabled tinyint(4) NOT NULL DEFAULT '1',
   `fixed` tinyint(4) NOT NULL DEFAULT '0',
   message varchar(250) COLLATE utf8_unicode_ci NOT NULL,
+  PRIMARY KEY (id)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table 'notification_type'
+--
+
+CREATE TABLE notification_type (
+  id int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(20) COLLATE utf8_unicode_ci NOT NULL,
+  disabled int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (id)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
