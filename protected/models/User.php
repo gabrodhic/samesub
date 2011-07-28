@@ -49,7 +49,6 @@ class User extends CActiveRecord
 			array('username, password, email', 'required', 'on'=>'register'),
 			array('oldpassword, newpassword, newpassword2', 'required', 'on'=>'changepassword'),
 			array('newpassword', 'compare', 'compareAttribute'=>'newpassword2', 'on'=>'changepassword'),
-			array('oldpassword', 'validateOldPassword', 'on'=>'changepassword'),
 			array('username, email', 'unique'),
 			array('email', 'email'),
 			array('country_id', 'numerical'),
@@ -60,10 +59,6 @@ class User extends CActiveRecord
 		);
 	}
 
-	public function validateOldPassword($attribute,$params){
-		if(! $this->validatePassword($this->oldpassword)) $this->addError('oldpassword','The old password is incorrect.');
-		
-	}
 	
 	/**
 	 * @return array relational rules.
