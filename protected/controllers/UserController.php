@@ -60,8 +60,9 @@ class UserController extends Controller
 
 		$this->menu=array(
 		array('label'=>$arr_titles['index'], 'url'=>array('user/index')),//Note:we have to indicate the controller also, for the CMenu widget activateItems propoerty work properly
-		array('label'=>$arr_titles['update'], 'url'=>array('user/update', 'id'=>Yii::app()->user->id)),
-		array('label'=>$arr_titles['changepassword'], 'url'=>array('user/changepassword', 'id'=>Yii::app()->user->id)),
+		array('label'=>$arr_titles['update'], 'url'=>array('user/update')),		
+		array('label'=>$arr_titles['changepassword'], 'url'=>array('user/changepassword')),
+		//array('label'=>$arr_titles['changepassword'], 'url'=>array('user/changepassword', 'id'=>Yii::app()->user->id)),
 		//array('label'=>'Manage User', 'url'=>array('admin')),		
 		);
 		SiteLibrary::remove_current_url_menu($this,$arr_titles);
@@ -85,9 +86,9 @@ class UserController extends Controller
 	 * Change the current user password.
 	 * Musk ask the old password again.
 	 */
-	public function actionChangepassword($id)
+	public function actionChangepassword()
 	{
-		$model=$this->loadModel($id);
+		$model=$this->loadModel(Yii::app()->user->id);
 		$model->scenario='changepassword';
 		if(isset($_POST['User']))
 		{
@@ -188,9 +189,9 @@ class UserController extends Controller
 	 * If update is successful, the browser will be redirected to the 'view' page.
 	 * @param integer $id the ID of the model to be updated
 	 */
-	public function actionUpdate($id)
+	public function actionUpdate()
 	{
-		$model=$this->loadModel($id);
+		$model=$this->loadModel(Yii::app()->user->id);
 
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
