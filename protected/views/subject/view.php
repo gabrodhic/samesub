@@ -55,10 +55,10 @@ $this->pageTitle=Yii::app()->name . ' - '. $model->title;
 </div><!-- form -->
 <div id="right_container">
 <div id="tags_container">
-	<h3 style="margin-right:10px;">tags:</h3>
+	<h4 style="margin-right:10px;">tags:</h4>
 	<div id="tags_list">
 		<ul>
-		<?php foreach(SiteHelper::make_tags($model->title) as $tag) echo "<li>".$tag."</li>";?>
+		<?php foreach(SiteHelper::make_tags($model->urn) as $tag) echo "<li>".$tag."</li>";?>
 		</ul>
 	</div>
 </div>

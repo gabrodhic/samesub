@@ -116,7 +116,7 @@ class SiteHelper extends CHtml
 		$arr_text =  explode(" ", $text);
 		$arr_text = array_unique($arr_text);//remove any duplicate tag
 		function to_link(&$value, $key){
-			$value = '<a href="'.Yii::app()->params['weburl'].'/subject/index?'.urlencode('Subject[title]').'='.$value.'&ajax=subject-grid">&#32;&#149;&#32;'.$value.'</a>'; 
+			$value = '<a href="'.Yii::app()->params['weburl'].'/subject/index?'.urlencode('Subject[urn]').'='.$value.'&ajax=subject-grid">&#32;&#149;&#32;'.$value.'</a>'; 
 		} 
 		
 		array_walk($arr_text, 'to_link');
