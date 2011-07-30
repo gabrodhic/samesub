@@ -572,13 +572,13 @@ class Subject extends CActiveRecord
 		$criteria->compare('user_comment',$this->user_comment,true);
 		$criteria->compare('title',$this->title,true);
 		$criteria->compare('urn',$this->urn,true);
-		$criteria->compare('content_type_id',$this->content_type_id, true);
-		$criteria->compare('priority_id',$this->priority_id, true);
+		$criteria->compare('content_type_id',$this->content_type_id);
+		$criteria->compare('priority_id',$this->priority_id);
 		$criteria->compare('approved',$this->approved);
 		$criteria->compare('authorized',$this->authorized);
 		$criteria->compare('disabled',$this->disabled);
 		$criteria->compare('content_id',$this->content_id);
-		$criteria->compare('country_id',$this->country_id, true);
+		$criteria->compare('country_id',$this->country_id);
 		$criteria->compare('moderator_id',$this->moderator_id);
 		$criteria->compare('moderator_ip',$this->moderator_ip,true);
 		$criteria->compare('moderator_comment',$this->moderator_comment,true);
