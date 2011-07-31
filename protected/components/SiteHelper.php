@@ -19,7 +19,7 @@ class SiteHelper extends CHtml
 				$html = '<img src="'.$img_url.'" class="content_image">';//Yii::app()->getRequest()->getHostInfo().
 				if($subject->content_image->url){
 					$parsed_url = parse_url($subject->content_image->url);
-					$html .= "<br><span>Source: ". $parsed_url['scheme'].'://'.$parsed_url['host'];
+					$html .= "<br><span>Image source: ". $parsed_url['scheme'].'://'.$parsed_url['host'];
 				}
 				break;
 			case 2:

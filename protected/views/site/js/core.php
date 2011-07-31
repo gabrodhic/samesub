@@ -282,7 +282,7 @@ function display_elements(obj_json){
 		current_id = obj_json.id_1;//id
 		current_title = obj_json.title_1;//title
 		share_html = '<?php echo SiteHelper::share_links("'+obj_json.urn_1+'","'+obj_json.title_1+'"); ?>';
-		$('#content_div_1').html(obj_json.user_comment_1 + '<br>'+ obj_json.content_html_1+ share_html);
+		$('#content_div_1').html(obj_json.content_html_1 + '<br>' +obj_json.user_comment_1 + '<br>'+ share_html);
 		time_submitted = fromUnixTime(obj_json.time_submitted_1);
 		current_info = '<b>'+obj_json.country_name_1+'</b> '+ time_submitted.getHours()+':'+time_submitted.getMinutes()+' UTC | ';
 		//$("#comments_board").html("Waiting for comments");
@@ -396,7 +396,7 @@ function display_elements(obj_json){
 			$("#content_div_1").html(  obj_json.user_comment_2 + '<br>' + obj_json.content_html_2 + share_html);
 			//$('#cache_html').html(  obj_json.user_comment_2 + '<br>' + obj_json.content_html_2 + share_html);
 		}else{
-			$("#content_div_2").html(  obj_json.user_comment_2 + '<br>' + obj_json.content_html_2 + share_html);
+			$("#content_div_2").html(  obj_json.content_html_2 + '<br>' + obj_json.user_comment_2 + '<br>' + share_html);
 		}
 		
 		time_submitted = fromUnixTime(obj_json.time_submitted_2);

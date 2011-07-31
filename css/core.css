@@ -80,8 +80,9 @@ float:right;
 width:392px;/*40%*/
 /*background-color:blue;*/
 }
-#content_div{
-padding-right:10px;
+.user_input{
+font: normal 13px helvetica,arial;
+color:black;
 }
 #comments_container{
 padding-left:10px;
