@@ -3,7 +3,11 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<meta name="language" content="en" />
+	<?php 
+	if( strtolower($this->id) == 'site' and strtolower($this->action->Id) == 'index'){
+	?>
 	<meta name="description" content="Samesub is a space where only one subject is transmitted at a time in a synchronous manner, thus, everyone connected to the site interact with that same subject">
+	<?php } ?>
 	<meta name="keywords" content="<?php echo  str_replace(" ", ",", str_replace(",", "", $this->pageTitle));?>">
 	<script>
 		<?php $time = SiteLibrary::utc_time(); ?>
@@ -62,7 +66,7 @@
 if( Yii::app()->session->get('site_loaded') != "yes" and (strtolower($this->id) == 'site' and strtolower($this->action->Id) == 'index')){
 ?>
 <div id="preload" style="position:fixed; width: 680px; left: 50%; margin:20px 0px 0px -340px;font-family: Trebuchet MS, Arial, Helvetica, sans-serif;">
-	<div style="font-size: 12px;"><b>NOW: </b><?php echo $this->pageTitle;?></div>
+	<div style="font-size: 12px;"><b>NOW: </b><?php echo '<a href="'.Yii::app()->createUrl('subject/index').'">'.$this->pageTitle.'</a>';?></div>
 	<div style="background-color: #336699; font-size: 170px; color: white; font-weight:bold; margin: 20px 0px 20px 0px;">samesub</div>
 	<hr style="border: 1px solid grey;" />
 	<div style="font-size: 20px; color:#303030;"><?php echo Notification::getNotification()->note;?></div>

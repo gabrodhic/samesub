@@ -1,9 +1,4 @@
 <?php
-$this->breadcrumbs=array(
-	'Subjects'=>array('index'),
-	$model->title=>array('view','id'=>$model->id),
-	'View',
-);
 $this->pageTitle=Yii::app()->name . ' - '. $model->title;
 ?>
 
@@ -11,12 +6,7 @@ $this->pageTitle=Yii::app()->name . ' - '. $model->title;
 
 <div id="left_container" class="form">
 
-<?php $form=$this->beginWidget('CActiveForm', array(
-	'id'=>'subject-form',
-	'enableAjaxValidation'=>false,'htmlOptions'=>array('enctype' => 'multipart/form-data'),
-)); ?>
 
-	<?php echo $form->errorSummary($model); ?>
 
 	<div class="row">
 		<?php echo $model->country->name . " | "; ?>
@@ -32,7 +22,7 @@ $this->pageTitle=Yii::app()->name . ' - '. $model->title;
 	</div>
 	
 
-<?php $this->endWidget(); ?>
+
 <?php echo SiteHelper::share_links($model->urn,$model->title); ?>
 <h4>Comments:</h4>
 
