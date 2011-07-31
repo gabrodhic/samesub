@@ -393,7 +393,7 @@ function display_elements(obj_json){
 		share_html = '<?php echo SiteHelper::share_links("'+obj_json.urn_2+'","'+obj_json.title_2+'"); ?>';
 		cache_div_title = obj_json.title_2;
 		if($("#content_div_1").css("display") == 'none'){
-			$("#content_div_1").html(  obj_json.user_comment_2 + '<br>' + obj_json.content_html_2 + share_html);
+			$("#content_div_1").html(  obj_json.content_html_2 + '<br>' + obj_json.user_comment_2 + '<br>' + share_html);
 			//$('#cache_html').html(  obj_json.user_comment_2 + '<br>' + obj_json.content_html_2 + share_html);
 		}else{
 			$("#content_div_2").html(  obj_json.content_html_2 + '<br>' + obj_json.user_comment_2 + '<br>' + share_html);
