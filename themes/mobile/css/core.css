@@ -6,7 +6,7 @@ body { background: white; }
 body { font: normal 13px Trebuchet MS, Arial, Helvetica, sans-serif; color: #686868; }
 p { margin: 0; padding: 0 0 1.2em 0; }
 /* Text font styles*/
-h1 { font-size: 28px; letter-spacing: -1px; padding: 0 0 2px 0; color: #686868; font-weight: normal;}
+h1 { font-size: 18px; letter-spacing: -1px; padding: 0 0 2px 0; color: #686868; font-weight: normal;}
 h2 { font-size: 36px; letter-spacing: -1px; padding: 0 0 14px 0;  color: #686868}
 h3 { font-size: 24px; letter-spacing: -1px; padding: 0 0 14px 0; color: #999; }
 h4 { font-size: 18px; letter-spacing: -1px; padding: 0 0 5px 0; color: #686868; }
@@ -35,9 +35,9 @@ clear: both;
 .button {
 color: white;
 font-weight: bold;
-padding: 4px 10px 4px 10px;
+padding: 2px 5px 2px 5px;
 text-decoration: none;
-font-size: 18px;
+font-size: 12px;
 background-color:#777777;
 }
 
@@ -65,27 +65,12 @@ font-size: 18px;
 display:none;
 }
 
-
-#left_container{
-float:left;
-width:588px;/*60%*/
-/*background-color:red;*/
-}
-#right_container{
-float:right;
-width:392px;/*40%*/
-/*background-color:blue;*/
-}
 .user_input{
 font: normal 13px helvetica,arial;
 color:black;
 }
 #comments_container{
-padding-left:10px;
-padding-top:10px;
-}
-#cache_html{
-display:none;
+
 }
 
 
@@ -93,54 +78,23 @@ display:none;
 max-width:550px;
 /*width:100%;*/
 }
-#board_left{
-float:left;
-width:580px;
-}
-#board_right{
-width:385px;
-float:right;
-padding-top:19px;
-}
 #comment_textarea{
 margin: 0; padding: 0; border: 1px solid grey;
-width:500px;
-overflow:hidden; 
+width:170px;
 }
 #send_comment{
-float:right;
-padding: 6px 14px 6px 14px;
-cursor:pointer;
+margin:3px;
 }
 
 #header_info{
 float:left;
 }
 #comment_status{
-float:right;
 font-weight:bold;
-background-color: #0099CC;
-color:white;
 /*visibility:hidden;*/
 }
 #comment_timer{
 float:left;
-}
-#comments_title{
-font-size: 16px;
-font-weight:bold;
-padding-bottom:18px;
-}
-
-#previous_left{
-float:left;
-width:77px;
-font-size: 11px;
-}
-
-#previous_right, #previous_right a{
-float:left;
-font-size: 11px;
 }
 
 .navigation{
@@ -171,16 +125,7 @@ margin:0;
 padding:0;
 }
 
-#comments_board {
-	
-	width: 100%;
-	bottom:1px;
-	top:1px;
-	
-	/*overflow: auto;*/
-	/*border: 1px dotted black;*/
 
-}
 .comment_board_entry{
 margin-bottom:7px;
 padding: 0px;

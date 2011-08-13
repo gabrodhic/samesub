@@ -17,7 +17,7 @@
 
 //Freamework code ends here.
 
-
+var baseUrl = "<?php echo Yii::app()->getRequest()->getBaseUrl(true);?>";
 	   
 //window.onbeforeunload = confirmExit;
 function confirmExit()
@@ -256,10 +256,12 @@ function get_Contents(callback){
 			if(epoch_time < json.current_time){
 				epoch_time = json.current_time;//Update the epoch_time whenever the client time has get delayed
 				//most probably that the clock also is slow, so lets update it also
-				utc_hour=json.current_time_h;
-				utc_min=json.current_time_m;
-				utc_sec=json.current_time_s;
-				clock_time.setHours(utc_hour,utc_min,utc_sec,0);
+				if(typeof(clock_time) != "undefined"){
+					utc_hour=json.current_time_h;
+					utc_min=json.current_time_m;
+					utc_sec=json.current_time_s;
+					clock_time.setHours(utc_hour,utc_min,utc_sec,0);
+				}
 			}
 			
 			if(request_count == 0) { epoch_timer(); }

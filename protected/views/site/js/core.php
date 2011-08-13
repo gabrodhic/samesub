@@ -89,7 +89,7 @@ var tick;
 var clock_time = null;
 
 <?php $time = SiteLibrary::utc_time(); ?>
-var baseUrl = "<?php echo Yii::app()->getRequest()->getBaseUrl(true);?>";
+
 var utc_time = <?php echo $time;?>;
 var utc_hour = <?php echo date("H",$time); ?>;
 var utc_min = <?php echo date("i",$time); ?>;
