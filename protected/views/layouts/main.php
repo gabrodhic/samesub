@@ -9,14 +9,7 @@
 	<meta name="description" content="Samesub is a space where only one subject is transmitted at a time in a synchronous manner, thus, everyone connected to the site interact with that same subject">
 	<?php } ?>
 	<meta name="keywords" content="<?php echo  str_replace(" ", ",", str_replace(",", "", $this->pageTitle));?>">
-	<script>
-		<?php $time = SiteLibrary::utc_time(); ?>
-		var baseUrl = "<?php echo Yii::app()->getRequest()->getBaseUrl(true);?>";
-		var utc_time = <?php echo $time;?>;
-		var utc_hour = <?php echo date("H",$time); ?>;
-		var utc_min = <?php echo date("i",$time); ?>;
-		var utc_sec = <?php echo date("s",$time); ?>;
-	</script>
+
 	<?php if(strtolower($this->id) != 'site' or strtolower($this->action->Id) != 'index'){	?>
 		<!-- blueprint CSS framework -->
 		<link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/screen.css" media="screen, projection" />
@@ -40,11 +33,11 @@
 		var element1 = document.createElement("link");
 		element1.type="text/css";
 		element1.rel = "stylesheet";
-		element1.href = baseUrl+"/css/core.css";
+		element1.href = "<?php echo Yii::app()->getRequest()->getBaseUrl(true);?>/css/core.css";
 		document.getElementsByTagName("head")[0].appendChild(element1);
 
 		var element2 = document.createElement("script");
-		element2.src = baseUrl+"/site/js/core";
+		element2.src = "<?php echo Yii::app()->getRequest()->getBaseUrl(true);?>/site/js/core";
 		element2.type="text/javascript";
 		document.getElementsByTagName("head")[0].appendChild(element2);
 

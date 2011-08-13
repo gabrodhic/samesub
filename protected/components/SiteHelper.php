@@ -123,4 +123,18 @@ class SiteHelper extends CHtml
 		return $arr_text;
 	}
 	
+	/**
+	 * Generates the html for the content on the client side
+	 * @param string $subject_content the subject specific html
+	 * @param string $comment (optional) the user comment
+	 * @param string $share (optional) the sharing links
+	 * @return string with the html
+	 */
+	public function content_html($subject_content,$comment='',$share='')
+	{
+		$html = $subject_content."<br>".$comment."<br>".$share;
+		return $html;
+	
+	}
+	
 }
