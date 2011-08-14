@@ -75,8 +75,8 @@ color:black;
 
 
 .content_image{
-max-width:550px;
-/*width:100%;*/
+max-width:300px;
+width:100%;
 }
 #comment_textarea{
 margin: 0; padding: 0; border: 1px solid grey;

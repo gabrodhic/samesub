@@ -15,7 +15,13 @@ class SiteHelper extends CHtml
 	{
 		switch ($subject->content_type_id) {
 			case 1:
-				$img_url = ($subject->content_image->url) ? $subject->content_image->url : Yii::app()->params['weburl'].'/'.$subject->content_image->path.'/'.$subject->content_image->id.'.'.$subject->content_image->extension;
+				if ($subject->content_image->url){ 
+					$img_url = $subject->content_image->url;
+				}else{
+					$img_url = Yii::app()->getRequest()->getBaseUrl(true).'/'.$subject->content_image->path.'/';
+					$filename = $subject->content_image->id.'.'.$subject->content_image->extension;
+					$img_url .=  (Yii::app()->getTheme()->name=='mobile') ? "small_".$filename : $filename;
+				}
 				$html = '<img src="'.$img_url.'" class="content_image">';//Yii::app()->getRequest()->getHostInfo().
 				if($subject->content_image->url){
 					$parsed_url = parse_url($subject->content_image->url);
@@ -48,6 +54,17 @@ class SiteHelper extends CHtml
 					}
 				}else{
 					$html = SiteHelper::formatted($subject->content_video->embed_code);
+				}
+				
+				//intercept the content html and resize any width or height property for a mobile version			
+				if(Yii::app()->getTheme()->name=='mobile'){
+					$pattern = '/(width=")(\d+)(")/i';//Replace: width="***"  ---> width="MOBILE_WIDTH"
+					$replacement = '${1}250$3';//reference numbers come from string enclosed in parenthesis(left to right) in the pattern
+					$html = preg_replace($pattern, $replacement, $html);
+					$pattern = '/(height=")(\d+)(")/i';
+					$replacement = '${1}190$3';
+					$html = preg_replace($pattern, $replacement, $html);
+					//TODO: http://css-tricks.com/7066-fluid-width-youtube-videos/
 				}
 				break;
 		}

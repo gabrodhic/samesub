@@ -170,8 +170,8 @@ class Subject extends CActiveRecord
 					$this->image->maxHeight = 750;
 					 
 					$this->image->thumb = array(
-						'maxWidth' => 480,	//Because we dont know if its viewing in landscape or portrait
-						'maxHeight' => 480, //we set bowth to a max of 800 instead of 480(no, lets make both 480)
+						'maxWidth' => 300,	//Because we dont know if its viewing in landscape or portrait
+						'maxHeight' => 300, //we set bowth to a max of 800 instead of 480(no, lets make both 480)
 						//'dir' => Yii::app()->params['dirroot'] . '/'.$img_path,
 						'prefix' => 'small_',
 					);
