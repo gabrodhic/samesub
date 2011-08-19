@@ -29,11 +29,8 @@ class Controller extends CController
 			Yii::app()->theme='mobile';
 		}
 	}
-	function __construct() {
-		//we cant access $this->id yet here, so we obtain controller name from the class name
-		//TODO: $this->module will be always empty here, so we need to place this code in other place in the future
-		//if a module its gonna be used
-		parent::__construct(str_ireplace("Controller","",get_class($this)), $this->module);
+	// Override init to set theme property
+	function init() {
 		$this->set_theme();
-    }
+	}
 }
