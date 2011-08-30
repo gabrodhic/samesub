@@ -96,7 +96,10 @@ preload_time_passed = 5;
 				</div>
 				<div id="menu_right">
 					<span><a href="<? echo Yii::app()->getRequest()->getBaseUrl(true);?>/site/contact">Feedback</a></span>
-					<span> | <?php echo (Yii::app()->user->isGuest) ? '<a href="'. Yii::app()->createUrl('site/login').'">Login</a>' :  '<a href="'. Yii::app()->createUrl('user').'">'.Yii::app()->user->name.'</a>| <span><a href="'. Yii::app()->createUrl('site/logout').'">Logout</a></span>';?></span>
+					<span> | <?php echo (Yii::app()->user->isGuest) ? '<a href="'. Yii::app()->createUrl('site/login').'">Login</a>' 
+					:  '<a href="'. Yii::app()->createUrl('mysub/'.Yii::app()->user->name).'">Mysub'
+					.'</a>| <span><a href="'. Yii::app()->createUrl('user').'">Settings</a></span>'
+					.'| <span><a href="'. Yii::app()->createUrl('site/logout').'">Logout</a></span>';?></span>
 					<?php if(strtolower(Yii::app()->controller->action->id) == 'index' and strtolower(Yii::app()->controller->id) == 'site')
 					echo '<span><b> | UTC NOW: </b></span><span id="utc_clock"></span>'; ?>
 				</div>
