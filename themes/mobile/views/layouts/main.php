@@ -119,6 +119,3 @@ preload_time_passed = 5;
 
 </body>
 </html>
-<?php
-if( Yii::app()->session->get('site_loaded') != "yes") Yii::app()->session->add('site_loaded', 'yes');
-?>

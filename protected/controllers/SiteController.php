@@ -71,24 +71,24 @@ class SiteController extends Controller
 	 */
 	public function actionContact()
 	{
-		$model=new ContactForm;
+		$this->model=new ContactForm;
 		if(isset($_POST['ContactForm']))
 		{
-			$model->attributes=$_POST['ContactForm'];
-			if($model->validate())
+			$this->model->attributes=$_POST['ContactForm'];
+			if($this->model->validate())
 			{
-				if($model->email) 
+				if($this->model->email) 
 				{	
-					$headers="From: {$model->email}\r\nReply-To: {$model->email}";
-					mail(Yii::app()->params['contactEmail'],"SSCONTACT ".SiteLibrary::utc_time(),$model->text,$headers);
+					$headers="From: {$this->model->email}\r\nReply-To: {$this->model->email}";
+					mail(Yii::app()->params['contactEmail'],"SSCONTACT ".SiteLibrary::utc_time(),$this->model->text,$headers);
 				}else{
-					mail(Yii::app()->params['contactEmail'],"SSCONTACT ".SiteLibrary::utc_time(),$model->text);
+					mail(Yii::app()->params['contactEmail'],"SSCONTACT ".SiteLibrary::utc_time(),$this->model->text);
 				}
 				Yii::app()->user->setFlash('contact','Thank you for contacting us. If you provided an email we will respond to you as soon as possible.');
 				$this->refresh();
 			}
 		}
-		$this->render('contact',array('model'=>$model));
+		$this->render('contact',array('model'=>$this->model));
 	}
 
 	/**
@@ -96,25 +96,25 @@ class SiteController extends Controller
 	 */
 	public function actionLogin()
 	{
-		$model=new LoginForm;
+		$this->model=new LoginForm;
 
 		// if it is ajax validation request
 		if(isset($_POST['ajax']) && $_POST['ajax']==='login-form')
 		{
-			echo CActiveForm::validate($model);
+			echo CActiveForm::validate($this->model);
 			Yii::app()->end();
 		}
 
 		// collect user input data
 		if(isset($_POST['LoginForm']))
 		{
-			$model->attributes=$_POST['LoginForm'];
+			$this->model->attributes=$_POST['LoginForm'];
 			// validate user input and redirect to the previous page if valid
-			if($model->validate() && $model->login())
+			if($this->model->validate() && $this->model->login())
 				$this->redirect(Yii::app()->user->returnUrl);
 		}
 		// display the login form
-		$this->render('login',array('model'=>$model));
+		$this->render('login',array('model'=>$this->model));
 	}
 
 	/**

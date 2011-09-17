@@ -179,6 +179,67 @@ class InternalController extends Controller
 	}
 
 	/**
+	 * Executed by cron to update the country_id column in the log table
+	 * (because doing so in each record insertion would impact user navigation performance)
+	 * so we use a cron instead.
+	 */
+	public function actionUpdateCountryLog()
+	{
+		$cached_ips = array();
+		$cached_country = array();
+		$ip = '';
+		$command =Yii::app()->db->createCommand();
+		$country_logs = Yii::app()->db->createCommand()->select('id, client_ip, request_ip, client_country_id, request_country_id')
+		->from('log_detail')->where("cronned = 0 AND request_ip <> '127.0.0.1'")
+		->order('id ASC')->limit(5)->queryAll();
+		foreach($country_logs as $country_log){
+			
+			if(strlen($country_log['request_ip']) > 7){//4x# 4x. minimum valid ip
+				
+				$ip = $country_log['request_ip'];
+				if (! in_array($ip, $cached_ips)){//don't overuse this service unnecessary
+					$cached_ips[] = $ip;
+					if($country = SiteLibrary::get_country_from_ip($ip)){
+						$command->update('log_detail', array('cronned'=>1,'request_country_id'=>$country->id)
+						,'id=:id', array(':id'=>$country_log['id']));
+						$cached_country[$ip] = $country->id;
+					}
+				}else{
+					$command->update('log_detail', array('cronned'=>1,'request_country_id'=>$cached_country[$ip])
+						,'id=:id', array(':id'=>$country_log['id']));
+				}
+			}
+			
+			if(strlen($country_log['client_ip']) > 7){//4x# 4x. minimum valid ip 
+				
+				if(strstr($country_log['client_ip'], ',')){
+					$country_log['client_ip'] = str_replace(' ', '', $country_log['client_ip']);
+					$ips = explode(",", $country_log['client_ip']);
+					reset($ips);//get the first ip, is supposed to be where the request originated from
+					$ip = current($ips);
+				}else{
+					$ip = $country_log['client_ip'];
+				}
+				if (! in_array($ip, $cached_ips)) {//don't overuse this service unnecessary
+					$cached_ips[] = $ip;
+					
+					if($country = SiteLibrary::get_country_from_ip($ip)){
+						
+						$command->update('log_detail', array('cronned'=>1,'client_country_id'=>$country->id)
+						,'id=:id', array(':id'=>$country_log['id']));
+						$cached_country[$ip] = $country->id;
+					}
+				}else{
+					
+					$command->update('log_detail', array('cronned'=>1,'client_country_id'=>$cached_country[$ip])
+						,'id=:id', array(':id'=>$country_log['id']));
+				}
+			}
+			
+		}
+		
+	}
+	/**
 	 * This is the action to handle external exceptions.
 	 */
 	public function actionError()

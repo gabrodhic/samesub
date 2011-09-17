@@ -90,10 +90,10 @@ class MysubController extends Controller
 	{
 		
 		$model2 = $this->loadModel(null,$username);
-		$model = new Subject();
-		$model->unsetAttributes();  // clear any default values
-		$model->user_id = $model2->id;
-		$this->render('index',array('username'=>$username,'model'=>$model));
+		$this->model = new Subject();
+		$this->model->unsetAttributes();  // clear any default values
+		$this->model->user_id = $model2->id;
+		$this->render('index',array('username'=>$username,'model'=>$this->model));
 		
 	}
 	
@@ -103,13 +103,13 @@ class MysubController extends Controller
 	 */
 	public function actionAdmin()
 	{
-		$model=new User('search');
-		$model->unsetAttributes();  // clear any default values
+		$this->model=new User('search');
+		$this->model->unsetAttributes();  // clear any default values
 		if(isset($_GET['User']))
-			$model->attributes=$_GET['User'];
+			$this->model->attributes=$_GET['User'];
 
 		$this->render('admin',array(
-			'model'=>$model,
+			'model'=>$this->model,
 		));
 	}
 

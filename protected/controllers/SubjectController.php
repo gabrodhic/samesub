@@ -47,12 +47,12 @@ class SubjectController extends Controller
 	{
 		if(! $id) $this->redirect(array('index'));
 		if(! is_int($id)){
-			$model = Subject::model()->find('urn=:urn', array(':urn'=>$id));
-			if($model) $id = $model->id;
+			$this->model = Subject::model()->find('urn=:urn', array(':urn'=>$id));
+			if($this->model) $id = $this->model->id;
 			
 		}
-		$model=$this->loadModel($id);
-		if(! $model->authorized){//only managers can "view" unauthorized subjects
+		$this->model=$this->loadModel($id);
+		if(! $this->model->authorized){//only managers can "view" unauthorized subjects
 			if(! Yii::app()->user->checkAccess('subject_manage'))
 			{
 				throw new CHttpException(403,'Sory, this subject is not authorized and you are not a manager.');
@@ -60,7 +60,7 @@ class SubjectController extends Controller
 			}
 		}
 		$this->render('view',array(
-			'model'=>$model,
+			'model'=>$this->model,
 		));
 	}
 
@@ -70,11 +70,11 @@ class SubjectController extends Controller
 	 */
 	public function actionAdd()
 	{
-		$model=new Subject;
-		$model->scenario='add';
+		$this->model=new Subject;
+		$this->model->scenario='add';
 
 		// Uncomment the following line if AJAX validation is needed
-		// $this->performAjaxValidation($model);
+		// $this->performAjaxValidation($this->model);
 		$country_id = 0;
 		if($_SERVER['REMOTE_ADDR'] != '127.0.0.1'){
 			Yii::import('ext.EGeoIP');
@@ -87,26 +87,26 @@ class SubjectController extends Controller
 		
 		if(isset($_POST['Subject']))
 		{
-			$model->attributes=$_POST['Subject'];
+			$this->model->attributes=$_POST['Subject'];
 			// Assign the user_id 1 if is a guest
-			$model->user_id=(Yii::app()->user->id) ? Yii::app()->user->id : 1;
-			$model->time_submitted = SiteLibrary::utc_time();
-			$model->user_ip = $_SERVER['REMOTE_ADDR'];
-			$model->user_country_id = $country_id;
+			$this->model->user_id=(Yii::app()->user->id) ? Yii::app()->user->id : 1;
+			$this->model->time_submitted = SiteLibrary::utc_time();
+			$this->model->user_ip = $_SERVER['REMOTE_ADDR'];
+			$this->model->user_country_id = $country_id;
 			
-			if($model->save()){
-				$wait = Subject::getPrognostic($model->id);
+			if($this->model->save()){
+				$wait = Subject::getPrognostic($this->model->id);
 				Yii::app()->user->setFlash('subject_added','Subject succesfully submitted!. Your subject has just been sended to a moderator for its approval. If your subject gets approved, it will go to the homepage(livestram) on an estimated time.');
 				
 				Yii::app()->user->setFlash('subject_added_info','Here is your prognostic: your subject is on position <b>'.$wait['position'].'</b> of the queue and has a wating time of <b>'.$wait['time'].'</b> minutes approximately.');
 				$this->refresh();
 			}
 		}else{
-			$model->country_id = $country_id;
+			$this->model->country_id = $country_id;
 		}
 		
 		$this->render('create',array(
-			'model'=>$model,
+			'model'=>$this->model,
 		));
 	}
 
@@ -117,22 +117,22 @@ class SubjectController extends Controller
 	 */
 	public function actionUpdate($id)
 	{
-		$model=$this->loadModel($id);
-		$model->scenario='update';
+		$this->model=$this->loadModel($id);
+		$this->model->scenario='update';
 
 		// Uncomment the following line if AJAX validation is needed
-		// $this->performAjaxValidation($model);
+		// $this->performAjaxValidation($this->model);
 
 		if(isset($_POST['Subject']))
 		{
 			//Create an array(named Subject) with the params stored in the databse for this element
 			//We can't use $_POST['Subject'], because it would just load the submited user data params and not other data already in database.
-			$params=array('Subject'=>$model->attributes);
+			$params=array('Subject'=>$this->model->attributes);
 			if(Yii::app()->user->checkAccess('subject_update',$params))
 			{
-				$model->attributes=$_POST['Subject'];
-				if($model->save())
-					$this->redirect(array('view','id'=>$model->id));
+				$this->model->attributes=$_POST['Subject'];
+				if($this->model->save())
+					$this->redirect(array('view','id'=>$this->model->id));
 			}else
 			{
 				throw new CHttpException(403,'You are not allowed to update this subject.');
@@ -141,7 +141,7 @@ class SubjectController extends Controller
 		
 
 		$this->render('update',array(
-			'model'=>$model,
+			'model'=>$this->model,
 		));
 	}
 	
@@ -154,28 +154,28 @@ class SubjectController extends Controller
 	{
 		if(Yii::app()->user->checkAccess('subject_moderate'))
 		{
-			$model=$this->loadModel($id);
-			$model->scenario='moderate';
+			$this->model=$this->loadModel($id);
+			$this->model->scenario='moderate';
 
 			// Uncomment the following line if AJAX validation is needed
-			// $this->performAjaxValidation($model);
+			// $this->performAjaxValidation($this->model);
 
 
 			if(isset($_POST['Subject']))
 			{
-					$model->attributes=$_POST['Subject'];
+					$this->model->attributes=$_POST['Subject'];
 					Yii::import('ext.EGeoIP');
 					$geoIp = new EGeoIP();
 					$geoIp->locate($_SERVER['REMOTE_ADDR']);
 					//http://www.iso.org/iso/english_country_names_and_code_elements
 					$country=Country::model()->find('code=:code', array(':code'=>$geoIp->countryCode)); 
-					$model->moderator_country_id = $country->id;
-					if($model->save())
+					$this->model->moderator_country_id = $country->id;
+					if($this->model->save())
 						$this->redirect(array('manage'));
 			}
 
 			$this->render('moderate',array(
-				'model'=>$model,
+				'model'=>$this->model,
 			));
 		}else
 		{
@@ -192,27 +192,27 @@ class SubjectController extends Controller
 	{
 		if(Yii::app()->user->checkAccess('subject_authorize'))
 		{
-			$model=$this->loadModel($id);
-			$model->scenario='authorize';
+			$this->model=$this->loadModel($id);
+			$this->model->scenario='authorize';
 
 			// Uncomment the following line if AJAX validation is needed
-			// $this->performAjaxValidation($model);
+			// $this->performAjaxValidation($this->model);
 
 			if(isset($_POST['Subject']))
 			{
-					$model->attributes=$_POST['Subject'];
+					$this->model->attributes=$_POST['Subject'];
 					Yii::import('ext.EGeoIP');
 					$geoIp = new EGeoIP();
 					$geoIp->locate($_SERVER['REMOTE_ADDR']);
 					//http://www.iso.org/iso/english_country_names_and_code_elements
 					$country=Country::model()->find('code=:code', array(':code'=>$geoIp->countryCode)); 
-					$model->authorizer_country_id = $country->id;
-					if($model->save())
+					$this->model->authorizer_country_id = $country->id;
+					if($this->model->save())
 						$this->redirect(array('manage'));	
 			}
 
 			$this->render('authorize',array(
-				'model'=>$model,
+				'model'=>$this->model,
 			));
 		}else
 		{
@@ -261,21 +261,8 @@ class SubjectController extends Controller
 		$subject_id_2 =  (int)$subject_id_2;
 		$comment_number = (int)$comment_number;
 		$data = NULL;
-		if ( $data = Subject::getLiveData($subject_id_2,$comment_number,false) )
-		{
-				echo $data;
-				die();
-		}
-		//else{
-			//Time has gone, user its updated, respone 0
-		//	echo json_encode(array('new_comment'=>'0','new_sub'=>'0'));
-		//	die();
-		//}
-		
-		//$dataProvider=new CActiveDataProvider('Subject');
-		//$this->render('index',array(
-		//	'dataProvider'=>$dataProvider,
-		//));
+		$data = Subject::getLiveData($subject_id_2,$comment_number,false);
+		echo $data;
 		
 	}
 	
@@ -285,20 +272,20 @@ class SubjectController extends Controller
 	public function actionIndex()
 	{
 		
-		$model=new Subject('history');
-		$model->unsetAttributes();  // clear any default values
+		$this->model=new Subject('history');
+		$this->model->unsetAttributes();  // clear any default values
 		if(isset($_GET['Subject']))
-				$model->attributes=$_GET['Subject'];
+				$this->model->attributes=$_GET['Subject'];
 		
-		$model->show_time = ">:0";
+		$this->model->show_time = ">:0";
 		$live_subject = Yii::app()->db->createCommand()
 			->select('*')
 			->from('live_subject')
 			->queryRow();
-		$model->id = "<>".$live_subject['subject_id_2'];//Do not display the cached subject(the next subject that its gonna be showed)
+		$this->model->id = "<>".$live_subject['subject_id_2'];//Do not display the cached subject(the next subject that its gonna be showed)
 
 		$this->render('index',array(
-			'model'=>$model,
+			'model'=>$this->model,
 		));
 		
 	}
@@ -310,18 +297,18 @@ class SubjectController extends Controller
 	{
 		if(Yii::app()->user->checkAccess('subject_manage'))
 		{
-			$model=new Subject('manage');
-			$model->unsetAttributes();  // clear any default values
+			$this->model=new Subject('manage');
+			$this->model->unsetAttributes();  // clear any default values
 			if(isset($_GET['Subject']))
-				$model->attributes=$_GET['Subject'];
+				$this->model->attributes=$_GET['Subject'];
 			
 			$live_subject = Yii::app()->db->createCommand()
 			->select('*')
 			->from('live_subject')
 			->queryRow();
-			if(! isset($model->disabled)) $model->disabled = 0;//Set to view only NOT disabled subjects by default(notice isset insted of a simple if)
+			if(! isset($this->model->disabled)) $this->model->disabled = 0;//Set to view only NOT disabled subjects by default(notice isset insted of a simple if)
 			$this->render('manage',array(
-				'model'=>$model,'live_subject'=>$live_subject,
+				'model'=>$this->model,'live_subject'=>$live_subject,
 			));
 		}else
 		{

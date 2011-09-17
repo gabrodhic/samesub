@@ -88,24 +88,24 @@ class UserController extends Controller
 	 */
 	public function actionChangepassword()
 	{
-		$model=$this->loadModel(Yii::app()->user->id);
-		$model->scenario='changepassword';
+		$this->model=$this->loadModel(Yii::app()->user->id);
+		$this->model->scenario='changepassword';
 		if(isset($_POST['User']))
 		{
 			
-			$model->attributes=$_POST['User'];
-			if(! $model->validatePassword($model->oldpassword)) $model->addError('oldpassword','The old password is incorrect.');
-			$model->salt = $model->generateSalt();//lets give it a new salt also, just in case
-			$model->password = $model->hashPassword($model->newpassword, $model->salt);
-			if($model->save()){
+			$this->model->attributes=$_POST['User'];
+			if(! $this->model->validatePassword($this->model->oldpassword)) $this->model->addError('oldpassword','The old password is incorrect.');
+			$this->model->salt = $this->model->generateSalt();//lets give it a new salt also, just in case
+			$this->model->password = $this->model->hashPassword($this->model->newpassword, $this->model->salt);
+			if($this->model->save()){
 				Yii::app()->user->setFlash('changepass_success','Your password has been changed successfully.');
 			}else{
-				$model->password=$_POST['User']['password'];
+				$this->model->password=$_POST['User']['password'];
 			}
 		}
 
 		$this->render('changepassword',array(
-			'model'=>$model,
+			'model'=>$this->model,
 		));
 	}
 	/**
@@ -114,10 +114,10 @@ class UserController extends Controller
 	 */
 	public function actionRegister()
 	{
-		$model=new User('register');
+		$this->model=new User('register');
 
 		// Uncomment the following line if AJAX validation is needed
-		// $this->performAjaxValidation($model);
+		// $this->performAjaxValidation($this->model);
 
 		if(isset($_POST['User']))
 		{
@@ -130,19 +130,19 @@ class UserController extends Controller
 				$country=Country::model()->find('code=:code', array(':code'=>$geoIp->countryCode));
 				if($country) $country_id = $country->id;
 			}
-			$model->time_created = SiteLibrary::utc_time();
-			$model->ip_created = $_SERVER['REMOTE_ADDR'];
-			$model->country_id = $country_id;
-			$model->country_id_created = $country_id;
+			$this->model->time_created = SiteLibrary::utc_time();
+			$this->model->ip_created = $_SERVER['REMOTE_ADDR'];
+			$this->model->country_id = $country_id;
+			$this->model->country_id_created = $country_id;
 			
-			$model->attributes=$_POST['User'];
+			$this->model->attributes=$_POST['User'];
 			
 			
-			if($model->save()){
+			if($this->model->save()){
 				$headers="From: Samesub Contact <".Yii::app()->params['contactEmail'].">\r\nReply-To: ".Yii::app()->params['contactEmail'];
-				$mail_message = "Hi {$model->email}, welcome to samesub!\n\n";
-				$mail_message .= "Name:  " . $model->username."\n";
-				$mail_message .= "Email: " . $model->email."\n\n";
+				$mail_message = "Hi {$this->model->email}, welcome to samesub!\n\n";
+				$mail_message .= "Name:  " . $this->model->username."\n";
+				$mail_message .= "Email: " . $this->model->email."\n\n";
 				$mail_message .= "Thanks for registering.\n\n";
 				$mail_message .= "Remember that our mission:\n\n";
 				$mail_message .= "Is that there be a unique point of union on the internet where all users connected\n";
@@ -158,13 +158,13 @@ class UserController extends Controller
 				$mail_message .= "Samesub Team\n";
 				$mail_message .= "www.samesub.com";				
 	
-				if(@mail($model->email,"Registration successful",$mail_message,$headers)){
+				if(@mail($this->model->email,"Registration successful",$mail_message,$headers)){
 					$mail_sent = "An email has been sent to you.";
 				}else{
 					$mail_sent = "Email could not be sent.";
 				}
 				$model2=new LoginForm;
-				$model2->email=$model->email;
+				$model2->email=$this->model->email;
 				$model2->password=$_POST['User']['password'];
 				// validate user input and redirect to the previous page if valid
 				if($model2->validate() && $model2->login()){
@@ -174,13 +174,13 @@ class UserController extends Controller
 				
 			}else{
 				//Set back the password to its original as the view will receive it hashed
-				$model->password=$_POST['User']['password'];
+				$this->model->password=$_POST['User']['password'];
 			}
 				
 		}
 
 		$this->render('register',array(
-			'model'=>$model,
+			'model'=>$this->model,
 		));
 	}
 
@@ -191,21 +191,21 @@ class UserController extends Controller
 	 */
 	public function actionUpdate()
 	{
-		$model=$this->loadModel(Yii::app()->user->id);
+		$this->model=$this->loadModel(Yii::app()->user->id);
 
 		// Uncomment the following line if AJAX validation is needed
-		// $this->performAjaxValidation($model);
+		// $this->performAjaxValidation($this->model);
 
 		if(isset($_POST['User']))
 		{
-			$model->attributes=$_POST['User'];
-			if($model->save())
+			$this->model->attributes=$_POST['User'];
+			if($this->model->save())
 			Yii::app()->user->setFlash('profile_success','Profile Settings updated successfully');
 				//$this->redirect(array('index'));
 		}
 
 		$this->render('update',array(
-			'model'=>$model,
+			'model'=>$this->model,
 		));
 	}
 
@@ -242,13 +242,13 @@ class UserController extends Controller
 	 */
 	public function actionAdmin()
 	{
-		$model=new User('search');
-		$model->unsetAttributes();  // clear any default values
+		$this->model=new User('search');
+		$this->model->unsetAttributes();  // clear any default values
 		if(isset($_GET['User']))
-			$model->attributes=$_GET['User'];
+			$this->model->attributes=$_GET['User'];
 
 		$this->render('admin',array(
-			'model'=>$model,
+			'model'=>$this->model,
 		));
 	}
 

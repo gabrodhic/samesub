@@ -449,6 +449,7 @@ class Subject extends CActiveRecord
 		$arr_data['current_time_h'] = date("H",$utc_time);
 		$arr_data['current_time_m'] = date("i",$utc_time);
 		$arr_data['current_time_s'] = date("s",$utc_time);
+		if($arr_data['new_sub'] == 0) $this->no_log = true;//This is just to control the logging functionality(client dont receive this info)
 		return json_encode($arr_data);
 	
 	}

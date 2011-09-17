@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Jul 25, 2011 at 11:09 PM
+-- Generation Time: Sep 16, 2011 at 10:05 PM
 -- Server version: 5.1.33
 -- PHP Version: 5.2.9
 
@@ -213,6 +213,71 @@ CREATE TABLE live_subject (
   last_comment_number int(11) NOT NULL DEFAULT '0',
   comment_sequence int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (id)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table 'log'
+--
+
+CREATE TABLE log (
+  id int(11) NOT NULL AUTO_INCREMENT,
+  `time` int(11) NOT NULL,
+  session_id varchar(40) COLLATE utf8_unicode_ci DEFAULT NULL,
+  user_id int(11) NOT NULL DEFAULT '0',
+  controller varchar(30) COLLATE utf8_unicode_ci NOT NULL,
+  `action` varchar(30) COLLATE utf8_unicode_ci DEFAULT NULL,
+  uri varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  model varchar(20) COLLATE utf8_unicode_ci DEFAULT NULL,
+  model_id int(11) NOT NULL DEFAULT '0',
+  theme char(2) COLLATE utf8_unicode_ci NOT NULL DEFAULT 're',
+  PRIMARY KEY (id),
+  KEY `time` (`time`),
+  KEY session_id (session_id),
+  KEY user_id (user_id),
+  KEY controller (controller),
+  KEY `action` (`action`),
+  KEY model (model),
+  KEY model_id (model_id),
+  KEY theme (theme)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table 'log_detail'
+--
+
+CREATE TABLE log_detail (
+  id int(11) NOT NULL AUTO_INCREMENT,
+  log_id int(11) NOT NULL DEFAULT '0',
+  `session` varchar(40) COLLATE utf8_unicode_ci DEFAULT NULL,
+  client_ip varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'can be multiple ips: HTTP_X_FORWARDED_FOR',
+  client_host varchar(250) COLLATE utf8_unicode_ci DEFAULT NULL,
+  request_ip varchar(20) COLLATE utf8_unicode_ci DEFAULT NULL,
+  request_host varchar(250) COLLATE utf8_unicode_ci DEFAULT NULL,
+  client_country_id int(11) NOT NULL DEFAULT '0',
+  request_country_id int(11) NOT NULL DEFAULT '0',
+  agent varchar(250) COLLATE utf8_unicode_ci DEFAULT NULL,
+  referer varchar(250) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `charset` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `language` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+  device char(2) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'desktop, mobile, etc',
+  cronned tinyint(4) NOT NULL DEFAULT '0' COMMENT 'entry has been processed by cron job ie country colum',
+  PRIMARY KEY (id),
+  KEY client_ip (client_ip),
+  KEY request_ip (request_ip),
+  KEY client_country_id (client_country_id),
+  KEY request_country_id (request_country_id),
+  KEY agent (agent),
+  KEY referer (referer),
+  KEY `charset` (`charset`),
+  KEY `language` (`language`),
+  KEY device (device),
+  KEY log_id (log_id),
+  KEY `session` (`session`),
+  KEY cronned (cronned)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------

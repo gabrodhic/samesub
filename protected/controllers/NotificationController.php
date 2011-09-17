@@ -53,20 +53,20 @@ class NotificationController extends Controller
 	 */
 	public function actionCreate()
 	{
-		$model=new Notification;
+		$this->model=new Notification;
 
 		// Uncomment the following line if AJAX validation is needed
-		// $this->performAjaxValidation($model);
+		// $this->performAjaxValidation($this->model);
 
 		if(isset($_POST['Notification']))
 		{
-			$model->attributes=$_POST['Notification'];
-			if($model->save())
+			$this->model->attributes=$_POST['Notification'];
+			if($this->model->save())
 				$this->redirect(array('admin'));
 		}
 
 		$this->render('create',array(
-			'model'=>$model,
+			'model'=>$this->model,
 		));
 	}
 
@@ -77,20 +77,20 @@ class NotificationController extends Controller
 	 */
 	public function actionUpdate($id)
 	{
-		$model=$this->loadModel($id);
+		$this->model=$this->loadModel($id);
 
 		// Uncomment the following line if AJAX validation is needed
-		// $this->performAjaxValidation($model);
+		// $this->performAjaxValidation($this->model);
 
 		if(isset($_POST['Notification']))
 		{
-			$model->attributes=$_POST['Notification'];
-			if($model->save())
+			$this->model->attributes=$_POST['Notification'];
+			if($this->model->save())
 				$this->redirect(array('admin'));
 		}
 
 		$this->render('update',array(
-			'model'=>$model,
+			'model'=>$this->model,
 		));
 	}
 
@@ -127,13 +127,13 @@ class NotificationController extends Controller
 	 */
 	public function actionAdmin()
 	{
-		$model=new Notification('search');
-		$model->unsetAttributes();  // clear any default values
+		$this->model=new Notification('search');
+		$this->model->unsetAttributes();  // clear any default values
 		if(isset($_GET['Notification']))
-			$model->attributes=$_GET['Notification'];
+			$this->model->attributes=$_GET['Notification'];
 
 		$this->render('admin',array(
-			'model'=>$model,
+			'model'=>$this->model,
 		));
 	}
 

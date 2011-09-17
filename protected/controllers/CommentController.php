@@ -9,27 +9,27 @@ class CommentController extends Controller
 	
 	public function actionPush($text="")
 	{
-		$model=new Comment;
+		$this->model=new Comment;
 
 		// Uncomment the following line if AJAX validation is needed
-		// $this->performAjaxValidation($model);
+		// $this->performAjaxValidation($this->model);
 
 		if(isset($_POST['Comment']) or $text or $_POST['text'])
 		{
-			if(isset($_POST['Comment'])) $model->attributes=$_POST['Comment'];
-			if($text) $model->comment = $text;
-			if($_POST['text']) $model->comment = $_POST['text'];
-			$model->update_live = true;
+			if(isset($_POST['Comment'])) $this->model->attributes=$_POST['Comment'];
+			if($text) $this->model->comment = $text;
+			if($_POST['text']) $this->model->comment = $_POST['text'];
+			$this->model->update_live = true;
 
-			$model->save();
+			$this->model->save();
 			//we need to jsonecode something, as not doing so, can provoke an 
 			//ajax response error on the client site if the ajax request is of type json
 			echo json_encode(array('success'=>'yes'));
-			die();
+			return;
 		}
 
 		$this->render('add',array(
-			'model'=>$model,
+			'model'=>$this->model,
 		));
 	}
 
