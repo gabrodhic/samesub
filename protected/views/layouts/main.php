@@ -111,6 +111,21 @@ preload_time_passed = 5;
 		)); ?><!-- breadcrumbs -->
 	</div>
 	<div id="main_body" class="bounded">
+	<?php if (Yii::app()->user->hasFlash('layout_flash_success')):?>
+		<div class="flash-success">
+			<?php echo Yii::app()->user->getFlash('layout_flash_success'); ?>
+		</div>
+	<?php endif; ?>
+	<?php if (Yii::app()->user->hasFlash('layout_flash_error')):?>
+		<div class="flash-error">
+			<?php echo Yii::app()->user->getFlash('layout_flash_error'); ?>
+		</div>
+	<?php endif; ?>
+	<?php if (Yii::app()->user->hasFlash('layout_flash_notice')):?>
+		<div class="flash-notice">
+			<?php echo Yii::app()->user->getFlash('layout_flash_notice'); ?>
+		</div>
+	<?php endif; ?>
 	
 	<?php echo $content; ?>
 	
