@@ -28,7 +28,7 @@ $this->breadcrumbs=array(
 		<?php echo $form->passwordField($model,'password'); ?>
 		<?php echo $form->error($model,'password'); ?>
 		<p class="hint">
-			Forgot your password? <a href="">Click here</a>.
+			Forgot your password? <a href="<?php echo Yii::app()->createUrl('user/resetpassword');?>">Click here</a>.
 		</p>
 	</div>
 

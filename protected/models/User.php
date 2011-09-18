@@ -49,7 +49,10 @@ class User extends CActiveRecord
 			array('username, password, email', 'required', 'on'=>'register'),
 			array('oldpassword, newpassword, newpassword2', 'required', 'on'=>'changepassword'),
 			array('newpassword', 'compare', 'compareAttribute'=>'newpassword2', 'on'=>'changepassword'),
-			array('username, email', 'unique'),
+			array('username, email', 'validateOne', 'on'=>'resetpassword'),
+			array('newpassword, newpassword2', 'required', 'on'=>'resetpasswordnext'),
+			array('newpassword', 'compare', 'compareAttribute'=>'newpassword2', 'on'=>'resetpasswordnext'),
+			array('username, email', 'unique', 'on'=>'register'),
 			array('email', 'email'),
 			array('country_id', 'numerical'),
 			array('username, password, email', 'length', 'max'=>50, 'min'=>3),
@@ -58,7 +61,15 @@ class User extends CActiveRecord
 			array('id, username, password, email, ip_created, ip_last_access, user_status_id, user_type_id, time_created, time_last_access, time_modified', 'safe', 'on'=>'search'),
 		);
 	}
-
+	/**
+	 * Validate either one field is valid
+	 */
+	public function validateOne($attribute,$params)
+    {
+		if (($this->username==null)and($this->email==null)){
+			$this->addError('username,email','Please submit at least one data');
+		}
+	}
 	
 	/**
 	 * @return array relational rules.
@@ -78,7 +89,7 @@ class User extends CActiveRecord
 	{
 		return array(
 			'id' => 'ID',
-			'username' => 'Name',
+			'username' => 'Username',
 			'password' => 'Password',
 			'oldpassword' => 'Old Password',
 			'newpassword' => 'New Password',

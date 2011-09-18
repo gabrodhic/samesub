@@ -30,7 +30,7 @@ class UserController extends Controller
 	{
 		return array(
 			array('allow',  // allow all users to perform 'register' actions
-				'actions'=>array('register'),
+				'actions'=>array('register','resetpassword','resetpasswordnext'),
 				'users'=>array('*'),
 			),
 			array('allow', // allow authenticated user to perform 'index' and 'update' actions
@@ -180,6 +180,94 @@ class UserController extends Controller
 		}
 
 		$this->render('register',array(
+			'model'=>$this->model,
+		));
+	}
+	/**
+	 * Forgot password option.
+	 */
+	public function actionResetPassword()
+	{
+		$this->model=new User('resetpassword');
+
+		// Uncomment the following line if AJAX validation is needed
+		// $this->performAjaxValidation($this->model);
+
+		$this->model->unsetAttributes();  // clear any default values
+		if(isset($_POST['User']))
+		{
+			$this->model->attributes=$_POST['User'];
+			if($this->model->validate()){
+				
+				if(! $model2 = User::model()->find('username=:username OR email=:email',array(':username'=>$this->model->username,':email'=>$this->model->email))){
+					$this->model->addError('username, email','The username or email was not found in our database.');
+				}else{
+					$this->model = $model2;//to be able to log model id
+
+					$this->model->reset_hash = md5(uniqid(rand(), true));
+					$this->model->reset_time = SiteLibrary::utc_time();
+					
+					//Set up the mail message
+					$headers="From: Samesub Contact <".Yii::app()->params['contactEmail'].">\r\nReply-To: ".Yii::app()->params['contactEmail'];
+					$mail_message = "Hi {$this->model->username}!\n\n";
+					$mail_message .= "We recently received a request to reset your password.\n";
+					$mail_message .= "If you did not request this, please ignore this message and the steps described in it.\n\n";
+					$mail_message .= "Username:  " . $this->model->username."\n";
+					$mail_message .= "Email: " . $this->model->email."\n\n";					
+					$mail_message .= "To reset your password please click or visit the link bellow and complete the steps \n";
+					$mail_message .= "described there.\n\n";
+					$mail_message .= Yii::app()->getRequest()->getBaseUrl(true)."/user/resetpasswordnext?reset_hash=".$this->model->reset_hash;
+					$mail_message .= "\n\nThanks\n\n";
+					$mail_message .= "Sincerely\n";
+					$mail_message .= "Samesub Team\n";
+					$mail_message .= "www.samesub.com";				
+		
+
+					if($this->model->save()){
+					//User::model()->updateByPk($model2->id, array('reset_hash'=>md5(rand(100,9000)),'reset_time'=>SiteLibrary::utc_time()));
+						if(@mail($this->model->email,"Password Reset",$mail_message,$headers)){
+							Yii::app()->user->setFlash('resetpassword_success','An email has been sent to your address '. '***'.substr($model2->email, 3).' with the link to reset your password. Please verify your email spam folder if you do not see the message.');
+						}else{
+							Yii::app()->user->setFlash('resetpassword_success','Ooops!. We could not sent an email to your address. We need to send an email to your address to reset your password automatically. Please contact us to request a password reset manually.');
+						}
+					}
+				}
+			}
+		}
+		
+		$this->render('resetpassword',array(
+			'model'=>$this->model,
+		));
+				
+	}
+	
+	/**
+	 * Next step after password reset has been requested. The user types in the new password.
+	 */
+	public function actionResetPasswordNext($reset_hash)
+	{
+		if(! $this->model = User::model()->find('reset_hash=:reset_hash AND reset_time>:reset_time',
+			array(':reset_hash'=>$reset_hash,':reset_time'=>(SiteLibrary::utc_time() - 604800)  ))){ //expires in 1 week
+			throw new CHttpException(404,'Sorry but the reset code in the link is incorrect or has expired, or you have already reset your password. Please repeat the process or contact us.');
+		}
+		
+		$this->model->scenario='resetpasswordnext';
+		if(isset($_POST['User']))
+		{
+			$this->model->attributes=$_POST['User'];
+
+			$this->model->salt = $this->model->generateSalt();//lets give it a new salt also, just in case
+			$this->model->password = $this->model->hashPassword($this->model->newpassword, $this->model->salt);
+			$this->model->reset_hash = rand(1000,9000)."_". SiteLibrary::utc_time()."_" .$this->model->reset_hash;
+			if($this->model->save()){
+				Yii::app()->user->setFlash('layout_flash_success','Your password has been changed successfully. You may now login with your new password.');
+				$this->redirect(array('site/login'));
+			}else{
+				$this->model->password=$_POST['User']['password'];
+			}
+		}
+
+		$this->render('resetpasswordnext',array(
 			'model'=>$this->model,
 		));
 	}

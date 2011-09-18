@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Sep 16, 2011 at 10:05 PM
+-- Generation Time: Sep 18, 2011 at 05:53 PM
 -- Server version: 5.1.33
 -- PHP Version: 5.2.9
 
@@ -431,6 +431,8 @@ CREATE TABLE `user` (
   username varchar(50) COLLATE utf8_unicode_ci NOT NULL,
   `password` varchar(150) COLLATE utf8_unicode_ci NOT NULL,
   salt varchar(150) COLLATE utf8_unicode_ci NOT NULL,
+  reset_hash varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  reset_time int(11) NOT NULL DEFAULT '0',
   email varchar(50) COLLATE utf8_unicode_ci NOT NULL,
   ip_created varchar(20) COLLATE utf8_unicode_ci NOT NULL,
   ip_last_access varchar(20) COLLATE utf8_unicode_ci NOT NULL,
@@ -447,7 +449,9 @@ CREATE TABLE `user` (
   KEY `password` (`password`),
   KEY username_password (username,`password`),
   KEY user_state_id (user_status_id),
-  KEY user_type_id (user_type_id)
+  KEY user_type_id (user_type_id),
+  KEY reset_hash (reset_hash),
+  KEY reset_time (reset_time)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
