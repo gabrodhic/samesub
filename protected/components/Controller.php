@@ -62,6 +62,7 @@ class Controller extends CController
 		//Do NOT log some specific actions in some specific conditions
 		//ie:We should not be logging each user subject fetch unless there is a new subject(that would be a line in the log every 10 sec)
 		if($this->action->Id == 'js') $this->no_log = true;
+		if(Log::is_bot($_SERVER['HTTP_USER_AGENT'])) $this->no_log = true; ///Dont log if its a bot request
 		if($this->no_log == false){
 			try {
 				$command->insert('log',array('time'=>SiteLibrary::utc_time(),'session_id'=>Yii::app()->getSession()->getSessionID(), 

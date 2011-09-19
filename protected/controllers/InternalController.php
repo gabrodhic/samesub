@@ -185,13 +185,15 @@ class InternalController extends Controller
 	 */
 	public function actionUpdateCountryLog()
 	{
+		if($_SERVER['REMOTE_ADDR'] <> '127.0.0.1') die();//Only allow to run this locally
+		$this->no_log = true;//This is just to control the logging functionality
 		$cached_ips = array();
 		$cached_country = array();
 		$ip = '';
 		$command =Yii::app()->db->createCommand();
 		$country_logs = Yii::app()->db->createCommand()->select('id, client_ip, request_ip, client_country_id, request_country_id')
 		->from('log_detail')->where("cronned = 0 AND request_ip <> '127.0.0.1'")
-		->order('id ASC')->limit(5)->queryAll();
+		->order('id ASC')->limit(100)->queryAll();
 		foreach($country_logs as $country_log){
 			
 			if(strlen($country_log['request_ip']) > 7){//4x# 4x. minimum valid ip
@@ -235,6 +237,8 @@ class InternalController extends Controller
 						,'id=:id', array(':id'=>$country_log['id']));
 				}
 			}
+			//Wether country was updated or not we should mark it as cronned so we don't process this record again
+			$command->update('log_detail', array('cronned'=>1),'id=:id', array(':id'=>$country_log['id']));
 			
 		}
 		

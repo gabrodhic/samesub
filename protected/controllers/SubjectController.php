@@ -262,7 +262,9 @@ class SubjectController extends Controller
 		$comment_number = (int)$comment_number;
 		$data = NULL;
 		$data = Subject::getLiveData($subject_id_2,$comment_number,false);
-		echo $data;
+		if($data['new_sub'] == 0) $this->no_log = true;//This is just to control the logging functionality(client dont receive this info)
+		
+		echo json_encode($data);
 		
 	}
 	
