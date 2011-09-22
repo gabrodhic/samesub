@@ -366,6 +366,8 @@ class Subject extends CActiveRecord
 				$country = Country::model()->findByPk($subject_data->country_id);
 				$arr_data['country_code_1'] = ($country->code) ? $country->code : 'WW';
 				$arr_data['country_name_1'] = ($country->name) ? $country->name : 'WORLD';
+				$user = User::model()->findByPk($subject_data->user_id);
+				$arr_data['username_1'] = $user->username;
 
 				$arr_data['content_html_1'] = SiteHelper::subject_content($subject_data);
 				$arr_data['content_data_1'] = (array) Subject::subject_content($subject_data)->getAttributes();

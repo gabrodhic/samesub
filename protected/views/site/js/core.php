@@ -123,14 +123,16 @@ function display_elements(obj_json){
 
 
 	if(cache_div_id == 0){
+		time_submitted = fromUnixTime(obj_json.time_submitted_1);
 		reset_page=true;
 		reset_comment = true;
 		current_id = obj_json.id_1;//id
 		current_title = obj_json.title_1;//title
+		submit_info = 'by <a href="<?php echo Yii::app()->getRequest()->getBaseUrl(true);?>/mysub/'+obj_json.username_1+'">' + obj_json.username_1 + '</a> at ' 
+		+time_submitted.getHours()+':'+time_submitted.getMinutes()+' UTC';
 		share_html = '<?php echo SiteHelper::share_links("'+obj_json.urn_1+'","'+obj_json.title_1+'"); ?>';
-		$('#content_div_1').html('<?php echo SiteHelper::content_html("'+obj_json.content_html_1+'","'+obj_json.user_comment_1+'","'+share_html+'"); ?> ');
-		time_submitted = fromUnixTime(obj_json.time_submitted_1);
-		current_info = '<b>'+obj_json.country_name_1+'</b> '+ time_submitted.getHours()+':'+time_submitted.getMinutes()+' UTC | ';
+		$('#content_div_1').html('<?php echo SiteHelper::content_html("'+obj_json.content_html_1+'","'+obj_json.user_comment_1+'","'+submit_info+'","'+share_html+'"); ?> ');
+		current_info = '<b>'+obj_json.country_name_1+'</b> | ';
 		//$("#comments_board").html("Waiting for comments");
 	}else{
 		if(cached == true){
@@ -236,17 +238,20 @@ function display_elements(obj_json){
 		
 		cached = true;
 		cache_div_id = obj_json.id_2;
+		time_submitted = fromUnixTime(obj_json.time_submitted_2);
+		submit_info = 'by <a href="<?php echo Yii::app()->getRequest()->getBaseUrl(true);?>/mysub/'+obj_json.username_2+'">' + obj_json.username_2 + '</a> at ' 
+		+time_submitted.getHours()+':'+time_submitted.getMinutes()+' UTC';
 		share_html = '<?php echo SiteHelper::share_links("'+obj_json.urn_2+'","'+obj_json.title_2+'"); ?>';
 		cache_div_title = obj_json.title_2;
 		if($("#content_div_1").css("display") == 'none'){
-			$("#content_div_1").html(  '<?php echo SiteHelper::content_html("'+obj_json.content_html_2+'","'+obj_json.user_comment_2+'","'+share_html+'"); ?> ');
+			$("#content_div_1").html(  '<?php echo SiteHelper::content_html("'+obj_json.content_html_2+'","'+obj_json.user_comment_2+'","'+submit_info+'","'+share_html+'"); ?> ');
 			//$('#cache_html').html(  obj_json.user_comment_2 + '<br>' + obj_json.content_html_2 + share_html);
 		}else{
-			$("#content_div_2").html(  '<?php echo SiteHelper::content_html("'+obj_json.content_html_2+'","'+obj_json.user_comment_2+'","'+share_html+'"); ?> ');
+			$("#content_div_2").html(  '<?php echo SiteHelper::content_html("'+obj_json.content_html_2+'","'+obj_json.user_comment_2+'","'+submit_info+'","'+share_html+'"); ?> ');
 		}
 		
-		time_submitted = fromUnixTime(obj_json.time_submitted_2);
-		cache_div_info = '<b>'+obj_json.country_name_2+'</b> '+ time_submitted.getHours()+':'+time_submitted.getMinutes()+' UTC | ';
+		
+		cache_div_info = '<b>'+obj_json.country_name_2+'</b> UTC | ';
 		cache_display_time = obj_json.display_time_2;
 	
 	}

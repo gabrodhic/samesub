@@ -44,6 +44,14 @@ The following list shows all the subjects that has been placed in the live strea
 			'sortable'=>true,
         ),
 		array(
+            'name'=>'user_id',
+			'type'=>'html',
+            'value'=>'CHtml::link(User::model()->findByPk($data->user_id)->username,Yii::app()->getRequest()->getBaseUrl(true)."/mysub/".User::model()->findByPk($data->user_id)->username)',
+			'filter'=>'',
+			'headerHtmlOptions'=>array('width'=>'90px'),
+			'sortable'=>true,
+        ),
+		array(
             'name'=>'priority_id',
             'value'=>'$data->priority_type->name',
 			'headerHtmlOptions'=>array('width'=>'50px'),

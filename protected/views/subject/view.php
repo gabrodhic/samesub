@@ -21,6 +21,9 @@ $this->pageTitle=Yii::app()->name . ' - '. $model->title;
 		<?php echo SiteHelper::formatted($model->user_comment); ?>
 	</div>
 	
+	<div class="row">
+		by <?php echo CHtml::link(User::model()->findByPk($model->user_id)->username,array('mysub/'.User::model()->findByPk($model->user_id)->username));?>
+	</div>
 
 
 <?php echo SiteHelper::share_links($model->urn,$model->title); ?>

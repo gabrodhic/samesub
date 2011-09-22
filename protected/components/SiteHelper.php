@@ -144,15 +144,16 @@ class SiteHelper extends CHtml
 	 * Generates the html for the content on the client side
 	 * @param string $subject_content the subject specific html
 	 * @param string $comment (optional) the user comment
+	 * @param string $info (optional) additional info
 	 * @param string $share (optional) the sharing links
 	 * @return string with the html
 	 */
-	public function content_html($subject_content,$comment='',$share='')
+	public function content_html($subject_content,$comment='',$info='',$share='')
 	{
-		$html = $subject_content."<br>".$comment."<br>".$share;
+		$html = $subject_content."<br>".$comment."<br><br>".$info."<br><br>".$share;
 		if(Yii::app()->getTheme()->name=='mobile'){
 			$html = $subject_content."<br>".
-			'<div class="expandable">'.$comment.'<br>'.$share.'</div>';
+			'<div class="expandable">'.$comment.'<br>'.$info.'<br>'.$share.'</div>';
 			$html = $html .'<script>$(".expandable").expander({slicePoint:100,expandText: "[more]",userCollapseText: "[less]"});</script>';
 			
 			//if( strlen(strip_tags($comment)) > 64 ){	
