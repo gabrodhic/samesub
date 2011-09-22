@@ -17,6 +17,10 @@
 		<?php echo SiteHelper::formatted($data->user_comment); ?>
 	</div>
 	
+	<div class="row">
+		<?php echo SiteHelper::share_links($data->urn,$data->title); ?>
+	</div>
+	
 	<h4>Comments:</h4>
 
 	<?php foreach($data->comments as $comment): ?>
