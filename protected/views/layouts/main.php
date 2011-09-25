@@ -80,7 +80,7 @@ preload_time_passed = 5;
 		<div id="header_top"><?php if(strtolower($this->id) != 'site' or strtolower($this->action->Id) != 'index')
 		echo '<a href="'.Yii::app()->params['weburl'].'">LIVE: '. Notification::getNotification()->live. '</a>'; ?></div>
 		<div id="header_middle">
-			<div id="logo">HERE GOES THE LOGO</div>
+			<div id="logo"><a href="<?php echo Yii::app()->createUrl('site/index');?>"><img src="<?php echo Yii::app()->request->baseUrl; ?>/images/logo.jpg"></a></div>
 			<div id="main_menu">
 				<div id="menu_left">
 					<div class="navigation">
@@ -88,8 +88,9 @@ preload_time_passed = 5;
 							'items'=>array(
 								array('label'=>'Live', 'url'=>array('site/index')),
 								array('label'=>'Add Subject', 'url'=>array('subject/add')),
+								array('label'=>'Mysub', 'url'=>array((Yii::app()->user->isGuest) ? '/mysub' : 'mysub/'.Yii::app()->user->name)),
 								array('label'=>'History', 'url'=>array('subject/index')),
-								array('label'=>'Manage', 'url'=>array('subject/manage')),
+
 							),
 						)); ?>					
 					</div>
@@ -97,8 +98,7 @@ preload_time_passed = 5;
 				<div id="menu_right">
 					<span><a href="<? echo Yii::app()->getRequest()->getBaseUrl(true);?>/site/contact">Feedback</a></span>
 					<span> | <?php echo (Yii::app()->user->isGuest) ? '<a href="'. Yii::app()->createUrl('site/login').'">Login</a>' 
-					:  '<a href="'. Yii::app()->createUrl('mysub/'.Yii::app()->user->name).'">Mysub'
-					.'</a>| <span><a href="'. Yii::app()->createUrl('user').'">Settings</a></span>'
+					:  '<span><a href="'. Yii::app()->createUrl('user').'">Settings</a></span>'
 					.'| <span><a href="'. Yii::app()->createUrl('site/logout').'">Logout</a></span>';?></span>
 					<?php if(strtolower(Yii::app()->controller->action->id) == 'index' and strtolower(Yii::app()->controller->id) == 'site')
 					echo '<span><b> | UTC NOW: </b></span><span id="utc_clock"></span>'; ?>

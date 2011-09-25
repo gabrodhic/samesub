@@ -86,9 +86,10 @@ class MysubController extends Controller
 	/**
 	 * User subs.
 	 */
-	public function actionIndex($username)
+	public function actionIndex($username='')
 	{
-		
+		if(!$username and Yii::app()->user->isGuest) {Yii::app()->user->setReturnUrl(Yii::app()->getRequest()->url); $this->redirect(array('site/login'));}
+		if(!$username) $this->redirect( array('mysub/'.Yii::app()->user->name));
 		$model2 = $this->loadModel(null,$username);
 		$this->model = new Subject();
 		$this->model->unsetAttributes();  // clear any default values
