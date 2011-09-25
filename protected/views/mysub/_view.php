@@ -1,4 +1,4 @@
-<div style="padding-bottom:25px;">
+<div style="padding-bottom:75px;">
 
 	<div class="row">
 		<a style="font-size: 20px;color: #blue;font-weight: bold;font-family: arial;" href="<?php echo Yii::app()->createUrl('sub/'.$data->urn);?>"><?php echo CHtml::encode($data->title); ?></a>
@@ -21,9 +21,9 @@
 		<?php echo SiteHelper::share_links($data->urn,$data->title); ?>
 	</div>
 	
-	<h4>Last 5 Comments:</h4>
-
+	
 	<?php foreach($data->comments as $comment): $i++; if($i==6) break;?>
+	<?php if($i == 1) echo "<h4>Last 5 Comments:</h4>";?>
 	<div class="comment" id="c<?php echo $comment->id; ?>">
 
 		<div class="time">
@@ -36,5 +36,6 @@
 
 	</div><!-- comment -->
 	<?php endforeach; ?>
+	<?php if(! $i) echo "NO COMMENTS";?>
 
 </div>
