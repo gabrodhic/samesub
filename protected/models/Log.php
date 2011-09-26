@@ -82,287 +82,289 @@ class Log extends CActiveRecord
 	 * Or http://www.user-agents.org/index.shtml
 	*/
 	public function is_bot($bot_text){
-		$bots = "ABCdatos BotLink/1.0.2 (test links)
-Due to a deficiency in Java it's not currently possible to set the User-Agent.
-'Ahoy! The Homepage Finder'
-AlkalineBOT
-AnthillV1.1
-appie/1.1
-Arachnophilia
-no
-Araneo/0.7 (araneo@esperantisto.net; http://esperantisto.net)
-AraybOt/1.0 (+http://www.araykoo.com/araybot.html)
-ArchitextSpider
-arks/1.0
-ASpider/0.09
-ATN_Worldwide
-Atomz/1.0
-AURESYS/1.0
-BackRub/*.*
-BaySpider
-bbot/0.100
-Big Brother
-Bjaaland/0.5
-BlackWidow
-Die Blinde Kuh
-None
-borg-bot/0.9
-BoxSeaBot/0.5 (http://boxsea.com/crawler)
-Mozilla/3.01 (compatible;)
-BSpider/1.0 libwww-perl/0.40
-CACTVS Chemistry Spider
-Calif/0.6 (kosarev@tnps.net; http://www.tnps.dp.ua)
-Digimarc CGIReader/1.0
-Checkbot/x.xx LWP/5.x
-Mozilla/4.0 (compatible; ChristCrawler.com, ChristCrawler@ChristCENTRAL.com)
-cIeNcIaFiCcIoN.nEt Spider (http://www.cienciaficcion.net)
-CMC/0.01
-LWP
-combine/0.0
-Confuzzledbot/X.X (+http://www.confuzzled.lu/bot/)
-CoolBot
-root/0.1
-cosmos/0.3
-Internet Cruiser Robot/2.1
-Cusco/3.2
-CyberSpyder/2.1
-CydralSpider/X.X (Cydral Web Image Search;
-DesertRealm.com; 0.2; [J];
-Deweb/1.01
-dienstspider/1.0  
-Digger/1.0 JDK/1.3.0
-DIIbot
-grabber
-DNAbot/1.0
-DragonBot/1.0 libwww/5.0
-DWCP/2.0
-LWP::
-EbiNess/0.01a
-EIT-Link-Verifier-Robot/0.2
-elfinbot
-Emacs-w3/v[0-9\.]+
-EMC Spider
-esculapio/1.1
-esther
-Evliya Celebi v0.151 - http://ilker.ulak.net.tr
-explorersearch
-FastCrawler 3.0.X (crawler@1klik.dk) - http://www.1klik.dk
-Mozilla/4.0 (compatible: FDSE robot)
-FelixIDE/1.0
-Hazel's Ferret Web hopper, 
-ESIRover v1.0
-fido/0.9 Harvest/1.4.pl2
-Hämähäkki/0.2
-KIT-Fireball/2.0 libwww/5.0a
-Fish-Search-Robot
-Mozilla/2.0 (compatible fouineur v2.0; fouineur.9bit.qc.ca)
-Robot du CRIM 1.0a
-Freecrawl
-FunnelWeb-1.0
-gammaSpider xxxxxxx ()/
-gazz/1.0
-gcreep/1.0
-???
-GetURL.rexx v1.05
-Golem/1.1
-Googlebot/2.X (+http://www.googlebot.com/bot.html)
-griffon/1.0
-Gromit/1.0
-Gulliver/1.1
-Gulper Web Bot 0.2.4 (www.ecsl.cs.sunysb.edu/~maxim/cgi-bin/Link/GulperBot)
-yes
-havIndex/X.xx[bxx]
-AITCSRobot/1.1
-Hometown Spider Pro
-wired-digital-newsbot/1.5
-htdig/3.1.0b2
-HTMLgobble v2.2
-no
-iajaBot/0.1
-IBM_Planetwide, 
-gestaltIconoclast/1.0 libwww-FM/2.17
-INGRID/0.1
-Mozilla 3.01 PBWF (Win95)
-IncyWincy/1.0b1
-Informant
-InfoSeek Robot 1.0
-Infoseek Sidewinder
-InfoSpiders/0.1
-inspectorwww/1.0 http://www.greenpac.com/inspectorwww.html
-'IAGENT/1.0'
-I Robot 0.4 (irobot@chaos.dk)
-Iron33/0.0
-IsraeliSearch/1.0
-JavaBee
-JBot
-JCrawler/0.2
-Mozilla/2.0 (compatible; Ask Jeeves/Teoma)
-JoBo
-Jobot/0.1alpha libwww-perl/4.0
-JoeBot
-JubiiRobot
-jumpstation
-image.kapsi.net/1.0
-Katipo/1.0
-KDD-Explorer/0.1
-KO_Yappo_Robot/1.0.4(http://yappo.com/info/robot.html)
-LabelGrab/1.1
-larbin (+mail)
-legs
-Linkidator/0.93
-LinkScan Server/5.5 | LinkScan Workstation/5.5
-LinkWalker
-Lockon
-logo.gif crawler
-Lycos
-Magpie/1.0
-marvin/infoseek (marvin-team@webseek.de)
-M/3.8
-MediaFox/x.y
-MerzScope
-NEC-MeshExplorer
-MindCrawler
-UdmSearch
-moget/1.0
-MOMspider/1.00 libwww-perl/0.40
-Monster
-Motor/0.2
-MSNBOT/0.1 (http://search.msn.com/msnbot.htm)
-Muninn/0.1 libwww-perl-5.76
-MuscatFerret
-MwdSearch/0.1
-User-Agent: Mozilla/4.0 (compatible; sharp-info-agent v1.0; )
-NDSpider/1.5
-NetCarta CyberPilot Pro
-NetMechanic
-NetScoop/1.0 libwww/5.0a
-newscan-online/1.1
-NHSEWalker/3.0
-Nomad
-NorthStar
-ObjectsSearch/0.01
-Occam/1.0
-HKU WWW Robot,
-OntoSpider/1.0 libwww-perl/5.65
-Openfind data gatherer, Openbot/3.0+(robot-response@openfind.com.tw;+http://www.openfind.com.tw/robot.html)
-Orbsearch/1.0
-PackRat/1.0
-PageBoy/1.0
-ParaSite/0.21 (http://www.ianett.com/parasite/)
-Patric/0.01a
-web robot PEGASUS
-Peregrinator-Mathematics/0.7
-PerlCrawler/1.0 Xavatoria/2.0
-Duppies
-phpdig
-PiltdownMan/1.0 profitnet@myezmail.com
-Mozilla/4.0 (compatible: Pimptrain's robot)
-Pioneer
-PortalJuice.com/4.0
-PGP-KA/1.2
-PlumtreeWebAccessor/0.9
-Poppi/1.0
-PortalBSpider/1.0 (spider@portalb.com)
-psbot/0.X (+http://www.picsearch.com/bot.html)
-straight FLASH!! GetterroboPlus 1.5
-Raven-v2
-Resume Robot
-RHCS/1.0a
-RixBot (http://www.oops-as.no/rix/)
-Road Runner: ImageScape Robot (lim@cs.leidenuniv.nl)
-Robbie/0.1
-ComputingSite Robi/1.0 (robi@computingsite.com)
-RoboCrawl (http://www.canadiancontent.net)
-Robofox v2.0
-Robozilla/1.0
-Roverbot
-RuLeS/1.0 libwww/4.0
-SafetyNet Robot 0.1
-Scooter/2.0 G.R.A.B. V1.1.0
-Mozilla/4.0 (Sleek Spider/1.2)
-searchprocess/0.9
-Senrigan
-SG-Scout
-Shagseeker at http://www.shagseek.com /1.0
-Shai'Hulud
-libwww-perl-5.41
-SimBot/1.0
-Site Valet
-SiteTech-Rover
-aWapClient
-SLCrawler
-Slurp/2.0
-ESISmartSpider/2.0
-Snooper/b97_01
-Solbot/1.0 LWP/5.07
-Speedy Spider ( http://www.entireweb.com/speedy.html )
-mouse.house/7.1
-SpiderBot/1.0
-spiderline/3.1.3
-SpiderMan 1.0
-Mozilla/4.0 (compatible; SpiderView 1.0;unix)
-ssearcher100
-suke
-suntek
-http://www.sygol.com
-Black Widow
-Tarantula/1.0
-tarspider
-dlw3robot
-TechBOT
-Templeton
-TitIn/0.2
-TITAN/0.1
-TLSpider/1.1
-UCSD-Crawler
-UdmSearch/2.1.1
-uptimebot
-urlck/1.2.3
-URL Spider Pro
-Valkyrie/1.0 libwww-perl/0.40
-Verticrawlbot
-Victoria/1.0
-vision-search/3.0
-void-bot/0.1 (bot@void.be; http://www.void.be/)
-Voyager/0.0
-VWbot_K/4.2
-w3index
-W3M2
-CrawlPaper
-WWWWanderer v3.0
-w@pSpider
-WebBandit/1.0
-WebCatcher/1.0
-WebCopy
-WebFetcher
-weblayers
-WebLinker
-WebMoose
-WebQuest/1.0
-Digimarc WebReader/1.2
-WebReaper [webreaper@otway.com]
-webs@recruit.co.jp
-webvac/1.0
-webwalk
-WebWalker/1.10
-WebWatch
-Wget
-whatUseek_winona
-wlm-1.1
-w3mir
-WOLP/1.0 mda/1.0
-WWWC
-XGET
-Nederland.zoek
-";
-	 if(stripos($bots, $bot_text)){
-		return true;
-	}else{
-		if($bot_text == " ") return true;
-		if(stripos($bot_text,"spider")) return true;
-		if(stripos($bot_text,"crawl")) return true;
-		if(stripos($bot_text,"bot")) return true;
+		$bots = 
+$bots = array();
+$bots[] = "ABCdatos ";
+$bots[] = "Due to a deficiency in Java it's not currently possible to set the User-Agent.";
+$bots[] = "Ahoy";
+$bots[] = "AlkalineBOT";
+$bots[] = "Anthill";
+$bots[] = "appie";
+$bots[] = "Arachnophilia";
+$bots[] = "no";
+$bots[] = "Araneo";
+$bots[] = "AraybOt";
+$bots[] = "ArchitextSpider";
+$bots[] = "arks/1.0";
+$bots[] = "ASpider";
+$bots[] = "ATN_Worldwide";
+$bots[] = "Atomz";
+$bots[] = "AURESYS";
+$bots[] = "BackRub";
+$bots[] = "BaySpider";
+$bots[] = "bbot";
+$bots[] = "Big Brother";
+$bots[] = "Bjaaland/";
+$bots[] = "BlackWidow";
+$bots[] = "Die Blinde Kuh";
+$bots[] = "None";
+$bots[] = "borg-bot";
+$bots[] = "BoxSeaBot";
+$bots[] = "Mozilla";
+$bots[] = "BSpider";
+$bots[] = "CACTVS Chemistry Spider";
+$bots[] = "Calif";
+$bots[] = "Digimarc CGIReader";
+$bots[] = "Checkbot";
+$bots[] = "ChristCrawler.com";
+$bots[] = "cIeNcIaFiCcIoN.nEt Spider";
+$bots[] = "CMC/0.01";
+$bots[] = "LWP";
+$bots[] = "combine/0.0";
+$bots[] = "Confuzzledbot";
+$bots[] = "CoolBot";
+$bots[] = "root/";
+$bots[] = "cosmos/";
+$bots[] = "Internet Cruiser Robot";
+$bots[] = "Cusco/";
+$bots[] = "CyberSpyder";
+$bots[] = "CydralSpider";
+$bots[] = "DesertRealm.com";
+$bots[] = "Deweb/";
+$bots[] = "dienstspider";
+$bots[] = "Digger/";
+$bots[] = "DIIbot";
+$bots[] = "grabber";
+$bots[] = "DNAbot";
+$bots[] = "DragonBot";
+$bots[] = "DWCP/";
+$bots[] = "LWP";
+$bots[] = "EbiNess/";
+$bots[] = "EIT-Link-Verifier-Robot";
+$bots[] = "elfinbot";
+$bots[] = "Emacs-w3/";
+$bots[] = "EMC Spider";
+$bots[] = "esculapio/";
+$bots[] = "esther";
+$bots[] = "Evliya Celebi";
+$bots[] = "explorersearch";
+$bots[] = "FastCrawler";
+$bots[] = "FDSE robot";
+$bots[] = "FelixIDE/";
+$bots[] = "Hazel's Ferret Web hopper";
+$bots[] = "ESIRover";
+$bots[] = "fido/";
+$bots[] = "Hämähäkki/";
+$bots[] = "KIT-Fireball/";
+$bots[] = "Fish-Search-Robot";
+$bots[] = "fouineur";
+$bots[] = "CRIM";
+$bots[] = "Freecrawl";
+$bots[] = "FunnelWeb";
+$bots[] = "gammaSpider";
+$bots[] = "gazz";
+$bots[] = "gcreep/";
+$bots[] = "???";
+$bots[] = "GetURL";
+$bots[] = "Golem/";
+$bots[] = "Googlebot";
+$bots[] = "griffon";
+$bots[] = "Gromit";
+$bots[] = "Gulliver/";
+$bots[] = "Gulper";
+$bots[] = "havIndex";
+$bots[] = "AITCSRobot";
+$bots[] = "Hometown Spider Pro";
+$bots[] = "wired-digital-newsbot";
+$bots[] = "htdig/";
+$bots[] = "HTMLgobble";
+$bots[] = "iajaBot/";
+$bots[] = "IBM_Planetwide";
+$bots[] = "gestaltIconoclast";
+$bots[] = "INGRID/";
+$bots[] = "Mozilla 3.01 PBWF (Win95)";
+$bots[] = "IncyWincy";
+$bots[] = "Informant";
+$bots[] = "InfoSeek Robot";
+$bots[] = "Infoseek Sidewinder";
+$bots[] = "InfoSpiders";
+$bots[] = "inspectorwww";
+$bots[] = "IAGENT/";
+$bots[] = "I Robot";
+$bots[] = "Iron33";
+$bots[] = "IsraeliSearch";
+$bots[] = "JavaBee";
+$bots[] = "JBot";
+$bots[] = "JCrawler";
+$bots[] = "Ask Jeeves";
+$bots[] = "JoBo";
+$bots[] = "Jobot";
+$bots[] = "JoeBot";
+$bots[] = "JubiiRobot";
+$bots[] = "jumpstation";
+$bots[] = "image.kapsi.net";
+$bots[] = "Katipo";
+$bots[] = "KDD-Explorer";
+$bots[] = "KO_Yappo_Robot";
+$bots[] = "LabelGrab";
+$bots[] = "larbin";
+$bots[] = "legs";
+$bots[] = "Linkidator";
+$bots[] = "LinkScan Server";
+$bots[] = "LinkWalker";
+$bots[] = "Lockon";
+$bots[] = "logo.gif crawler";
+$bots[] = "Lycos";
+$bots[] = "Magpie";
+$bots[] = "marvin/infoseek";
+$bots[] = "M/3.";
+$bots[] = "MediaFox";
+$bots[] = "MerzScope";
+$bots[] = "NEC-MeshExplorer";
+$bots[] = "MindCrawler";
+$bots[] = "UdmSearch";
+$bots[] = "moget/";
+$bots[] = "MOMspider";
+$bots[] = "Monster";
+$bots[] = "Motor/";
+$bots[] = "MSNBOT/";
+$bots[] = "Muninn/";
+$bots[] = "MuscatFerret";
+$bots[] = "MwdSearch";
+$bots[] = "sharp-info-agent";
+$bots[] = "NDSpider/";
+$bots[] = "NetCarta CyberPilot Pro";
+$bots[] = "NetMechanic";
+$bots[] = "NetScoop/";
+$bots[] = "newscan-online";
+$bots[] = "NHSEWalker";
+$bots[] = "Nomad";
+$bots[] = "NorthStar";
+$bots[] = "ObjectsSearch";
+$bots[] = "Occam";
+$bots[] = "HKU WWW Robot";
+$bots[] = "OntoSpider";
+$bots[] = "Openfind";
+$bots[] = "Orbsearch";
+$bots[] = "PackRat";
+$bots[] = "PageBoy";
+$bots[] = "ParaSite";
+$bots[] = "Patric";
+$bots[] = "web robot PEGASUS";
+$bots[] = "Peregrinator-Mathematics";
+$bots[] = "PerlCrawler";
+$bots[] = "Duppies";
+$bots[] = "phpdig";
+$bots[] = "PiltdownMan";
+$bots[] = "Pimptrain";
+$bots[] = "Pioneer";
+$bots[] = "PortalJuice.com";
+$bots[] = "PGP-KA";
+$bots[] = "PlumtreeWebAccessor";
+$bots[] = "Poppi";
+$bots[] = "PortalBSpider";
+$bots[] = "psbot";
+$bots[] = "straight";
+$bots[] = "Raven-";
+$bots[] = "Resume Robot";
+$bots[] = "RHCS/";
+$bots[] = "RixBot";
+$bots[] = "Road Runner";
+$bots[] = "Robbie/";
+$bots[] = "ComputingSite";
+$bots[] = "RoboCrawl";
+$bots[] = "Robofox";
+$bots[] = "Robozilla/";
+$bots[] = "Roverbot";
+$bots[] = "RuLeS/";
+$bots[] = "SafetyNet Robot";
+$bots[] = "Scooter/2.0 G.R.A.B";
+$bots[] = "Sleek Spider";
+$bots[] = "searchprocess/";
+$bots[] = "Senrigan";
+$bots[] = "SG-Scout";
+$bots[] = "Shagseeker";
+$bots[] = "Shai'Hulud";
+$bots[] = "libwww-perl";
+$bots[] = "SimBot";
+$bots[] = "Site Valet";
+$bots[] = "SiteTech-Rover";
+$bots[] = "aWapClient";
+$bots[] = "SLCrawler";
+$bots[] = "Slurp";
+$bots[] = "ESISmartSpider";
+$bots[] = "Snooper";
+$bots[] = "Solbot";
+$bots[] = "Speedy Spider";
+$bots[] = "mouse.house";
+$bots[] = "SpiderBot";
+$bots[] = "spiderline";
+$bots[] = "SpiderMan0";
+$bots[] = "SpiderView";
+$bots[] = "ssearcher100";
+$bots[] = "suke";
+$bots[] = "suntek";
+$bots[] = "http://www.sygol.com";
+$bots[] = "Black Widow";
+$bots[] = "Tarantula/";
+$bots[] = "tarspider";
+$bots[] = "dlw3robot";
+$bots[] = "TechBOT";
+$bots[] = "Templeton";
+$bots[] = "TitIn";
+$bots[] = "TITAN";
+$bots[] = "TLSpider";
+$bots[] = "UCSD-Crawler";
+$bots[] = "UdmSearch";
+$bots[] = "uptimebot";
+$bots[] = "urlck/";
+$bots[] = "URL Spider Pro";
+$bots[] = "Valkyrie/";
+$bots[] = "Verticrawlbot";
+$bots[] = "Victoria/";
+$bots[] = "vision-search";
+$bots[] = "void-bot";
+$bots[] = "Voyager/";
+$bots[] = "VWbot_K/";
+$bots[] = "w3index";
+$bots[] = "W3M2";
+$bots[] = "CrawlPaper";
+$bots[] = "WWWWanderer";
+$bots[] = "w@pSpider";
+$bots[] = "WebBandit";
+$bots[] = "WebCatcher";
+$bots[] = "WebCopy";
+$bots[] = "WebFetcher";
+$bots[] = "weblayers";
+$bots[] = "WebLinker";
+$bots[] = "WebMoose";
+$bots[] = "WebQuest";
+$bots[] = "Digimarc WebReader";
+$bots[] = "WebReaper";
+$bots[] = "webs@recruit.co.jp";
+$bots[] = "webvac/";
+$bots[] = "webwalk";
+$bots[] = "WebWalker/";
+$bots[] = "WebWatch";
+$bots[] = "Wget";
+$bots[] = "whatUseek_winona";
+$bots[] = "wlm-";
+$bots[] = "w3mir";
+$bots[] = "WOLP/";
+$bots[] = "WWWC";
+$bots[] = "XGET";
+$bots[] = "Nederland.zoek";
+
+
+	foreach($bots as $bot){
+		if(stripos($bot_text, $bot)) return true;
 	}
+	
+	if($bot_text == " ") return true;
+	if(stripos($bot_text,"spider")) return true;
+	if(stripos($bot_text,"crawl")) return true;
+	if(stripos($bot_text,"bot")) return true;
+
 	return false;
 		
 	}
