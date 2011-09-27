@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Sep 18, 2011 at 05:53 PM
+-- Generation Time: Sep 27, 2011 at 09:34 AM
 -- Server version: 5.1.33
 -- PHP Version: 5.2.9
 
@@ -437,7 +437,7 @@ CREATE TABLE `user` (
   ip_created varchar(20) COLLATE utf8_unicode_ci NOT NULL,
   ip_last_access varchar(20) COLLATE utf8_unicode_ci NOT NULL,
   user_status_id tinyint(4) NOT NULL DEFAULT '1',
-  user_type_id tinyint(4) NOT NULL DEFAULT '1',
+  user_type_id tinyint(4) NOT NULL DEFAULT '2',
   time_created int(11) NOT NULL,
   time_last_access int(11) NOT NULL,
   time_modified int(11) NOT NULL,

@@ -37,9 +37,9 @@ class UserController extends Controller
 				'actions'=>array('index','update','changepassword'),
 				'users'=>array('@'),
 			),
-			array('allow', // allow admin user to perform 'admin' and 'delete' actions
-				'actions'=>array('admin','delete'),
-				'users'=>array('admin'),
+			array('allow', // allow admin user to perform 'admin','view'
+				'actions'=>array('admin','view'),
+				'users'=>array('admin','super'),
 			),
 			array('deny',  // deny all users
 				'users'=>array('*'),
@@ -77,8 +77,15 @@ class UserController extends Controller
 	 */
 	public function actionView($id)
 	{
+		$this->model=$this->loadModel($id);
+		$this->model->country = Country::model()->findByPk($this->model->country_id)->name;
+		$status = Yii::app()->db->createCommand()->select('*')->from('user_status')->queryRow();
+		$this->model->status = $status['name'];
+		$type = Yii::app()->db->createCommand()->select('*')->from('user_type')->queryRow();
+		$this->model->type = $type['name'];
+		$this->model->country_created = Country::model()->findByPk($this->model->country_id_created)->name;
 		$this->render('view',array(
-			'model'=>$this->loadModel($id),
+			'model'=>$this->model
 		));
 	}
 

@@ -5,8 +5,7 @@ $this->breadcrumbs=array(
 );
 
 $this->menu=array(
-	array('label'=>'List User', 'url'=>array('index')),
-	array('label'=>'Create User', 'url'=>array('create')),
+	array('label'=>'Manage Users', 'url'=>array('admin')),
 );
 
 Yii::app()->clientScript->registerScript('search', "
@@ -37,26 +36,61 @@ or <b>=</b>) at the beginning of each of your search values to specify how the c
 )); ?>
 </div><!-- search-form -->
 
-<?php $this->widget('zii.widgets.grid.CGridView', array(
+<?php 
+	$dataProvider=$model->search();
+	$dataProvider->pagination->pageSize=50;
+	$this->widget('zii.widgets.grid.CGridView', array(
 	'id'=>'user-grid',
-	'dataProvider'=>$model->search(),
+	'dataProvider'=>$dataProvider,
 	'filter'=>$model,
 	'columns'=>array(
 		'id',
-		'username',
-		'password',
-		'email',
-		'ip_created',
-		'ip_last_access',
-		/*
-		'user_state_id',
-		'user_type_id',
-		'time_created',
-		'time_last_access',
-		'time_modified',
-		*/
 		array(
-			'class'=>'CButtonColumn',
+            'name'=>'username',
+			'headerHtmlOptions'=>array('width'=>'150px'),
+		),
+		array(
+            'name'=>'country_id',
+			'headerHtmlOptions'=>array('width'=>'250px'),
+			'value'=>'$data->country',
+			'filter'=>CHtml::listData(Country::model()->findAll(),'id','name'),
+			'sortable'=>true,
+        ),
+		array(
+            'name'=>'status',			
+			'filter'=>CHtml::listData(Yii::app()->db->createCommand()
+			->select('*')
+			->from('user_status')
+			->queryAll(),'id','name'),
+			'sortable'=>true,
+        ),
+		array(
+            'name'=>'type',			
+			'filter'=>CHtml::listData(Yii::app()->db->createCommand()
+			->select('*')
+			->from('user_type')
+			->queryAll(),'id','name'),
+			'sortable'=>true,
+        ),
+		array(
+            'name'=>'time_last_access',
+            'value'=>'date("Y/m/d H:i:s", $data->time_last_access)',
+			'headerHtmlOptions'=>array('width'=>'180px'),
+			'filter'=>'',
+			'sortable'=>true,
+        ),
+		array(
+			'header'=>'Subs',
+			'type'=>'html',
+			'value'=>'CHtml::link( "$data->subs", Yii::app()->createUrl("mysub/".$data->username))',
+			'headerHtmlOptions'=>array('width'=>'50px'),
+			'sortable'=>true,
+		),
+		array(
+			'header'=>'Details',
+			'type'=>'html',
+			'value'=>'CHtml::link( "Details", Yii::app()->createUrl("user/view/".$data->id))',
+			'headerHtmlOptions'=>array('width'=>'50px'),
 		),
 	),
 )); ?>

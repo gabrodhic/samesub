@@ -21,6 +21,11 @@ class User extends CActiveRecord
 	public $oldpassword;
 	public $newpassword;
 	public $newpassword2;
+	public $country;
+	public $status;
+	public $type;
+	public $country_created;
+	public $subs;
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @return User the static model class
@@ -55,10 +60,10 @@ class User extends CActiveRecord
 			array('username, email', 'unique', 'on'=>'register'),
 			array('email', 'email'),
 			array('country_id', 'numerical'),
-			array('username, password, email', 'length', 'max'=>50, 'min'=>3),
+			array('username, password, email', 'length', 'max'=>50, 'min'=>3),			
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, username, password, email, ip_created, ip_last_access, user_status_id, user_type_id, time_created, time_last_access, time_modified', 'safe', 'on'=>'search'),
+			array('id, username, password, email, ip_created, ip_last_access, user_status_id, user_type_id, time_created, time_last_access, time_modified, country, type, status, subs', 'safe', 'on'=>'search'),
 		);
 	}
 	/**
@@ -123,11 +128,21 @@ class User extends CActiveRecord
 		$criteria->compare('email',$this->email,true);
 		$criteria->compare('ip_created',$this->ip_created,true);
 		$criteria->compare('ip_last_access',$this->ip_last_access,true);
-		$criteria->compare('user_status_id',$this->user_status_id);
-		$criteria->compare('user_type_id',$this->user_type_id);
+		$criteria->compare('user_status_id',$this->status);
+		$criteria->compare('user_type_id',$this->type);
 		$criteria->compare('time_created',$this->time_created);
 		$criteria->compare('time_last_access',$this->time_last_access);
 		$criteria->compare('time_modified',$this->time_modified);
+		
+		$criteria->compare('t.country_id',$this->country_id);
+		
+		$criteria->join = 'LEFT JOIN country as c ON c.id = t.country_id
+		LEFT JOIN user_status as us ON us.id = t.user_status_id
+		LEFT JOIN user_type as ut ON ut.id = t.user_type_id
+		LEFT JOIN subject as su ON su.user_id = t.id';
+		//$criteria->distinct = true;
+		$criteria->group = 't.id';
+		$criteria->select = 'COUNT(su.id) as subs, t.id, t.username, c.name as country, t.country_id as country_id, t.time_last_access, us.name as status, ut.name as type';
 
 		return new CActiveDataProvider(get_class($this), array(
 			'criteria'=>$criteria,
