@@ -59,7 +59,7 @@ class User extends CActiveRecord
 			array('newpassword', 'compare', 'compareAttribute'=>'newpassword2', 'on'=>'resetpasswordnext'),
 			array('username, email', 'unique', 'on'=>'register'),
 			array('email', 'email'),
-			array('country_id', 'numerical'),
+			array('country_id, notify_subject', 'numerical'),
 			array('username, password, email', 'length', 'max'=>50, 'min'=>3),			
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
@@ -108,6 +108,7 @@ class User extends CActiveRecord
 			'time_last_access' => 'Time Last Access',
 			'time_modified' => 'Time Modified',
 			'country_id' => 'Country',
+			'notify_subject'=>'Notify me when going LIVE',
 		);
 	}
 

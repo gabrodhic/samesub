@@ -174,6 +174,35 @@ class InternalController extends Controller
 		
 		
 		Subject::model()->updateByPk($next_subject_id_2, array('show_time'=>SiteLibrary::utc_time()));
+		
+		//Notify subject owner via email that his subject its gonna get LIVE
+		$subject = Subject::model()->findByPk($next_subject_id_2);
+		$user = User::model()->findByPk($subject->user_id);
+		if($user->id <> 1 and $user->notify_subject == 1){
+			$headers="From: Samesub Contact <".Yii::app()->params['contactEmail'].">\r\nReply-To: ".Yii::app()->params['contactEmail'];
+			$mail_message = "Hi {$user->username}, \n\n";
+			$mail_message .= "We are writing to notify you that your subject got approved and that it is\n";
+			$mail_message .= "going to be placed in the live stream(Homepage) in the next 5 minutes.\n\n";
+			$mail_message .= "Details\n\n";
+			$mail_message .= "Subject Title: {$subject->title}\n";
+			$mail_message .= "Uploaded time: ".date("Y/m/d H:i", $subject->time_submitted)." UTC\n";
+			$mail_message .= "Current time: ".date("Y/m/d H:i", SiteLibrary::utc_time())." UTC (time of this message)\n";
+			$mail_message .= "Estimated time: ".date("Y/m/d H:i", (SiteLibrary::utc_time()+300))." UTC (about 5 minutes)\n\n";
+			$mail_message .= "It is even more cool if you chat with your friends about your upcomming subject.\n";
+			$mail_message .= "So, invite them to go to samesub.com now, you still have 4 minutes.\n\n";
+			$mail_message .= "If you do not want to receive this type of notification you can update the settings in\n";
+			$mail_message .= "your user profile anytime you want.\n\n";
+			$mail_message .= "Thanks\n\n";
+			$mail_message .= "Sincerely\n";
+			$mail_message .= "Samesub Team\n";
+			$mail_message .= "www.samesub.com";				
+
+			if(@mail($user->email,"Your subject is going LIVE",$mail_message,$headers)){
+				echo "An email has been sent.";
+			}else{
+				echo "Email could not be sent.";
+			}
+		}
 		echo 'Done setting next subject_id_2 : '.$next_subject_id_2;
 		
 	}

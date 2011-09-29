@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Sep 27, 2011 at 09:34 AM
+-- Generation Time: Sep 28, 2011 at 08:51 AM
 -- Server version: 5.1.33
 -- PHP Version: 5.2.9
 
@@ -443,6 +443,7 @@ CREATE TABLE `user` (
   time_modified int(11) NOT NULL,
   country_id int(11) NOT NULL,
   country_id_created int(11) NOT NULL DEFAULT '0',
+  notify_subject tinyint(4) NOT NULL DEFAULT '1',
   PRIMARY KEY (id),
   UNIQUE KEY username (username),
   UNIQUE KEY email (email),

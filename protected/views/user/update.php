@@ -16,6 +16,11 @@
 		<?php echo $form->DropDownList($model, 'country_id', CHtml::listData(Country::model()->findAll(),'id','name'), array('prompt'=>'Select Country')); ?> 
 		<?php echo $form->error($model,'country_id'); ?>
 	</div>
+	<div class="row">
+		<?php echo $form->labelEx($model,'notify_subject'); ?>
+		<?php echo $form->DropDownList($model, 'notify_subject',array('0'=>'No', '1'=>'Yes')); ?>
+		<?php echo $form->error($model,'notify_subject'); ?>
+	</div>
 	
 	<div class="row buttons">
 		<?php echo CHtml::submitButton('Update Settings'); ?>
