@@ -94,7 +94,7 @@ class MysubController extends Controller
 		$this->model = new Subject();
 		$this->model->unsetAttributes();  // clear any default values
 		$this->model->user_id = $model2->id;
-		$this->model->show_time = ">:0";
+		$this->model->disabled = "=:0";
 		$live_subject = Yii::app()->db->createCommand()
 			->select('*')
 			->from('live_subject')
