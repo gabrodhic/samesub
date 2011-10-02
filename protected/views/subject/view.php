@@ -10,7 +10,7 @@ $this->pageTitle=Yii::app()->name . ' - '. $model->title;
 
 	<div class="row">
 		<?php echo $model->country->name . " | "; ?>
-		<?php echo CHtml::encode(date("Y/m/d H:i", $model->show_time)." UTC"); ?>
+		<?php echo CHtml::encode(date("Y/m/d H:i", $model->time_submitted)." UTC"); ?>
 	</div>
 
 	<div class="row">
