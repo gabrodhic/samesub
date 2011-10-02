@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Oct 01, 2011 at 11:27 PM
+-- Generation Time: Oct 02, 2011 at 06:10 PM
 -- Server version: 5.1.33
 -- PHP Version: 5.2.9
 
@@ -75,7 +75,7 @@ CREATE TABLE `comment` (
   subject_id int(11) NOT NULL,
   `time` int(11) NOT NULL,
   sequence int(11) NOT NULL,
-  `comment` varchar(250) COLLATE utf8_unicode_ci NOT NULL,
+  `comment` text COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (id),
   KEY `time` (`time`),
   KEY user_id (user_id),
@@ -193,7 +193,7 @@ CREATE TABLE live_comment (
   comment_number int(11) NOT NULL AUTO_INCREMENT,
   subject_id int(11) NOT NULL DEFAULT '0',
   comment_sequence int(11) NOT NULL,
-  comment_text varchar(250) COLLATE utf8_unicode_ci NOT NULL,
+  comment_text text COLLATE utf8_unicode_ci NOT NULL,
   comment_time int(11) NOT NULL DEFAULT '0',
   comment_country varchar(200) COLLATE utf8_unicode_ci DEFAULT 'WW',
   PRIMARY KEY (comment_number),

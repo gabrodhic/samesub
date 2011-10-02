@@ -39,7 +39,7 @@ class Comment extends CActiveRecord
 		// will receive user inputs.
 		return array(
 			array('comment', 'required'),
-			array('comment', 'length', 'min'=>2, 'max'=>250),
+			array('comment', 'length', 'min'=>2, 'max'=>65500),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
 			array('id, user_id, subject_id, time, comment', 'safe', 'on'=>'search'),
