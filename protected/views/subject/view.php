@@ -51,7 +51,10 @@ $this->pageTitle=Yii::app()->name . ' - '. $model->title;
 	<h4 style="margin-right:10px;">tags:</h4>
 	<div id="tags_list">
 		<ul>
-		<?php foreach(SiteHelper::make_tags($model->urn) as $tag) echo "<li>".$tag."</li>";?>
+		<?php 
+			$tags = ($model->tag) ? SiteHelper::make_tags($model->tag) : SiteHelper::make_tags($model->urn, true, 'urn'); 
+		?>
+		<?php foreach($tags as $tag) echo "<li>".$tag."</li>";?>
 		</ul>
 	</div>
 </div>

@@ -68,6 +68,14 @@ or <b>=</b>) at the beginning of each of your search values to specify how the c
 			'sortable'=>true,
         ),
 		array(
+            'name'=>'category',
+			'filter'=>CHtml::listData(Yii::app()->db->createCommand()
+			->select('name')
+			->from('subject_category')
+			->queryAll(),'name','name'),//categories a treated just like tags( we dont use ids to store them in db) so we use name as id
+			'sortable'=>true,
+        ),
+		array(
             'name'=>'title',
 			'headerHtmlOptions'=>array('width'=>'410px'),
         ),

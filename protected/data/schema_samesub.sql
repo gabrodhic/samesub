@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Sep 28, 2011 at 08:51 AM
+-- Generation Time: Oct 01, 2011 at 11:27 PM
 -- Server version: 5.1.33
 -- PHP Version: 5.2.9
 
@@ -380,6 +380,8 @@ CREATE TABLE `subject` (
   authorized tinyint(4) NOT NULL DEFAULT '0',
   disabled tinyint(4) NOT NULL DEFAULT '0',
   show_time int(11) NOT NULL DEFAULT '0' COMMENT 'time when the running thread shows the content',
+  tag varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  category varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (id),
   UNIQUE KEY urn (urn),
   KEY user_id (user_id),
@@ -394,7 +396,35 @@ CREATE TABLE `subject` (
   KEY country_id (country_id),
   KEY priority_id (priority_id),
   KEY subject_status (approved),
-  KEY user_country_id (user_country_id)
+  KEY user_country_id (user_country_id),
+  FULLTEXT KEY tag (tag),
+  FULLTEXT KEY category (category)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table 'subject_category'
+--
+
+CREATE TABLE subject_category (
+  id int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
+  PRIMARY KEY (id),
+  UNIQUE KEY `name` (`name`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table 'subject_tag'
+--
+
+CREATE TABLE subject_tag (
+  id int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
+  PRIMARY KEY (id),
+  UNIQUE KEY `name` (`name`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------

@@ -121,23 +121,36 @@ class SiteHelper extends CHtml
 	/**
 	 * Generates tags from a string
 	 * @param string $text the text to generate the tags from
+	 * @param boolean $set_link wether to make links to the tag
+	 * @param string $type source where we are generating tags from. eg: From a URN field or from a TAG table field.
 	 * @return array with the tags
 	 */
-	public function make_tags($text)
+	public function make_tags($text,$set_link=true,$type='tag')
 	{
-		//First, lets generate a clean text(just letters, remove everything else)		
-		$text = ereg_replace("[^A-Za-z ]", " ", $text);//we cen't replace with empty as it would concatenate some strings (ie: hi:im me => hiim me)so we use whitespace
-		$text = preg_replace('/\s+/', ' ', $text);//now replace any sequence of whitespace greater than one, with only one
-		$text = trim($text);//we need to trim also as there can be white spaces at the end (ie: how are you? => 'how are you ')
-		//$text = str_replace(" ", " *", $text);
-		//And split to an array by whitespaces
-		$arr_text =  explode(" ", $text);
-		$arr_text = array_unique($arr_text);//remove any duplicate tag
-		function to_link(&$value, $key){
-			$value = '<a href="'.Yii::app()->params['weburl'].'/subject/index?'.urlencode('Subject[urn]').'='.$value.'&ajax=subject-grid">&#32;&#149;&#32;'.$value.'</a>'; 
+		if($type == 'urn'){
+			//First, lets generate a clean text(just letters, remove everything else)		
+			$text = ereg_replace("[^A-Za-z ]", " ", $text);//we cen't replace with empty as it would concatenate some strings (ie: hi:im me => hiim me)so we use whitespace
+			$text = preg_replace('/\s+/', ' ', $text);//now replace any sequence of whitespace greater than one, with only one
+			$text = trim($text);//we need to trim also as there can be white spaces at the end (ie: how are you? => 'how are you ')
+			//$text = str_replace(" ", " *", $text);
+			//And split to an array by whitespaces
+			$arr_text =  explode(" ", $text);
+			$arr_text = array_unique($arr_text);//remove any duplicate tag
+		}else{
+			$arr_text = explode(",",$text);
+		}
+		
+		if(! $set_link)	return $arr_text;
+		
+		function to_link(&$value, $key, $type){
+			
+			if($type == 'urn')
+				$value = '<a href="'.Yii::app()->getRequest()->getBaseUrl(true).'/subject/index?'.urlencode('Subject[urn]').'='.$value.'&ajax=subject-grid">&#32;&#149;&#32;'.$value.'</a>'; 
+			else
+				$value = '<a href="'.Yii::app()->getRequest()->getBaseUrl(true).'/subject/index?'.urlencode('Subject[tag]').'='.$value.'&ajax=subject-grid">&#32;&#149;&#32;'.$value.'</a>'; 
 		} 
 		
-		array_walk($arr_text, 'to_link');
+		array_walk($arr_text, 'to_link', $type);
 		return $arr_text;
 	}
 	

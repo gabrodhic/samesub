@@ -70,6 +70,7 @@ class Subject extends CActiveRecord
 			array('content_type_id', 'validateContentType', 'on'=>'add'),
 
 			array('disabled', 'numerical', 'integerOnly'=>true, 'on'=>'moderate,authorize'),
+			array('tag, category', 'length', 'max'=>240),
 			
 			array('approved', 'numerical', 'integerOnly'=>true, 'on'=>'moderate'),
 			array('moderator_comment', 'length', 'max'=>240, 'on'=>'moderate'),
@@ -80,7 +81,7 @@ class Subject extends CActiveRecord
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
 			array('id, user_id, user_ip, user_comment, title, urn, content_type_id, approved, authorized, disabled, content_id, country_id, moderator_id, moderator_ip, moderator_comment, time_submitted, time_moderated, priority_id, show_time', 'safe', 'on'=>'manage'),
-			array('title, urn, content_type_id, country_id, time_submitted, priority_id, show_time', 'safe', 'on'=>'history'),
+			array('title, urn, tag, content_type_id, country_id, time_submitted, priority_id, show_time', 'safe', 'on'=>'history'),
 		);
 	}
 	
@@ -213,9 +214,23 @@ class Subject extends CActiveRecord
 	 */
 	public function afterSave()
 	{
-		
-		
-		
+		//Update the tag or category table if there are new tags
+		if($this->tag){
+			$tags = Subject::getTags();
+			$new_tags = explode(",",$this->tag);
+			foreach($new_tags as $new_tag) {
+				if (! in_array($new_tag, $tags)) 
+					Yii::app()->db->createCommand()->insert('subject_tag',array('name'=>$new_tag));
+			}
+		}
+		if($this->category){
+			$tags = Subject::getTags('category');
+			$new_tags = explode(",",$this->category);
+			foreach($new_tags as $new_tag) {
+				if (! in_array($new_tag, $tags)) 
+					Yii::app()->db->createCommand()->insert('subject_category',array('name'=>$new_tag));
+			}
+		}
 	
 	}
 	
@@ -457,6 +472,23 @@ class Subject extends CActiveRecord
 		return $arr_data;
 	
 	}
+	/**
+	 * Gets tag list of a category or tag
+	 * @param integer $id (optional) of the subject to get pronostic. If null, search for all subjects to be shown.
+	 * @param string $format (optional) desired to return the time to wait(minutes, date)
+	 * @return mixed Array with the wait time and wait position for each subject or the id received
+	 */
+	public function getTags($type='tag'){
+		$tags = Yii::app()->db->createCommand()
+		->select('name')
+		->from('subject_'.$type)
+		->order('name DESC')
+		->queryAll();
+		foreach($tags as $tag)$arr_tags[] = $tag['name'];
+		return $arr_tags;
+		//echo json_encode(array('availableTags'=>$arr_tags));
+	
+	}
 
 	/**
 	 * Gets the prognostic about the subject(s) to be shown
@@ -557,6 +589,8 @@ class Subject extends CActiveRecord
 			'priority_id' => 'Priority',
 			'show_time' => 'Show Time',
 			'video'=>'Video embed code',
+			'tag'=>'Tags',
+			'category'=>'Category',
 		);
 	}
 
@@ -592,6 +626,8 @@ class Subject extends CActiveRecord
 		//Disabled, Not needed anynmore, as we better use filter in view files
 		//$criteria->compare('priority_type.name',$this->priority_id, true);//Notice the relational name and not the table name, also notice that this has the user input value
 		$criteria->compare('show_time',$this->show_time);
+		$criteria->compare('tag',$this->tag,true);
+		$criteria->compare('category',$this->category, true);
 		
 		//$criteria->with=array('country','priority_type','content_type');//Disabled, Not needed anynmore, as we better use filter in view files
 

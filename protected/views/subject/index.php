@@ -73,6 +73,14 @@ The following list shows all the subjects that has been placed in the live strea
 			'sortable'=>true,
         ),
 		array(
+            'name'=>'category',
+			'filter'=>CHtml::listData(Yii::app()->db->createCommand()
+			->select('name')
+			->from('subject_category')
+			->queryAll(),'name','name'),//categories a treated just like tags( we dont use ids to store them in db) so we use name as id
+			'sortable'=>true,
+        ),
+		array(
             'name'=>'title',
 			'type'=>'html',
 			'value'=>'CHtml::link($data->title,Yii::app()->getRequest()->getBaseUrl(true)."/sub/".$data->urn)',
