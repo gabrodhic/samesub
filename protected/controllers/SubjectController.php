@@ -97,9 +97,39 @@ class SubjectController extends Controller
 			if($this->model->save()){
 				$wait = Subject::getPrognostic($this->model->id);
 				Yii::app()->user->setFlash('subject_added','Subject succesfully submitted!. Your subject has just been sended to a moderator for its approval. If your subject gets approved, it will go to the homepage(livestram) on an estimated time.');
-				
 				Yii::app()->user->setFlash('subject_added_info','Here is your prognostic: your subject is on position <b>'.$wait['position'].'</b> of the queue and has a wating time of <b>'.$wait['time'].'</b> minutes approximately.');
-				$this->refresh();
+				
+				//Notify manager users
+				//$users = User::model()->findAll('user_type_id > 2 AND user_status_id = 1');
+				//foreach($users as $user){
+					$send_mail = true;
+					if(! Yii::app()->user->isGuest){
+						$user = User::model()->findByPk(Yii::app()->user->id); 
+						if($user->user_type_id > 2) $send_mail=false;//Dont notify managers themself
+					}
+					if($send_mail){
+						$headers="From: Samesub Contact <".Yii::app()->params['contactEmail'].">\r\nReply-To: ".Yii::app()->params['contactEmail'];
+						//$mail_message = "Hi {$user->username}, \n\n";
+						$mail_message .= "This is a automatic message to notify you that a subject has been added by a user an that it is\n";
+						$mail_message .= "pending for approval by a samesub moderator.\n\n";
+						$mail_message .= "Details\n\n";
+						$mail_message .= "Subject Title: {$this->model->title}\n";
+						$mail_message .= "Uploaded time: ".date("Y/m/d H:i", $this->model->time_submitted)." UTC\n";
+						$mail_message .= "Current time: ".date("Y/m/d H:i", SiteLibrary::utc_time())." UTC (time of this message)\n\n";
+						$mail_message .= "You can go right now and approve this subject so that the final user can\n";
+						$mail_message .= "see his/her subject in the LIVE stream(homepage) as soon as posible.\n\n";
+						$mail_message .= Yii::app()->getRequest()->getBaseUrl(true)."/subject/manage";
+						$mail_message .= "\n\nNOTE: This message is supposed be received only by moderator users. If you\n";
+						$mail_message .= "are not a moderator or authorizer please notify us replaying to this mail.\n\n";
+						$mail_message .= "Thanks\n\n";
+						$mail_message .= "Sincerely\n";
+						$mail_message .= "Samesub Team\n";
+						$mail_message .= "www.samesub.com";				
+						@mail("contact@samesub.com","New subject added ".$this->model->id,$mail_message,$headers);
+					}
+				//}
+					
+				
 			}
 		}else{
 			$this->model->country_id = $country_id;
