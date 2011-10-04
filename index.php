@@ -7,7 +7,7 @@ if(! stristr($_SERVER['HTTP_HOST'],'m.') and ! stristr($_SERVER['HTTP_HOST'],'mo
 	{
 		$url_http  = "http";
 		if ($_SERVER["HTTPS"] == "on") $url_http .= "s";
-		header('Location: '.$url_http.'://m.'.$_SERVER["SERVER_NAME"].$_SERVER["REQUEST_URI"]);
+		header('Location: '.$url_http.'://m.'.str_replace("www.", "", $_SERVER["SERVER_NAME"]).$_SERVER["REQUEST_URI"]);
 	}
 }
 
