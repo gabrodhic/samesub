@@ -6,7 +6,7 @@
 	
 	<div class="row">
 		<?php echo $data->country->name . " | "; ?>
-		<?php echo CHtml::encode(date("Y/m/d H:i", $data->show_time)." UTC"); ?>
+		<?php echo CHtml::encode(date("Y/m/d H:i", $data->time_submitted)." UTC"); ?>
 	</div>
 
 	<div class="row">
