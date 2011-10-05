@@ -56,16 +56,27 @@ class SiteHelper extends CHtml
 					$html = SiteHelper::formatted($subject->content_video->embed_code);
 				}
 				
-				//intercept the content html and resize any width or height property for a mobile version			
+				//intercept the content html and resize any width or height depending on current theme
 				if(Yii::app()->getTheme()->name=='mobile'){
-					$pattern = '/(width=")(\d+)(")/i';//Replace: width="***"  ---> width="MOBILE_WIDTH"
-					$replacement = '${1}250$3';//reference numbers come from string enclosed in parenthesis(left to right) in the pattern
-					$html = preg_replace($pattern, $replacement, $html);
-					$pattern = '/(height=")(\d+)(")/i';
-					$replacement = '${1}190$3';
-					$html = preg_replace($pattern, $replacement, $html);
-					//TODO: http://css-tricks.com/7066-fluid-width-youtube-videos/
+					$max_width = 250;
+					$max_height = 190;
+				}else{
+					$max_width = 550;
+					$max_height = 440;
 				}
+				$pattern = '/(width=")(\d+)(")/i';//Replace: width="***"  ---> width="MOBILE_WIDTH"
+				preg_match($pattern, $html, $matches);//width will fall in thrid position as position 0 is the full match(see func definition)				
+				if((int)$matches[2] > $max_width) $html = preg_replace($pattern, '${1}'.$max_width.'$3', $html); 				
+				
+				$pattern = '/(height=")(\d+)(")/i';
+				preg_match($pattern, $html, $matches);//width will fall in thrid position as position 0 is the full match(see func definition)
+				if((int)$matches[2] > $max_height) $html = preg_replace($pattern, '${1}'.$max_height.'$3', $html); 				
+				
+				
+				$replacement = '${1}190$3';
+				
+				//TODO: http://css-tricks.com/7066-fluid-width-youtube-videos/
+				
 				break;
 		}
 		return $html;
