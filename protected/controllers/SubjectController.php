@@ -52,13 +52,6 @@ class SubjectController extends Controller
 			
 		}
 		$this->model=$this->loadModel($id);
-		if(! $this->model->authorized){//only managers can "view" unauthorized subjects
-			if(! Yii::app()->user->checkAccess('subject_manage'))
-			{
-				throw new CHttpException(403,'Sory, this subject is not authorized and you are not a manager.');
-				return;
-			}
-		}
 		$this->render('view',array(
 			'model'=>$this->model,
 		));
