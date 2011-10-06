@@ -351,7 +351,7 @@ class Subject extends CActiveRecord
 		
 		foreach ($live_comments as $live_comment){
 			$arr_data['new_comment']++;
-			$arr_comments[] = array('display_time'=>($live_comment['comment_time']+Yii::app()->params['request_interval']),'comment_text'=> CHtml::encode($live_comment['comment_text']), 'comment_sequence'=>$live_comment['comment_sequence'],'comment_number'=>$live_comment['comment_number'],'comment_time'=>$live_comment['comment_time'],'comment_country'=>$live_comment['comment_country']);
+			$arr_comments[] = array('display_time'=>($live_comment['comment_time']+Yii::app()->params['request_interval']),'comment_text'=> CHtml::encode($live_comment['comment_text']), 'comment_sequence'=>$live_comment['comment_sequence'],'comment_number'=>$live_comment['comment_number'],'comment_time'=>date("H:i:s",$live_comment['comment_time']),'comment_country'=>$live_comment['comment_country']);
 		}
 		$arr_data['comments']= $arr_comments;
 		
@@ -427,7 +427,7 @@ class Subject extends CActiveRecord
 				
 				$arr_comments_2[] = array('display_time'=>($comment_2['time']+Yii::app()->params['request_interval']),
 				'comment_text'=> CHtml::encode($comment_2['comment']), 'comment_sequence'=>$i,
-				'comment_time'=>$comment_2['time'],'comment_country'=>$country_code);
+				'comment_time'=>date("H:i:s",$comment_2['time']),'comment_country'=>$country_code);
 			}
 			
 			/*

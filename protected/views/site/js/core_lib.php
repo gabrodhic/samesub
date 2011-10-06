@@ -199,8 +199,7 @@ function load_comments(comments){
 				new_line += '<div class="comment_header">';
 				new_line += '<span class="comment_number">'+pad_w_zero+comment_number+'</span>';
 				new_line += '<span class="comment_country">'+comments[i]['comment_country']+'</span>';
-				comment_time = fromUnixTime(comments[i]['comment_time']);
-				new_line += '<span class="comment_time">'+ comment_time.getHours()+':'+comment_time.getMinutes()+':'+comment_time.getSeconds() +' UTC</span>';
+				new_line += '<span class="comment_time">'+ comments[i]['comment_time'] +' </span>';
 				new_line += '</div>';
 				new_line += '<div class="comment_text">'+ comments[i]['comment_text']+'</div>';
 				

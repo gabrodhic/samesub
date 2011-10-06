@@ -251,7 +251,7 @@ function display_elements(obj_json){
 		}
 		
 		
-		cache_div_info = '<b>'+obj_json.country_name_2+'</b> UTC | ';
+		cache_div_info = '<b>'+obj_json.country_name_2+'</b> | ';
 		cache_display_time = obj_json.display_time_2;
 	
 	}
