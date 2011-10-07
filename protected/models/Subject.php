@@ -351,7 +351,11 @@ class Subject extends CActiveRecord
 		
 		foreach ($live_comments as $live_comment){
 			$arr_data['new_comment']++;
-			$arr_comments[] = array('display_time'=>($live_comment['comment_time']+Yii::app()->params['request_interval']),'comment_text'=> CHtml::encode($live_comment['comment_text']), 'comment_sequence'=>$live_comment['comment_sequence'],'comment_number'=>$live_comment['comment_number'],'comment_time'=>date("H:i:s",$live_comment['comment_time']),'comment_country'=>$live_comment['comment_country']);
+			$arr_comments[] = array('username'=>$live_comment['username'],
+			'display_time'=>($live_comment['comment_time']+Yii::app()->params['request_interval']),
+			'comment_text'=> CHtml::encode($live_comment['comment_text']), 'comment_sequence'=>$live_comment['comment_sequence'],
+			'comment_number'=>$live_comment['comment_number'],'comment_time'=>date("H:i:s",$live_comment['comment_time']),
+			'comment_country'=>$live_comment['comment_country']);
 		}
 		$arr_data['comments']= $arr_comments;
 		
@@ -418,14 +422,16 @@ class Subject extends CActiveRecord
 			
 			
 			//TEMPORAL TODO:lets add the old comments(if any) for the cached subeject
-			$comments_2 = Yii::app()->db->createCommand()->select('code,time,comment,sequence')->from('comment t1')->where('subject_id ='.$live_subject['subject_id_2'])
-			->leftJoin('country t2', 'country_id=t2.id')->order('time ASC')->queryAll();
+			$comments_2 = Yii::app()->db->createCommand()->select('code,time,comment,sequence,username')
+			->from('comment t1')->where('subject_id ='.$live_subject['subject_id_2'])
+			->leftJoin('country t2', 'country_id=t2.id')
+			->leftJoin('user t3', 'user_id=t3.id')->order('time ASC')->queryAll();
 			$i = 0;
 			foreach($comments_2 as $comment_2){
 				$i++;//we need to use a counter for the sequence as one same sequence mith be repeated if the sub was repeated(TEMPORAL)
 				$country_code = ($comment_2['code']) ? $comment_2['code'] : "WW";
 				
-				$arr_comments_2[] = array('display_time'=>($comment_2['time']+Yii::app()->params['request_interval']),
+				$arr_comments_2[] = array('username'=>$comment_2['username'],'display_time'=>($comment_2['time']+Yii::app()->params['request_interval']),
 				'comment_text'=> CHtml::encode($comment_2['comment']), 'comment_sequence'=>$i,
 				'comment_time'=>date("H:i:s",$comment_2['time']),'comment_country'=>$country_code);
 			}

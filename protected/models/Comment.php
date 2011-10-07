@@ -70,6 +70,7 @@ class Comment extends CActiveRecord
 		$this->country_id = $country_id;
 		
 		$this->time = SiteLibrary::utc_time();
+		$this->user_id = Yii::app()->user->id;
 		
 		if($this->update_live){
 			$live_subject = Yii::app()->db->createCommand()->select('subject_id_1, (comment_sequence+1)as next_sequence')->from('live_subject')->queryRow();
@@ -80,6 +81,7 @@ class Comment extends CActiveRecord
 			'comment_text'=>$this->comment,
 			'comment_time'=>$this->time,
 			'comment_country'=>$country_code,
+			'username'=>(Yii::app()->user->isGuest)?'guest':Yii::app()->user->name,
 			));
 			Yii::app()->db->createCommand()->update('live_subject', array(
 			'last_comment_number'=>Yii::app()->db->getLastInsertID(),
@@ -100,6 +102,7 @@ class Comment extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
+			'user'=>array(self::BELONGS_TO, 'User', 'user_id'),
 		);
 	}
 

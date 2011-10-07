@@ -22,12 +22,15 @@
 	</div>
 	
 	
-	<?php foreach($data->comments as $comment): $i++; if($i==6) break;?>
+	<?php 
+	$comments=Comment::model()->with('user')->findAll(array('condition'=>"subject_id = {$data->id}", 'limit'=>5, 'order'=>'t.id DESC'));
+	foreach($comments as $comment): $i++;?>
 	<?php if($i == 1) echo "<h4>Last 5 Comments:</h4>";?>
 	<div class="comment" id="c<?php echo $comment->id; ?>">
 
 		<div class="time">
-			<?php echo date("Y/m/d H:i",$comment->time)." UTC"; ?>
+			<?php echo date("Y/m/d H:i",$comment->time)." UTC ". 
+			CHtml::link($comment->user->username,array('mysub/'.$comment->user->username)); ?>
 		</div>
 
 		<div class="content">

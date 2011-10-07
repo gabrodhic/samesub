@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Oct 02, 2011 at 06:10 PM
+-- Generation Time: Oct 06, 2011 at 10:50 PM
 -- Server version: 5.1.33
 -- PHP Version: 5.2.9
 
@@ -69,7 +69,7 @@ CREATE TABLE authitemchild (
 
 CREATE TABLE `comment` (
   id int(10) NOT NULL AUTO_INCREMENT,
-  user_id int(11) NOT NULL DEFAULT '0',
+  user_id int(11) NOT NULL DEFAULT '1',
   user_ip varchar(20) COLLATE utf8_unicode_ci DEFAULT NULL,
   country_id tinyint(4) NOT NULL DEFAULT '0',
   subject_id int(11) NOT NULL,
@@ -196,6 +196,7 @@ CREATE TABLE live_comment (
   comment_text text COLLATE utf8_unicode_ci NOT NULL,
   comment_time int(11) NOT NULL DEFAULT '0',
   comment_country varchar(200) COLLATE utf8_unicode_ci DEFAULT 'WW',
+  username varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (comment_number),
   KEY `time` (comment_time)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;

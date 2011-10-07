@@ -29,13 +29,16 @@ $this->pageTitle=Yii::app()->name . ' - '. $model->title;
 <?php echo SiteHelper::share_links($model->urn,$model->title); ?>
 <h4>Comments:</h4>
 
-<?php foreach($model->comments as $comment): ?>
+<?php 
+$comments=Comment::model()->with('user')->findAll("subject_id = {$model->id}");
+foreach($comments as $comment): ?>
 <div class="comment" id="c<?php echo $comment->id; ?>">
 
 
 
 	<div class="time">
-		<?php echo date("Y/m/d H:i",$comment->time)." UTC"; ?>
+		<?php echo date("Y/m/d H:i",$comment->time)." UTC ". 
+		CHtml::link($comment->user->username,array('mysub/'.$comment->user->username)); ?>
 	</div>
 
 	<div class="content">

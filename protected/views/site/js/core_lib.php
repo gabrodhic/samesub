@@ -200,6 +200,7 @@ function load_comments(comments){
 				new_line += '<span class="comment_number">'+pad_w_zero+comment_number+'</span>';
 				new_line += '<span class="comment_country">'+comments[i]['comment_country']+'</span>';
 				new_line += '<span class="comment_time">'+ comments[i]['comment_time'] +' </span>';
+				new_line += '<span class="comment_username"><a href="<?php echo Yii::app()->getRequest()->getBaseUrl(true);?>/mysub/'+ comments[i]['username'] +'">'+ comments[i]['username'] + '</a></span>';
 				new_line += '</div>';
 				new_line += '<div class="comment_text">'+ comments[i]['comment_text']+'</div>';
 				
