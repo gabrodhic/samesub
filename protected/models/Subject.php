@@ -117,10 +117,7 @@ class Subject extends CActiveRecord
 				$this->addError('title','Right now this subject is either in the comming up queue or in the live-now stream. You can not modify it.');
 				return false;
 			}
-			//Generate the urn for this subject
-			if(! $this->urn = $this->generateUrn($this->title)){
-				$this->addError('title','Please change something in the title.'); return false;
-			}
+
 			//TODO:Update the table belonging to each content type(image,text,video,etc)
 			//also validatecontenttype
 		}
