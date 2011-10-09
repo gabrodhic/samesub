@@ -21,7 +21,24 @@ class CommentController extends Controller
 			if($_POST['text']) $this->model->comment = $_POST['text'];
 			$this->model->update_live = true;
 
-			$this->model->save();
+			if($this->model->save()){
+				$send_mail = true;
+				if(! Yii::app()->user->isGuest){
+					$user = User::model()->findByPk(Yii::app()->user->id); 
+					if($user->user_type_id > 2) $send_mail=false;//Dont notify managers themself
+					
+				}
+				$last_one = Comment::model()->find(array('limit'=>2, 'offset'=>1, 'order'=>'t.id DESC'));//offset is 0 based
+				if( SiteLibrary::utc_time() < ($last_one->time + 1500)) $send_mail = false;
+				if($send_mail){
+					$headers="From: Samesub Contact <".Yii::app()->params['contactEmail'].">\r\nReply-To: ".Yii::app()->params['contactEmail'];
+					$mail_message .= "User: ".Yii::app()->user->name."\n";
+					$mail_message .= "Comment: {$this->model->comment}\n";
+					$mail_message .= "Current time: ".date("Y/m/d H:i", SiteLibrary::utc_time())." UTC (time of this message)\n\n";
+					$mail_message .= "www.samesub.com";				
+					@mail("contact@samesub.com","Comment ".$this->model->id,$mail_message,$headers);
+				}
+			}
 			//we need to jsonecode something, as not doing so, can provoke an 
 			//ajax response error on the client site if the ajax request is of type json
 			echo json_encode(array('success'=>'yes'));
