@@ -9,9 +9,10 @@ class SiteHelper extends CHtml
 	/**
 	 * Generates the proper html depending on the content_type_id
 	 * @param object $subject the an instance of the Subject class
-	 * @return string the html content
+	 * @param string $mode in wich to return information(html or array of data)
+	 * @return mixed string the html content OR array with content values
 	 */
-	public function subject_content($subject)
+	public function subject_content($subject,$mode='html')
 	{
 		switch ($subject->content_type_id) {
 			case 1:
@@ -27,6 +28,7 @@ class SiteHelper extends CHtml
 					$parsed_url = parse_url($subject->content_image->url);
 					$html .= "<br><span>Image source: ". $parsed_url['scheme'].'://'.$parsed_url['host'];
 				}
+				$arr_content['image'] = $img_url;
 				break;
 			case 2:
 				$html = SiteHelper::formatted($subject->content_text->text);
@@ -45,7 +47,7 @@ class SiteHelper extends CHtml
 						//the code is before the first undersore for the video source(pending verify if thats the syntax for all cases)
 						if($last_code_pos = stripos($parsed_url['path'], '_')){
 							$video_code = substr($parsed_url['path'],1, $last_code_pos-1);
-							if($video_code)	$html = '<iframe frameborder="0" width="480" height="360" src="http://www.dailymotion.com/embed/'.$video_code.'"></iframe>';
+							if($video_code)	$html = '<iframe frameborder="0" width="480" height="360" src="http://www.dailymotion.com/embed/'.$video_code.'"></iframe>'; //$video_code already contains: /videdo/
 						}
 					}elseif(stripos($parsed_url['host'], 'vimeo.com')){
 						if($parsed_url['path'])
@@ -55,6 +57,25 @@ class SiteHelper extends CHtml
 				}else{
 					$html = SiteHelper::formatted($subject->content_video->embed_code);
 				}
+				//Get the iframe source url and set the image url for ogtags				
+				//src="...."    second match (((?!").)*) searches for any string NOT containing " as that is our delimitter used in third match
+				$pattern = '/(src=")(((?!").)*)(")/i'; 
+				preg_match($pattern, $html, $matches);//position 0 is the full match
+				
+				$arr_content['url'] = $matches[2];
+				if(SiteLibrary::valid_url($arr_content['url'])){//if its an url
+					$parsed_url = parse_url($arr_content['url']);
+					$query_arr = SiteLibrary::parse_url_query($parsed_url['query']);
+					if(stripos($parsed_url['host'], 'youtube.com')){
+						$pattern =  strpos($arr_content['url'], '?') ? '/(embed\/)(.+)(\?)/i' : '/(embed\/)(.+)$/i'; //the url can have extra params (a ? mark to pass extra params to the video)
+						preg_match($pattern, $arr_content['url'], $matches);//position 0 is the full match
+						$arr_content['code'] = $matches[2];
+						$arr_content['image'] = 'http://img.youtube.com/vi/'.$arr_content['code'].'/default.jpg';
+					}
+						//TODO: get schema for images in other providers
+					
+				}
+				
 				
 				//intercept the content html and resize any width or height depending on current theme
 				if(Yii::app()->getTheme()->name=='mobile'){
@@ -79,7 +100,7 @@ class SiteHelper extends CHtml
 				
 				break;
 		}
-		return $html;
+		return ($mode == 'array') ?  $arr_content : $html;
 	}
 	
 	/**
@@ -186,6 +207,26 @@ class SiteHelper extends CHtml
 		}
 		return $html;
 	
+	}
+	/**
+	 * Generates OpenGraph meta tags to help identify the content information in the page(eg: a flash video).
+	 * This is very usefull specially for sharing(eg:facebook) or indexing in search engines and AddThis.
+	 * http://www.addthis.com/help/widget-sharing
+	 * @param string $title the title of the page
+	 * @param string $description (optional) the description of the content in page
+	 * @param string $image (optional) to make a preview of the page
+	 * @param string $url (optional) of the page
+	 * @param string $iframe_url (optional) of the page widget
+	 * @return string with the meta tags
+	 */
+	public function get_ogtags($title,$description='',$image='',$url='',$iframe_url='')
+	{
+		$ogtags = '<meta property="og:title" content="'.htmlspecialchars($title).'" />';
+		if($description) $ogtags .= '<meta property="og:description" content="'.htmlspecialchars(substr($description, 0,220)).'" />';
+		if($image) 		 $ogtags .= '<meta property="og:image" content="'.$image.'" />';
+		if($iframe_url)  $ogtags .= '<link rel="iframe_src" href="'.$iframe_url.'" />';
+		$ogtags .= '<meta property="og:site_name" content="'.Yii::app()->name.'"/>';
+		return $ogtags;
 	}
 	
 }

@@ -1,5 +1,10 @@
 <?php
 $this->pageTitle=Yii::app()->name . ' - '. $model->title;
+$sub_data=SiteHelper::subject_content($model,'array');
+$this->ogtags = SiteHelper::get_ogtags($this->pageTitle, 
+($model->content_type_id == 2)?SiteHelper::subject_content($model) : $model->user_comment, $sub_data['image'],
+ Yii::app()->params['weburl'].'/sub/'.$model->urn,
+ $sub_data['url']);
 ?>
 
 <h1><?php echo CHtml::encode($model->title); ?></h1>

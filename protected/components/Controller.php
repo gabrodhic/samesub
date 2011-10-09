@@ -11,6 +11,12 @@ class Controller extends CController
 	 */
 	public $layout='//layouts/column1';
 	/**
+	 * @var string OpenGraph meta tags to help identify the content information in the page(eg: a flash video).
+	 * This is very usefull specially for sharing(eg:facebook) or indexing in search engines and AddThis.
+	 * http://www.addthis.com/help/widget-sharing#tagging
+	 */
+	public $ogtags='';
+	/**
 	 * @var array context menu items. This property will be assigned to {@link CMenu::items}.
 	 */
 	public $menu=array();
