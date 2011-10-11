@@ -34,7 +34,7 @@ $code.= ($model->category)? "assignedTags: ".json_encode(explode(",",CHtml::enco
 $code.="
     availableTags: ".json_encode(Subject::getTags('category')).",
     autocomplete: true,
-    maxTags: 5,
+    maxTags: 5
 
 }
 );
