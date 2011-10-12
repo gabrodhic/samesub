@@ -62,24 +62,24 @@ function secondsToTime(secs)
     };
     return obj;
 }
+$(document).ready(function() {
+	//Cause enter keypress submit the text on the text area
+	$('#comment_textarea').keypress(function(event) {
+		if (event.keyCode == '13') {
+			event.preventDefault();
+			send_comment();
+		}
+	});
 
-//Cause enter keypress submit the text on the text area
-$('#comment_textarea').keypress(function(event) {
-	if (event.keyCode == '13') {
-		event.preventDefault();
-		send_comment();
-	}
+	$("#comment_textarea").val('Write your comments here!');
+	var first_focus = false;
+	$("#comment_textarea").focus(function(){
+		if(first_focus==false) $("#comment_textarea").val('');
+		first_focus = true;
+	});
+
+	$("#send_comment").click(function (){send_comment();});
 });
-
-$("#comment_textarea").val('Write your comments here!');
-var first_focus = false;
-$("#comment_textarea").focus(function(){
-	if(first_focus==false) $("#comment_textarea").val('');
-	first_focus = true;
-});
-
-$("#send_comment").click(function (){send_comment();});
-
 
 function send_comment(){
 	if ($('#comment_textarea').val().length > 0){

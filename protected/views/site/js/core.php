@@ -289,7 +289,9 @@ function display_elements(obj_json){
 
 
 var interval_check;
-get_Contents(function(){
-	//Add this callback only the first time after we fetch content
-	interval_check = setInterval("check_preload()",1000);	
+$(document).ready(function() {
+	get_Contents(function(){
+		//Add this callback only the first time after we fetch content
+		interval_check = setInterval("check_preload()",1000);	
+	});
 });
