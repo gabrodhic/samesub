@@ -294,6 +294,11 @@ class UserController extends Controller
 		if(isset($_POST['User']))
 		{
 			$this->model->attributes=$_POST['User'];
+			if($this->model->Year){
+				if(! $this->model->Month) $this->model->Month = 01;
+				if(! $this->model->Day) $this->model->Day = 01;
+				$this->model->birthdate = strtotime($this->model->Year."/".$this->model->Month."/".$this->model->Day);
+			}
 			if($this->model->save())
 			Yii::app()->user->setFlash('profile_success','Profile Settings updated successfully');
 				//$this->redirect(array('index'));

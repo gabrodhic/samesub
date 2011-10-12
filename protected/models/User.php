@@ -26,6 +26,9 @@ class User extends CActiveRecord
 	public $type;
 	public $country_created;
 	public $subs;
+	public $Year;
+	public $Month;
+	public $Day;
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @return User the static model class
@@ -59,8 +62,11 @@ class User extends CActiveRecord
 			array('newpassword', 'compare', 'compareAttribute'=>'newpassword2', 'on'=>'resetpasswordnext'),
 			array('username, email', 'unique', 'on'=>'register'),
 			array('email', 'email'),
-			array('country_id, notify_subject', 'numerical'),
-			array('username, password, email', 'length', 'max'=>50, 'min'=>3),			
+			array('country_id, notify_subject, sex, birthdate, Day, Month, Year', 'numerical'),
+			array('username, password, email', 'length', 'max'=>50, 'min'=>3),
+			array('firstname, lastname',  'length', 'max'=>50),
+			array('region, city',  'length', 'max'=>100),
+			array('interests, activities, about',  'length', 'max'=>65500),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
 			array('id, username, password, email, ip_created, ip_last_access, user_status_id, user_type_id, time_created, time_last_access, time_modified, country, type, status, subs', 'safe', 'on'=>'search'),
