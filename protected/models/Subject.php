@@ -211,23 +211,17 @@ class Subject extends CActiveRecord
 	 */
 	public function afterSave()
 	{
-		//Update the tag or category table if there are new tags
+		//Update the tag table if there are new tags
 		if($this->tag){
 			$tags = Subject::getTags();
-			$new_tags = explode(",",$this->tag);
+			$new_tags = explode(" ",$this->tag);
 			foreach($new_tags as $new_tag) {
+				$new_tag = substr($new_tag,0,48);//a word can't be larger than 50 chars,maybe we have no white spaces also
 				if (! in_array($new_tag, $tags)) 
 					Yii::app()->db->createCommand()->insert('subject_tag',array('name'=>$new_tag));
 			}
 		}
-		if($this->category){
-			$tags = Subject::getTags('category');
-			$new_tags = explode(",",$this->category);
-			foreach($new_tags as $new_tag) {
-				if (! in_array($new_tag, $tags)) 
-					Yii::app()->db->createCommand()->insert('subject_category',array('name'=>$new_tag));
-			}
-		}
+
 	
 	}
 	
@@ -477,14 +471,14 @@ class Subject extends CActiveRecord
 	}
 	/**
 	 * Gets tag list of a category or tag
-	 * @param integer $id (optional) of the subject to get pronostic. If null, search for all subjects to be shown.
-	 * @param string $format (optional) desired to return the time to wait(minutes, date)
-	 * @return mixed Array with the wait time and wait position for each subject or the id received
+	 * @param strin $text to search for in the table
+	 * @return Array with the tags
 	 */
-	public function getTags($type='tag'){
+	public function getTags($text=''){
 		$tags = Yii::app()->db->createCommand()
 		->select('name')
-		->from('subject_'.$type)
+		->from('subject_tag')
+		->where(array('like', 'name', '%'.$text.'%'))
 		->order('name DESC')
 		->queryAll();
 		foreach($tags as $tag)$arr_tags[] = $tag['name'];
@@ -629,7 +623,7 @@ class Subject extends CActiveRecord
 		//Disabled, Not needed anynmore, as we better use filter in view files
 		//$criteria->compare('priority_type.name',$this->priority_id, true);//Notice the relational name and not the table name, also notice that this has the user input value
 		$criteria->compare('show_time',$this->show_time);
-		$criteria->compare('tag',$this->tag,true);
+		$criteria->compare('tag',$this->title,true,'OR');//notice $this->title: we can just have just one field in the griddview. Notice OR, thats to not force this condition
 		$criteria->compare('category',$this->category, true);
 		
 		//$criteria->with=array('country','priority_type','content_type');//Disabled, Not needed anynmore, as we better use filter in view files

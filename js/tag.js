@@ -119,21 +119,22 @@
                             }
                         }                        
                     }
-                    
-                    matches = $.grep(matches, function (v, i) {
-                        return !chosenTags[v.toLowerCase()];
-                    });
+                    if(matches){//ie bug fix. matches length
+						matches = $.grep(matches, function (v, i) {
+							return !chosenTags[v.toLowerCase()];
+						});
 
-                    if (settings.sort) {
-                        matches = matches.sort();
-                    }                    
+						if (settings.sort) {
+							matches = matches.sort();
+						}                    
 
-                    for (i = 0; i < matches.length; i++) {
-                        html += '<' + settings.tagWrap + ' class="_tag_suggestion">' + matches[i] + '</' + settings.tagWrap + '>';
-                    }
+						for (i = 0; i < matches.length; i++) {
+							html += '<' + settings.tagWrap + ' class="_tag_suggestion">' + matches[i] + '</' + settings.tagWrap + '>';
+						}
 
-                    tagMatches.html(html);
-                    suggestionsShow = !!(matches.length);
+						tagMatches.html(html);
+						suggestionsShow = !!(matches.length);
+					}
                 } else {
                     hideSuggestions();
                 }
@@ -178,7 +179,7 @@
                 fromTab = false;
                 var type = ev.type;
                 var resetSelection = false;
-             showSuggestionsDelayed(this, ev.charCode);    
+                
                 switch (ev.keyCode) {
                     case 37: // ignore cases (arrow keys)
                     case 38:
@@ -200,7 +201,7 @@
                             hideSuggestions();
                             setSelection();
                             return true;
-                        } else {alert('ae');
+                        } else {
                             type = 'keyup'; // allow drop through
                             resetSelection = true;
                             showSuggestionsDelayed(this);
@@ -242,7 +243,6 @@
                     if (resetSelection) { 
                         setSelection();
                     }
-					alert('cc');
                     showSuggestionsDelayed(this, ev.charCode);            
                 }
             }

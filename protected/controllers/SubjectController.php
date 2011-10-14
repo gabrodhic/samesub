@@ -22,7 +22,7 @@ class SubjectController extends Controller
 	{
 		return array(
 			array('allow',  // allow all users to perform 'index' 'add' 'view' actions
-				'actions'=>array('index','view','add','fetch'),
+				'actions'=>array('index','view','add','fetch','gettags'),
 				'users'=>array('*'),
 			),
 			array('allow', // allow authenticated user to perform 'update' actions
@@ -39,6 +39,21 @@ class SubjectController extends Controller
 		);
 	}
 
+	/**
+	 * Searches for a tag suggestion
+	 * @param string $text the text to search tags
+	 */
+	public function actionGettags($tag='')
+	{
+	$text = $tag;
+	$tags = Subject::getTags($tag);
+		 foreach ($tags as $tag) {
+	        if (stripos($tag, $text) === 0) {
+	            $match[] = $tag;
+	        }
+		}
+		echo json_encode($match);
+	}
 	/**
 	 * Displays a particular model.
 	 * @param integer $id the ID of the model to be displayed

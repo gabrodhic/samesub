@@ -81,6 +81,7 @@ The following list shows all the subjects that has been placed in the live strea
 			'sortable'=>true,
         ),
 		array(
+			'header'=>'Subject',
             'name'=>'title',
 			'type'=>'html',
 			'value'=>'CHtml::link($data->title,Yii::app()->getRequest()->getBaseUrl(true)."/sub/".$data->urn)',

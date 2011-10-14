@@ -169,7 +169,7 @@ class SiteHelper extends CHtml
 			$arr_text =  explode(" ", $text);
 			$arr_text = array_unique($arr_text);//remove any duplicate tag
 		}else{
-			$arr_text = explode(",",$text);
+			$arr_text = explode(" ",$text);
 		}
 		
 		if(! $set_link)	return $arr_text;
@@ -179,7 +179,7 @@ class SiteHelper extends CHtml
 			if($type == 'urn')
 				$value = '<a href="'.Yii::app()->getRequest()->getBaseUrl(true).'/subject/index?'.urlencode('Subject[urn]').'='.$value.'&ajax=subject-grid">&#32;&#149;&#32;'.$value.'</a>'; 
 			else
-				$value = '<a href="'.Yii::app()->getRequest()->getBaseUrl(true).'/subject/index?'.urlencode('Subject[tag]').'='.$value.'&ajax=subject-grid">&#32;&#149;&#32;'.$value.'</a>'; 
+				$value = '<a href="'.Yii::app()->getRequest()->getBaseUrl(true).'/subject/index?'.urlencode('Subject[title]').'='.$value.'&ajax=subject-grid">&#32;&#149;&#32;'.$value.'</a>'; 
 		} 
 		
 		array_walk($arr_text, 'to_link', $type);
