@@ -31,7 +31,7 @@ function get_Contents(){
 				//most probably that the clock also is slow, so lets update it also
 
 			}
-			$('#header_top').html('LIVE: <a href="<?php echo Yii::app()->request->baseUrl;?>">' + json.title_1 + '</a>');
+			$('#header_top').html('LIVE NOW: <a href="<?php echo Yii::app()->createUrl('site/index');?>">' + json.title_1 + '</a>');
 			
 			next_fetch = (json.display_time_2 - epoch_time);// + (<?php echo Yii::app()->params['subject_interval'];?>*60);
 			if(next_fetch < 0) next_fetch = 30;//If by any reason cron was not executed before time, then do next fetch in 30 seconds
