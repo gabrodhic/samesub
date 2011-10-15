@@ -114,6 +114,11 @@ Yii::app()->clientScript->registerScript('tagscodeid',$code);
 		<?php echo $form->error($model,'disabled'); ?>
 	</div>
 	<div class="row">
+		<?php echo $form->labelEx($model,'deleted'); ?>
+		<?php echo $form->DropDownList($model, 'deleted',array('0'=>'No', '1'=>'Yes')); ?>
+		<?php echo $form->error($model,'deleted'); ?>
+	</div>
+	<div class="row">
 		<?php echo $form->labelEx($model,'approved'); ?>
 		<?php echo $form->DropDownList($model, 'approved',array('0'=>'No', '1'=>'Yes')); ?>
 		<?php echo $form->error($model,'approved'); ?>

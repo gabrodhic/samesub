@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Oct 12, 2011 at 01:15 AM
+-- Generation Time: Oct 14, 2011 at 10:59 PM
 -- Server version: 5.1.33
 -- PHP Version: 5.2.9
 
@@ -380,6 +380,7 @@ CREATE TABLE `subject` (
   approved tinyint(4) NOT NULL DEFAULT '0',
   authorized tinyint(4) NOT NULL DEFAULT '0',
   disabled tinyint(4) NOT NULL DEFAULT '0',
+  deleted tinyint(4) NOT NULL DEFAULT '0',
   show_time int(11) NOT NULL DEFAULT '0' COMMENT 'time when the running thread shows the content',
   tag varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   category varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,

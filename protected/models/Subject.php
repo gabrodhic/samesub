@@ -69,7 +69,7 @@ class Subject extends CActiveRecord
 			array('video', 'safe', 'on'=>'add,update'),//So that it can be massively assigned, either way its gonna be validated by validateContentType
 			array('content_type_id', 'validateContentType', 'on'=>'add'),
 
-			array('disabled', 'numerical', 'integerOnly'=>true, 'on'=>'moderate,authorize'),
+			array('disabled,deleted', 'numerical', 'integerOnly'=>true, 'on'=>'moderate,authorize'),
 			array('tag, category', 'length', 'max'=>240),
 			
 			array('approved', 'numerical', 'integerOnly'=>true, 'on'=>'moderate'),
@@ -80,7 +80,7 @@ class Subject extends CActiveRecord
 			array('authorized', 'validateAuthorization', 'on'=>'authorize'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, user_id, user_ip, user_comment, title, urn, content_type_id, approved, authorized, disabled, content_id, country_id, moderator_id, moderator_ip, moderator_comment, time_submitted, time_moderated, priority_id, show_time', 'safe', 'on'=>'manage'),
+			array('id, user_id, user_ip, user_comment, title, urn, content_type_id, approved, authorized, disabled, deleted, content_id, country_id, moderator_id, moderator_ip, moderator_comment, time_submitted, time_moderated, priority_id, show_time', 'safe', 'on'=>'manage'),
 			array('title, urn, tag, content_type_id, country_id, time_submitted, priority_id, show_time', 'safe', 'on'=>'history'),
 		);
 	}
@@ -614,6 +614,7 @@ class Subject extends CActiveRecord
 		$criteria->compare('approved',$this->approved);
 		$criteria->compare('authorized',$this->authorized);
 		$criteria->compare('disabled',$this->disabled);
+		$criteria->compare('deleted',$this->deleted);
 		$criteria->compare('content_id',$this->content_id);
 		$criteria->compare('country_id',$this->country_id);
 		$criteria->compare('moderator_id',$this->moderator_id);

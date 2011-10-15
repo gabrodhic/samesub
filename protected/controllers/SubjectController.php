@@ -62,7 +62,7 @@ class SubjectController extends Controller
 	{
 		if(! $id) $this->redirect(array('index'));
 		if(! is_int($id)){
-			$this->model = Subject::model()->find('urn=:urn', array(':urn'=>$id));
+			$this->model = Subject::model()->find('urn=:urn AND deleted=0', array(':urn'=>$id));
 			if($this->model) $id = $this->model->id;
 			
 		}
@@ -318,6 +318,7 @@ class SubjectController extends Controller
 				$this->model->attributes=$_GET['Subject'];
 		
 		$this->model->show_time = ">:0";
+		$this->model->deleted = "=:0";
 		$live_subject = Yii::app()->db->createCommand()
 			->select('*')
 			->from('live_subject')
@@ -347,6 +348,7 @@ class SubjectController extends Controller
 			->from('live_subject')
 			->queryRow();
 			if(! isset($this->model->disabled)) $this->model->disabled = 0;//Set to view only NOT disabled subjects by default(notice isset insted of a simple if)
+			if(! isset($this->model->deleted)) $this->model->deleted = 0;
 			$this->render('manage',array(
 				'model'=>$this->model,'live_subject'=>$live_subject,
 			));

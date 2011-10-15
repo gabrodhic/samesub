@@ -124,6 +124,13 @@ or <b>=</b>) at the beginning of each of your search values to specify how the c
 			'filter'=>array('0'=>'No','1'=>'Yes'),
 			'sortable'=>true,
 		),
+		array(
+			'name'=>'deleted',
+			'value'=>'SiteHelper::yesno($data->deleted)',
+			'headerHtmlOptions'=>array('width'=>'20px'),
+			'filter'=>array('0'=>'No','1'=>'Yes'),
+			'sortable'=>true,
+		),
 	),
 	'enablePagination'=>true,
 )); ?>
