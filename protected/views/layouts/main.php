@@ -62,7 +62,8 @@ if( Yii::app()->session->get('site_loaded') != "yes" and (strtolower($this->id) 
 ?>
 <div id="preload" style="position:fixed; width: 680px; left: 50%; margin:20px 0px 0px -340px;font-family: Trebuchet MS, Arial, Helvetica, sans-serif;">
 	<div style="font-size: 12px;"><b>NOW: </b><?php echo '<a href="'.Yii::app()->createUrl('subject/index').'">'.$this->pageTitle.'</a>';?></div>
-	<div style="background-color: #336699; font-size: 170px; color: white; font-weight:bold; margin: 20px 0px 20px 0px;">samesub</div>
+	<div style="margin: 20px 0px 20px 0px; font-family:Arial Black">
+<span style="font-size: 124px"><font color="#333333">SAME</font><font color="#FFFFFF"><span style="background-color: #0066CC">SUB</span></font></span></div>
 	<hr style="border: 1px solid grey;" />
 	<div style="font-size: 20px; color:#303030;"><?php echo Notification::getNotification()->note;?></div>
 	<hr style="border: 1px solid grey;" />
