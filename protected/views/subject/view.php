@@ -35,14 +35,14 @@ $this->ogtags = SiteHelper::get_ogtags($this->pageTitle,
 <h4>Comments:</h4>
 
 <?php 
-$comments=Comment::model()->with('user')->findAll("subject_id = {$model->id}");
+$comments=Comment::model()->with('user','country')->findAll("subject_id = {$model->id}");
 foreach($comments as $comment): ?>
 <div class="comment" id="c<?php echo $comment->id; ?>">
 
 
 
 	<div class="time">
-		<?php echo date("Y/m/d H:i",$comment->time)." UTC ". 
+		<?php echo '<span class="comment_number">'.str_pad($comment->sequence, 2, '0',STR_PAD_LEFT).'</span><span class="comment_country">'. $comment->country->code. '</span> '. date("Y/m/d H:i",$comment->time).' UTC '.
 		CHtml::link($comment->user->username,array('mysub/'.$comment->user->username)); ?>
 	</div>
 
