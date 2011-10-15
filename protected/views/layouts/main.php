@@ -23,7 +23,8 @@
 		<link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/form.css" />
 		<link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/core.css" />
 	<?php
-		Yii::app()->clientScript->registerCoreScript('jquery');		
+		Yii::app()->clientScript->registerCoreScript('jquery');
+		Yii::app()->clientScript->registerScriptFile(Yii::app()->request->baseUrl.'/site/js/site');
 	}else{
 	?>
 		<script type="text/javascript">

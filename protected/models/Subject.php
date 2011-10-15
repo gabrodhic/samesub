@@ -382,6 +382,7 @@ class Subject extends CActiveRecord
 				$arr_data['content_html_1'] = SiteHelper::subject_content($subject_data);
 				$arr_data['content_data_1'] = (array) Subject::subject_content($subject_data)->getAttributes();
 				$arr_data['user_comment_1'] = SiteHelper::formatted($subject_data->user_comment);
+				$arr_data['display_time_1'] = $subject_data->show_time;
 				$arr_data['new_sub']++;
 			}
 			
