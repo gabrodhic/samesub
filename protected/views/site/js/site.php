@@ -34,6 +34,7 @@ function get_Contents(){
 			$('#header_top').html('LIVE: <a href="<?php echo Yii::app()->request->baseUrl;?>">' + json.title_1 + '</a>');
 			
 			next_fetch = (json.display_time_2 - epoch_time);// + (<?php echo Yii::app()->params['subject_interval'];?>*60);
+			if(next_fetch < 0) next_fetch = 30;//If by any reason cron was not executed before time, then do next fetch in 30 seconds
 			next_fetch = next_fetch + '000';
 			var aa = setTimeout("get_Contents()", next_fetch);//(add the javascript milliseconds) Everythig loaded ok, lets make a new request to watch for new changes
 			
