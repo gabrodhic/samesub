@@ -57,7 +57,7 @@ class Comment extends CActiveRecord
 		
 		//$this->time = SiteLibrary::utc_time();
 		$this->user_ip = $_SERVER['REMOTE_ADDR'];
-		$country_id = 0;
+		$country_id = 1;
 		$country_code = 'WW';
 		if($_SERVER['REMOTE_ADDR'] != '127.0.0.1'){
 			Yii::import('ext.EGeoIP');

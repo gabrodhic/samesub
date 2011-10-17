@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Oct 16, 2011 at 01:13 AM
+-- Generation Time: Oct 16, 2011 at 10:55 PM
 -- Server version: 5.1.33
 -- PHP Version: 5.2.9
 
@@ -71,7 +71,7 @@ CREATE TABLE `comment` (
   id int(10) NOT NULL AUTO_INCREMENT,
   user_id int(11) NOT NULL DEFAULT '1',
   user_ip varchar(20) COLLATE utf8_unicode_ci DEFAULT NULL,
-  country_id tinyint(4) NOT NULL DEFAULT '0',
+  country_id tinyint(4) NOT NULL DEFAULT '1',
   subject_id int(11) NOT NULL,
   `time` int(11) NOT NULL,
   sequence int(11) NOT NULL,
@@ -258,8 +258,8 @@ CREATE TABLE log_detail (
   client_host varchar(250) COLLATE utf8_unicode_ci DEFAULT NULL,
   request_ip varchar(20) COLLATE utf8_unicode_ci DEFAULT NULL,
   request_host varchar(250) COLLATE utf8_unicode_ci DEFAULT NULL,
-  client_country_id int(11) NOT NULL DEFAULT '0',
-  request_country_id int(11) NOT NULL DEFAULT '0',
+  client_country_id int(11) NOT NULL DEFAULT '1',
+  request_country_id int(11) NOT NULL DEFAULT '1',
   agent varchar(250) COLLATE utf8_unicode_ci DEFAULT NULL,
   referer varchar(250) COLLATE utf8_unicode_ci DEFAULT NULL,
   `charset` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -358,20 +358,20 @@ CREATE TABLE `subject` (
   user_id int(11) NOT NULL,
   user_ip varchar(20) COLLATE utf8_unicode_ci DEFAULT NULL,
   user_comment text COLLATE utf8_unicode_ci,
-  user_country_id tinyint(4) NOT NULL DEFAULT '0',
+  user_country_id tinyint(4) NOT NULL DEFAULT '1',
   title varchar(250) COLLATE utf8_unicode_ci NOT NULL,
   urn varchar(250) COLLATE utf8_unicode_ci NOT NULL,
   content_type_id int(11) NOT NULL COMMENT '1/image 2/text 3/video',
   content_id int(11) NOT NULL COMMENT 'Id of the record on the table associated with the content type',
-  country_id varchar(16) COLLATE utf8_unicode_ci NOT NULL DEFAULT '0',
+  country_id varchar(16) COLLATE utf8_unicode_ci NOT NULL DEFAULT '1',
   `language` varchar(16) COLLATE utf8_unicode_ci NOT NULL DEFAULT '0',
   moderator_id int(11) NOT NULL DEFAULT '0',
   moderator_ip varchar(20) COLLATE utf8_unicode_ci DEFAULT NULL,
   moderator_comment varchar(250) COLLATE utf8_unicode_ci DEFAULT NULL,
-  moderator_country_id tinyint(4) NOT NULL DEFAULT '0',
+  moderator_country_id tinyint(4) NOT NULL DEFAULT '1',
   authorizer_id int(11) NOT NULL DEFAULT '0',
   authorizer_ip varchar(20) COLLATE utf8_unicode_ci DEFAULT NULL,
-  authorizer_country_id tinyint(4) NOT NULL DEFAULT '0',
+  authorizer_country_id tinyint(4) NOT NULL DEFAULT '1',
   time_submitted int(11) NOT NULL DEFAULT '0',
   time_moderated int(11) NOT NULL DEFAULT '0',
   time_authorized int(11) NOT NULL DEFAULT '0',
@@ -474,8 +474,8 @@ CREATE TABLE `user` (
   time_created int(11) NOT NULL,
   time_last_access int(11) NOT NULL,
   time_modified int(11) NOT NULL,
-  country_id int(11) NOT NULL,
-  country_id_created int(11) NOT NULL DEFAULT '0',
+  country_id int(11) NOT NULL DEFAULT '1',
+  country_id_created int(11) NOT NULL DEFAULT '1',
   notify_subject tinyint(4) NOT NULL DEFAULT '1',
   firstname varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
   lastname varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,

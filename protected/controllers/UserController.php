@@ -128,7 +128,7 @@ class UserController extends Controller
 
 		if(isset($_POST['User']))
 		{
-			$country_id = 0;
+			$country_id = 1;
 			if($_SERVER['REMOTE_ADDR'] != '127.0.0.1'){
 				Yii::import('ext.EGeoIP');
 				$geoIp = new EGeoIP();

@@ -94,7 +94,7 @@ class SubjectController extends Controller
 
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($this->model);
-		$country_id = 0;
+		$country_id = 1;
 		if($_SERVER['REMOTE_ADDR'] != '127.0.0.1'){
 			Yii::import('ext.EGeoIP');
 			$geoIp = new EGeoIP();
