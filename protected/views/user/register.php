@@ -53,7 +53,7 @@ $("#User_email").keyup(function (){ $("#email_verify").text($("#User_email").val
 </script>
 </div><!-- form -->
 <div style="width:300px; margin:0px 30px 0px 30px; padding:20px; float:right; background-color: #F4F4FF;">
-<h3>Benefits of registering</h3>
+<h2>Benefits of registering</h2>
 <ul>
 <li>Know about the status of each subject you upload.</li>
 <li>You can get notified via email when your subject is going to get to the LIVE stream.</li>

@@ -67,6 +67,17 @@ class SubjectController extends Controller
 			
 		}
 		$this->model=$this->loadModel($id);
+		if(!(Yii::app()->session['subject_view'])) Yii::app()->session['subject_view'] = array('1'=>1); //just in case start it with something
+		if(! in_array($this->model->id, Yii::app()->session['subject_view'])){
+			//buggy we need to reasign a new array as we can not modify an array on the fly in a session var
+			$arr_sv = Yii::app()->session['subject_view'];
+			$arr_sv[] = $this->model->id;
+			Yii::app()->session['subject_view'] = $arr_sv;
+			
+			$this->model->views += 1;
+			$this->model->save();
+		}
+		
 		$this->render('view',array(
 			'model'=>$this->model,
 		));

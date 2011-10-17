@@ -14,8 +14,7 @@ $this->ogtags = SiteHelper::get_ogtags($this->pageTitle,
 
 
 	<div class="row">
-		<?php echo $model->country->name . " | "; ?>
-		<?php echo CHtml::encode(date("Y/m/d H:i", $model->time_submitted)." UTC"); ?>
+
 	</div>
 
 	<div class="row">
@@ -26,21 +25,17 @@ $this->ogtags = SiteHelper::get_ogtags($this->pageTitle,
 		<?php echo SiteHelper::formatted($model->user_comment); ?>
 	</div>
 	
-	<div class="row">
-		by <?php echo CHtml::link(User::model()->findByPk($model->user_id)->username,array('mysub/'.User::model()->findByPk($model->user_id)->username));?>
-	</div>
 
 
 <?php echo SiteHelper::share_links($model->urn,$model->title); ?>
-<h4>Comments:</h4>
-
+<br>
+<h3 class="detail_header">Comments</h3>
 <?php 
 $comments=Comment::model()->with('user','country')->findAll("subject_id = {$model->id}");
+$total_comments = count($comments);
+if($total_comments == 0) echo "<h4>NO COMMENTS</h4>";
 foreach($comments as $comment): ?>
 <div class="comment" id="c<?php echo $comment->id; ?>">
-
-
-
 	<div class="time">
 		<?php echo '<span class="comment_number">'.str_pad($comment->sequence, 2, '0',STR_PAD_LEFT).'</span><span class="comment_country">'. $comment->country->code. '</span> '. date("Y/m/d H:i",$comment->time).' UTC '.
 		CHtml::link($comment->user->username,array('mysub/'.$comment->user->username)); ?>
@@ -52,18 +47,63 @@ foreach($comments as $comment): ?>
 
 </div><!-- comment -->
 <?php endforeach; ?>
-
+<br>
+<div class="flash-notice" style="border:none">NOTE: Comments are allowed only on Live Subjects(<a href ="<?php echo Yii::app()->createUrl('site/index');?>">homepage</a>).</div>
 </div><!-- form -->
 <div id="right_container">
-<div id="tags_container">
-	<h4 style="margin-right:10px;">tags:</h4>
-	<div id="tags_list">
-		<ul>
-		<?php 
-			$tags = ($model->tag) ? SiteHelper::make_tags($model->tag) : SiteHelper::make_tags($model->urn, true, 'urn'); 
-		?>
-		<?php foreach($tags as $tag) echo "<li>".$tag."</li>";?>
-		</ul>
+	<div style="padding-left:30px;">
+		<div class="detail_section">
+		<h3 class="detail_header">Author</h3>
+			<?php 
+			$user = User::model()->with('ucountry')->findByPk($model->user_id);
+			echo CHtml::link($user->username,array('mysub/'.$user->username));?><br>
+			<?php echo ucwords(strtolower($user->ucountry->name)); ?>
+
+		</div>
+		<div class="detail_section">
+			<h3 class="detail_header">Sub Information</h3>
+			<div style="float:left;"><h4>Country:</h4></div><div style="float:right;"><?php echo $model->country->name; ?></div>
+			<div class="clear_both"></div>
+			<div style="float:left;"><h4>Submmited on:</h4></div><div style="float:right;"><?php echo CHtml::encode(date("Y/m/d H:i", $model->time_submitted)." UTC"); ?></div>
+			<div class="clear_both"></div>
+			<div style="float:left;"><h4>Show time(homepage):</h4></div><div style="float:right;"><?php echo CHtml::encode(date("Y/m/d H:i", $model->show_time)." UTC"); ?></div>
+			<div class="clear_both"></div>
+			<div style="float:left;"><h4>Type:</h4></div><div style="float:right;"><?php echo ucwords($model->content_type->name); ?></div>
+			<div class="clear_both"></div>
+			<div style="float:left;"><h4>Priority:</h4></div><div style="float:right;"><?php echo ucwords($model->priority_type->name); ?></div>
+			<div class="clear_both"></div>
+			<div style="float:left;"><h4>Comments:</h4></div><div style="float:right;"><?php echo $total_comments; ?></div>
+			<div class="clear_both"></div>
+			<div style="float:left;"><h4>Views:</h4></div><div style="float:right;"><?php echo $model->views; ?></div>
+			<div class="clear_both"></div>
+		</div>
+		<div id="detail_section">
+			<h3 class="detail_header">Tags</h3>
+			<div id="tags_list">
+				<ul>
+				<?php 
+					$tags = ($model->tag) ? SiteHelper::make_tags($model->tag) : SiteHelper::make_tags($model->urn, true, 'urn'); 
+				?>
+				<?php foreach($tags as $tag) echo "<li>".$tag."</li>";?>
+				</ul>
+			</div>
+		</div>
+		<div class="clear_both"></div>
+		<div class="detail_section">
+		<h3 class="detail_header">Categories</h3>
+				<div id="tags_list">
+				<ul>
+				<?php
+					$tags = explode(',',$model->category);
+					//$tags = ($model->category) ? SiteHelper::make_tags($model->category,true) : ''; 
+				?>
+				<?php if($model->category){ foreach($tags as $tag) echo "<li>".
+				'<a href="'.Yii::app()->getRequest()->getBaseUrl(true).'/subject/index?'.urlencode('Subject[category]').'='.$tag.'&ajax=subject-grid">&#32;&#149;&#32;'.$tag.'</a>'
+				."</li>"; 
+				}else{ echo "No categories";}
+				?>
+				</ul>
+			</div>
+		</div>
 	</div>
-</div>
 </div>

@@ -7,10 +7,10 @@ body { font: normal 13px Trebuchet MS, Arial, Helvetica, sans-serif; color: #686
 p { margin: 0; padding: 0 0 1.2em 0; }
 /* Text font styles*/
 h1 { font-size: 28px; letter-spacing: -1px; padding: 0 0 2px 0; color: #686868; font-weight: normal;}
-h2 { font-size: 36px; letter-spacing: -1px; padding: 0 0 14px 0;  color: #686868}
-h3 { font-size: 24px; letter-spacing: -1px; padding: 0 0 14px 0; color: #999; }
-h4 { font-size: 18px; letter-spacing: -1px; padding: 0 0 5px 0; color: #686868; }
-h5 { font-size: 20px; letter-spacing: -1px; padding: 0 0 14px 0; color: #686868; }
+h2 { font-size: 24px; letter-spacing: -1px; padding: 0 0 14px 0;  color: #686868}
+h3 { font-size: 18px; letter-spacing: -1px; padding: 0 0 0 0; color: #404040; font-weight: bold;}
+h4 { font-size: 16px; letter-spacing: -1px; padding: 0 0 5px 0; color: #404040; }
+h5 { font-size: 14px; letter-spacing: -1px; padding: 0 0 14px 0; color: #686868; }
 .orange_font { color: #f90; }
 .white_font { color: #F9F9F9; }
 .grey_font { color: #686868; }
@@ -19,7 +19,7 @@ h5 { font-size: 20px; letter-spacing: -1px; padding: 0 0 14px 0; color: #686868;
 a, a:link, a:visited { text-decoration: none; color: #046381; font-weight: bold;  font-size: 13px;}
 a:hover { text-decoration: underline; }
 
-ul { margin-top: 0; margin-bottom: 0; padding-top: 0; padding-bottom: 1.2em; }
+ul { padding-top: 0; padding-bottom: 1.2em; }
 ol { margin-top: 0; margin-bottom: 0; padding-top: 0; padding-bottom: 1.2em; }
 img { border: 0; }
 
@@ -349,4 +349,12 @@ div.flash-success a
 }
 .comment{
 margin-top:10px;
+}
+.detail_section{
+margin-top: 10px;
+margin-bottom: 15px;
+}
+.detail_header{
+padding-bottom: 7px;
+border-bottom: 1px solid #EEE;
 }

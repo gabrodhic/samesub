@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Oct 14, 2011 at 10:59 PM
+-- Generation Time: Oct 16, 2011 at 01:13 AM
 -- Server version: 5.1.33
 -- PHP Version: 5.2.9
 
@@ -384,6 +384,7 @@ CREATE TABLE `subject` (
   show_time int(11) NOT NULL DEFAULT '0' COMMENT 'time when the running thread shows the content',
   tag varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   category varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  views int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (id),
   UNIQUE KEY urn (urn),
   KEY user_id (user_id),
