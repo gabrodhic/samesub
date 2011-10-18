@@ -17,7 +17,7 @@ function ajax_request(url,data,bsend,suc,err,method,dt){
 
 var interval_check;
 
-function get_Contents(){
+function get_Contents(callback){
 	var d = new Date();
 	ajax_request(
 		"<?php echo Yii::app()->request->baseUrl;?>/subject/fetch",
@@ -31,10 +31,17 @@ function get_Contents(){
 				//most probably that the clock also is slow, so lets update it also
 
 			}
+			
 			$('#header_top').html('LIVE NOW: <a href="<?php echo Yii::app()->createUrl('site/index');?>">' + json.title_1 + '</a>');
+			if(callback === undefined) {
+			setTimeout(function (){$("#header_top, #header_top a").css("color", "white");},500);
+			setTimeout(function (){$("#header_top, #header_top a").css("color", "");},1000);
+			setTimeout(function (){$("#header_top, #header_top a").css("color", "white");},1500);
+			setTimeout(function (){$("#header_top, #header_top a").css("color", "");},2000);
+			}
 			
 			next_fetch = (json.display_time_2 - epoch_time);// + (<?php echo Yii::app()->params['subject_interval'];?>*60);
-			if(next_fetch < 0) next_fetch = 30;//If by any reason cron was not executed before time, then do next fetch in 30 seconds
+			if(next_fetch < 0) next_fetch = 10;//If by any reason cron was not executed before time, then do next fetch in 10 seconds
 			next_fetch = next_fetch + '000';
 			var aa = setTimeout("get_Contents()", next_fetch);//(add the javascript milliseconds) Everythig loaded ok, lets make a new request to watch for new changes
 			
@@ -50,5 +57,5 @@ function get_Contents(){
 }
 $(document).ready(function() {
 epoch_timer();
-get_Contents();
+get_Contents("firsttime");
 });

@@ -41,7 +41,9 @@ class SiteHelper extends CHtml
 					if(stripos($parsed_url['host'], 'youtube.com')){//and its from youtube
 						//get the V value $parsed_url['query'];						
 						if (array_key_exists('v', $query_arr)) {
-							$html = '<iframe width="425" height="349" src="http://www.youtube.com/embed/'.$query_arr['v'].'" frameborder="0" allowfullscreen></iframe>';
+							//set ?wmode=opaque because so that the the #header_top div does not get bellow the movie
+							//http://stackoverflow.com/questions/3820325/overlay-opaque-div-over-youtube-iframe
+							$html = '<iframe width="425" height="349" src="http://www.youtube.com/embed/'.$query_arr['v'].'?wmode=opaque" frameborder="0" allowfullscreen></iframe>';
 						}
 					}elseif(stripos($parsed_url['host'], 'dailymotion.com')){
 						//the code is before the first undersore for the video source(pending verify if thats the syntax for all cases)
