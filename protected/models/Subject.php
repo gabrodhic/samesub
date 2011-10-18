@@ -214,7 +214,7 @@ class Subject extends CActiveRecord
 		//Update the tag table if there are new tags
 		if($this->tag){
 			$tags = Subject::getTags();
-			$new_tags = explode(" ",$this->tag);
+			$new_tags = explode(" ",strtolower($this->tag));
 			foreach($new_tags as $new_tag) {
 				$new_tag = substr($new_tag,0,48);//a word can't be larger than 50 chars,maybe we have no white spaces also
 				if (! in_array($new_tag, $tags)) 
