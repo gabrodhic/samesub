@@ -159,6 +159,7 @@ function display_elements(obj_json){
 				$("#comments_title").html('Latest user comments:');
 				$("#comment_timer").attr("style", "");
 				$("#comment_timer").html('');
+				$('#frame_box').hide();
 						
 				current_id = cache_div_id;
 				current_title = cache_div_title;
@@ -193,41 +194,53 @@ function display_elements(obj_json){
 						hms = secondsToTime(countdown);
 						$("#comment_timer").html('<span>Time remaining: </span><span>'+ hms.m + 'min ' +  hms.s + 's</span>');
 					}else{
+
 						$("#comment_timer").html('<span>Time remaining: </span><span>'+countdown.toString()+ ' seconds</span>');
 						
-						if(countdown > 55){
-							$("#comments_title").fadeTo("fast", 1.0);//notice, this is just to reset it to original opacity
-							$("#comments_title").css("color", "black");
-							$("#comments_title").html('Comments closing...');
-							$("#comments_title").fadeTo("medium", 0.0);
-						}else if(countdown > 12){
-							$("#comments_title").attr("style", "");
-							$("#comments_title").html('People, make your conclusions:');
-							
-							$("#comment_timer  span:nth-child(2)").css("color", "black");//only the second span
-							setTimeout(function (){$("#comment_timer  span:nth-child(2)").css("color", "white");},500);
-							//$("#comment_timer").fadeTo("fast", 1.0);//notice, this is just to reset it to original opacity
-							//$("#comment_timer").css("color", "black");
-							//$("#comment_timer").html(countdown.toString() + 'seconds);
-							//$("#comment_timer").fadeTo("medium", 0.0);
-						}else if(countdown > 10){
-							$("#comments_title").attr("style", "color:red");//notice, we are overriding the style property fully cleans all other previous styles by jquery(opacity, filter, etc)							
-							$("#comments_title").html('Comments CLOSED');
-							
-							$("#comment_timer").css("color", "black");
-							
-						}else if(countdown > 2){
-							$("#comment_timer").attr("style", "color:red");
-							//$("#comment_timer").html(countdown.toString() + 'seconds');
-							$("#comment_textarea").attr('disabled',true);
-							
-						}else{
-							$("#comment_timer").attr("style", "");
-							$("#comment_timer").html('Changing to next subject');
+						if(countdown < 30){
+							if(countdown > 25){
+								$("#comments_title").fadeTo("fast", 1.0);//notice, this is just to reset it to original opacity
+								$("#comments_title").css("color", "black");
+								$("#comments_title").html('Comments closing...');
+								$("#comments_title").fadeTo("medium", 0.0);
+							}else if(countdown > 15){
+								$("#comments_title").attr("style", "");
+								//$("#comments_title").html('People, make your conclusions:');
+								
+								$("#comment_timer  span:nth-child(2)").css("color", "black");//only the second span
+								setTimeout(function (){$("#comment_timer  span:nth-child(2)").css("color", "white");},500);
+								//$("#comment_timer").fadeTo("fast", 1.0);//notice, this is just to reset it to original opacity
+								//$("#comment_timer").css("color", "black");
+								//$("#comment_timer").html(countdown.toString() + 'seconds);
+								//$("#comment_timer").fadeTo("medium", 0.0);
+							}else if(countdown > 10){
+
+								$("#comment_timer  span:nth-child(2)").css("color", "red");//only the second span
+								setTimeout(function (){$("#comment_timer  span:nth-child(2)").css("color", "white");},500);
+								//$("#comment_timer").css("color", "black");
+								
+							}else if(countdown > 6){
+								$("#comments_title").attr("style", "color:red");//notice, we are overriding the style property fully cleans all other previous styles by jquery(opacity, filter, etc)							
+								$("#comments_title").html('Comments CLOSED');
+								
+								$("#comment_textarea").attr('disabled',true);								
+								//$("#comment_timer").attr("style", "");
+								$("#comment_timer  span:nth-child(2)").css("color", "red");//only the second span
+								//$("#comment_timer").html('Changing to next subject');
+							}else{
+								if(countdown == 6){
+									$("#header_title h1").attr("style", "color:#1C75CE");
+									$("#header_title h1").html('Changing to next subject, get ready!');
+									$('#header_title h1').typewriter( 1000, function(){
+										setTimeout(function(){$("#header_title h1").attr("style", "");},3000);
+									}, new Date());
+								}else if(countdown == 2){
+									$('#frame_box').show();
+									//$('#frame_box').contents().find('body').attr('style','background-color:white;');
+								}
+							}
 						}
-						
-						//var tt = (cache_display_time-epoch_time);
-						
+
 					}
 				}
 			}
@@ -294,4 +307,11 @@ $(document).ready(function() {
 		//Add this callback only the first time after we fetch content
 		interval_check = setInterval("check_preload()",1000);	
 	});
+		//We need to iframe the layer as it is windowed element and we are working with different user content
+		//adata a as swf flash that dont have wmode=opaque
+		$('<iframe src="about:blank" width="980" height="900" id="frame_box" frameBorder="0" scrolling="no" style="display:none; background-color:white; z-index:9000; position:absolute;"></iframe>').prependTo('#main_body');
+		 setTimeout(function (){
+		 $('#frame_box').contents().find('body').html('<p align="center">&nbsp;</p><p align="center">&nbsp;</p><p align="center">&nbsp;</p><p align="center">&nbsp;</p><p align="center"><b><font size="7" face="Trebuchet MS" color="#3F3F3F">Next sub is:</font></b></p>');
+		 },3000); 
+		 
 });
