@@ -53,18 +53,12 @@ background-color:#1C75CE;
 float:left;
 }
 #header_top{
-padding:5px;
-font-size:10px;
-text-align:right;
+height:30px;
 position:fixed;
-background-color:#FFFFFF;
 width:980px; 
-margin-right: 5px;
 z-index:99;
 }
-#header_top a{
-font-size:10px;
-}
+
 #header_middle{
 padding-top:30px;
 }

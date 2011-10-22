@@ -79,8 +79,7 @@ preload_time_passed = 5;
 ?>
 <div id="page" class="container" <?php echo (Yii::app()->session->get('site_loaded') != "yes" and (strtolower($this->id) == 'site' and strtolower($this->action->Id) == 'index')) ? 'style="display:none;"' : '';?>>
 	<div id="header" class="bounded">
-		<div id="header_top"><?php if(strtolower($this->id) != 'site' or strtolower($this->action->Id) != 'index')
-		echo '<a href="'.Yii::app()->params['weburl'].'">LIVE: '. Notification::getNotification()->live. '</a>'; ?></div>
+		<div id="header_top"><iframe src="about:blank" width="980" height="30" id="header_top_frame" frameBorder="0" scrolling="no" style="background-color:white; z-index:9000; position:absolute;"></iframe></div>
 		<div id="header_middle">
 			<div id="logo"><a href="<?php echo Yii::app()->createUrl('site/index');?>"><img src="<?php echo Yii::app()->request->baseUrl; ?>/images/logo.jpg"></a></div>
 			<div id="main_menu">

@@ -32,15 +32,18 @@ function get_Contents(callback){
 
 			}
 			
-			$('#header_top').html('LIVE NOW: <a href="<?php echo Yii::app()->createUrl('site/index');?>">' + json.title_1 + '</a>');
+			$('#header_top_frame').contents().find('body').html('LIVE NOW: <a target="_top" style="color: #046381;" href="<?php echo Yii::app()->createUrl('site/index');?>">' + json.title_1 + '</a>');
 			if(callback === undefined) {
-			setTimeout(function (){$("#header_top, #header_top a").css("color", "white");},500);
-			setTimeout(function (){$("#header_top, #header_top a").css("color", "");},1000);
-			setTimeout(function (){$("#header_top, #header_top a").css("color", "white");},1500);
-			setTimeout(function (){$("#header_top, #header_top a").css("color", "");},2000);
+				setTimeout(function (){$("#header_top_frame").contents().find('body, body a').css("color", "white");},500);
+				setTimeout(function (){$("#header_top_frame").contents().find('body, body a').css("color", "");},1000);
+				setTimeout(function (){$("#header_top_frame").contents().find('body, body a').css("color", "white");},1500);
+				setTimeout(function (){$("#header_top_frame").contents().find('body, body a').css("color", "");},2000);
+			}else{
+				$('#header_top_frame').contents().find('head').append('<style> a, a:link, a:visited { text-decoration: none; color: #046381;font-weight: bold;  font-size: 13px;}a:hover { text-decoration: underline; }</style>');
+				$('#header_top_frame').contents().find('body').attr('style','margin:3px 1px 1px 1px; border:0px;padding:0px;text-align:right; font: bold 13px Trebuchet MS, Arial, Helvetica, sans-serif; color: #686868;');
 			}
 			
-			next_fetch = (json.display_time_2 - epoch_time);// + (<?php echo Yii::app()->params['subject_interval'];?>*60);
+			next_fetch = (json.display_time_2 - epoch_time);
 			if(next_fetch < 0) next_fetch = 10;//If by any reason cron was not executed before time, then do next fetch in 10 seconds
 			next_fetch = next_fetch + '000';
 			var aa = setTimeout("get_Contents()", next_fetch);//(add the javascript milliseconds) Everythig loaded ok, lets make a new request to watch for new changes
@@ -48,9 +51,9 @@ function get_Contents(callback){
 		},
 		function(){
 
-			$("#header_top").html("LIVE: There was an error getting data from the server to your device. Please check your internet connection. Retrying in 15 seconds.");
+			$("#header_top_frame").contents().find('body').html("LIVE: There was an error getting data from the server to your device. Please check your internet connection. Retrying in 15 seconds.");
 			
-			var bb = setTimeout(function(){$("#header_top").html(".")},10000);
+			var bb = setTimeout(function(){$("#header_top_frame").contents().find('body').html(".")},10000);
 			var bb = setTimeout("get_Contents()",15000);//There was an error loading content, lets make a new request to try to get content again
 		}
 	);

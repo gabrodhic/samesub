@@ -89,7 +89,7 @@ Yii::app()->clientScript->registerScript('tagscodeid',$code);
 	</div>
 	<div class="row">
 		<?php echo $form->labelEx($model,'video'); ?>
-		<?php echo $form->textArea($model,'video',array('rows'=>6, 'cols'=>50)); ?>
+		<?php echo $form->textArea($model,'video',array('rows'=>2, 'cols'=>50)); ?>
 		<?php echo $form->error($model,'video'); ?>
 	</div>
 	
