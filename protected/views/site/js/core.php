@@ -152,8 +152,8 @@ function display_elements(obj_json){
 				}
 				load_comments(obj_json.comments_2);
 
-				var new_title = ($("#header_title h1").html().length >45) ? $("#header_title h1").html().substring(0,45) + '...' : $("#header_title h1").html();
-				$("#previous_right").html('<a title="'+$("#header_title h1").html().replace(/"/g,'')+'" href="'+$('#urn_link').attr('href')+'">'+new_title+'</a>');
+				var new_title = (current_title.length >45) ? current_title.substring(0,45) + '...' : current_title;
+				$("#previous_right").html('<a title="'+current_title.replace(/"/g,'')+'" href="'+$('#urn_link').attr('href')+'">'+new_title+'</a>');
 				
 				$("#comments_title").attr("style", "");
 				$("#comments_title").html('Latest user comments:');
