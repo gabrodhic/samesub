@@ -94,7 +94,7 @@ Yii::app()->clientScript->registerScript('tagscodeid',$code);
 		<?php echo $form->DropDownList($model, 'category', CHtml::listData(Yii::app()->db->createCommand()
 		->select('name')
 		->from('subject_category')
-		->order('name DESC')
+		->order('name ASC')
 		->queryAll(),'name','name'), array('prompt'=>'Select Category')); ?> 
 		<?php echo $form->error($model,'category'); ?>
 	</div>
