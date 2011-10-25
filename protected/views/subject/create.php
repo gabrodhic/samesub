@@ -66,7 +66,7 @@ Yii::app()->clientScript->registerScript('tagscodeid',$code);
 
 	<div class="row">
 		<?php echo $form->labelEx($model,'content_type_id'); ?>
-		<?php echo $form->DropDownList($model, 'content_type_id', CHtml::listData(ContentType::model()->findAll(),'id','name')); ?> 
+		<?php echo $form->DropDownList($model, 'content_type_id', CHtml::listData(ContentType::model()->findAll(),'id','name'),array('prompt'=>'Select Type')); ?> 
 		<?php echo $form->error($model,'content_type_id'); ?>
 	</div>
 	
@@ -140,20 +140,29 @@ function show_content_input(){
 
 	switch($("#Subject_content_type_id").val())
 	{
+	case '':
+	  $("#Subject_image,#Subject_image_url").parent().hide();
+	  $("#Subject_text").parent().hide();
+	  $("#Subject_video").parent().hide();
+	  $("#Subject_user_comment").parent().hide();
+	  break;
 	case '1':
 	  $("#Subject_image,#Subject_image_url").parent().show();
 	  $("#Subject_text").parent().hide();
 	  $("#Subject_video").parent().hide();
+	  $("#Subject_user_comment").parent().show();
 	  break;
 	case '2':
 	  $("#Subject_image,#Subject_image_url").parent().hide();
 	  $("#Subject_text").parent().show();
 	  $("#Subject_video").parent().hide();
+	  $("#Subject_user_comment").parent().show();
 	  break;
 	case '3':
 	  $("#Subject_image,#Subject_image_url").parent().hide();
 	  $("#Subject_text").parent().hide();
 	  $("#Subject_video").parent().show();
+	  $("#Subject_user_comment").parent().show();
 	  break;
 	default:
 	  //nothing
