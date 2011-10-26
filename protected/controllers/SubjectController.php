@@ -313,6 +313,28 @@ class SubjectController extends Controller
 		$data = Subject::getLiveData($subject_id_2,$comment_number,false);
 		if($data['new_sub'] == 0) $this->no_log = true;//This is just to control the logging functionality(client dont receive this info)
 		
+		
+		if($data['new_sub'] <> 0) {
+			if(isset($_GET['subject_id_2'])){//Only if its not comming from site.php js(that script does not sends that param)
+				if($data['id_1'])
+						$this->model=$this->loadModel($data['id_1']);
+					else
+						$this->model=$this->loadModel($data['id_2']);
+						
+				if(!(Yii::app()->session['subject_view_live'])) Yii::app()->session['subject_view_live'] = array('1'=>1); //just in case start it with something
+				if(! in_array($this->model->id, Yii::app()->session['subject_view_live'])){
+					//buggy we need to reasign a new array as we can not modify an array on the fly in a session var
+					$arr_sv = Yii::app()->session['subject_view_live'];
+					$arr_sv[] = $this->model->id;
+					Yii::app()->session['subject_view_live'] = $arr_sv;
+					
+					$this->model->live_views += 1;
+					$this->model->save();
+				}
+			}
+			
+		}
+		
 		echo json_encode($data);
 		
 	}

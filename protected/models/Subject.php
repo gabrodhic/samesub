@@ -114,8 +114,10 @@ class Subject extends CActiveRecord
 			//Invalidate any change if the subject has been showed while it was being modified
 			if( Yii::app()->db->createCommand("SELECT * FROM live_subject WHERE subject_id_1 = {$this->id} OR subject_id_2 = {$this->id}")->queryRow())
 			{
-				$this->addError('title','Right now this subject is either in the comming up queue or in the live-now stream. You can not modify it.');
-				return false;
+				if(Yii::app()->controller->action->id != 'fetch' and Yii::app()->controller->action->id != 'view'){
+					$this->addError('title','Right now this subject is either in the comming up queue or in the live-now stream. You can not modify it.');
+					return false;
+				}
 			}
 
 			//TODO:Update the table belonging to each content type(image,text,video,etc)

@@ -68,13 +68,15 @@ foreach($comments as $comment): ?>
 			<div class="clear_both"></div>
 			<div style="float:left;"><h4>Show time(homepage):</h4></div><div style="float:right;"><?php echo CHtml::encode(date("Y/m/d H:i", $model->show_time)." UTC"); ?></div>
 			<div class="clear_both"></div>
+			<div style="float:left;"><h4>LIVE Views:</h4></div><div style="float:right;"><?php echo $model->live_views; ?></div>
+			<div class="clear_both"></div>
 			<div style="float:left;"><h4>Type:</h4></div><div style="float:right;"><?php echo ucwords($model->content_type->name); ?></div>
 			<div class="clear_both"></div>
 			<div style="float:left;"><h4>Priority:</h4></div><div style="float:right;"><?php echo ucwords($model->priority_type->name); ?></div>
 			<div class="clear_both"></div>
 			<div style="float:left;"><h4>Comments:</h4></div><div style="float:right;"><?php echo $total_comments; ?></div>
 			<div class="clear_both"></div>
-			<div style="float:left;"><h4>Views:</h4></div><div style="float:right;"><?php echo $model->views; ?></div>
+			<div style="float:left;"><h4>Page Views:</h4></div><div style="float:right;"><?php echo $model->views; ?></div>
 			<div class="clear_both"></div>
 		</div>
 		<div id="detail_section">
