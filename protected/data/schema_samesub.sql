@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Oct 24, 2011 at 10:17 PM
+-- Generation Time: Oct 29, 2011 at 11:27 AM
 -- Server version: 5.1.33
 -- PHP Version: 5.2.9
 
@@ -480,13 +480,14 @@ CREATE TABLE `user` (
   notify_subject tinyint(4) NOT NULL DEFAULT '1',
   firstname varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
   lastname varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  sex tinyint(4) DEFAULT NULL,
+  sex tinyint(4) NOT NULL DEFAULT '0',
   birthdate int(11) DEFAULT NULL,
   region varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
   city varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
   interests text COLLATE utf8_unicode_ci,
   activities text COLLATE utf8_unicode_ci,
   about text COLLATE utf8_unicode_ci,
+  image_name varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (id),
   UNIQUE KEY username (username),
   UNIQUE KEY email (email),

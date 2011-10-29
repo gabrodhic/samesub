@@ -9,8 +9,20 @@
 
 <?php $form=$this->beginWidget('CActiveForm', array(
 	'id'=>'user-form',
-	'enableAjaxValidation'=>false,
+	'enableAjaxValidation'=>false,'htmlOptions'=>array('enctype' => 'multipart/form-data'),
 )); ?>
+	<div class="row">
+		<?php echo $form->labelEx($model,'image'); ?>
+		<img src="<?php echo $model->getUserImage('small_');?>">
+		<?php if($model->image_name) echo $form->checkBox($model,'deleteimage')." Delete Image"; ?>
+	</div>
+	<div class="row">
+		<label>Upload an image from your computer.</label>
+		<?php echo $form->labelEx($model,'image'); ?>		
+		<?php echo $form->FileField($model, 'image');?>
+		<?php echo $form->error($model,'image'); ?>
+	</div>
+
 	<div class="row">
 		<?php echo $form->labelEx($model,'firstname'); ?>
 		<?php echo $form->textField($model,'firstname',array('size'=>25,'maxlength'=>50)); ?>
@@ -23,7 +35,7 @@
 	</div>
 	<div class="row">
 		<?php echo $form->labelEx($model,'sex'); ?>
-		<?php echo $form->DropDownList($model, 'sex',array(''=>'Please Select','1'=>'Male', '0'=>'Female')); ?>
+		<?php echo $form->DropDownList($model, 'sex',array('1'=>'Male', '2'=>'Female'), array('prompt'=>'Please Select')); ?>
 		<?php echo $form->error($model,'sex'); ?>
 	</div>
 	<div class="row">

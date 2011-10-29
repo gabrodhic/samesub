@@ -18,6 +18,9 @@
  */
 class User extends CActiveRecord
 {
+	public $image;
+	public $image_url;
+	public $deleteimage;
 	public $oldpassword;
 	public $newpassword;
 	public $newpassword2;
@@ -68,6 +71,8 @@ class User extends CActiveRecord
 			array('firstname, lastname',  'length', 'max'=>50),
 			array('region, city',  'length', 'max'=>100),
 			array('interests, activities, about',  'length', 'max'=>65500),
+			array('image,deleteimage', 'safe', 'on'=>'update'),//So that it can be massively assigned, either way its gonna be validated by validateContentType
+			array('image_url', 'url', 'on'=>'update'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
 			array('id, username, password, email, ip_created, ip_last_access, user_status_id, user_type_id, time_created, time_last_access, time_modified, country, type, status, subs', 'safe', 'on'=>'search'),
@@ -170,6 +175,25 @@ class User extends CActiveRecord
 		}
 		if($this->scenario != 'login') $this->time_modified = SiteLibrary::utc_time();//login also saves data
 		return true;
+	}
+
+	/**
+	 * Gets a user image depending on the user properties.
+	 * @param string $size the desired image size. ie: 'small_', '' => default size
+	 * @return string with the url of the image.
+	 */
+	public function getUserImage($size='')
+	{
+		if(! $this->image_name){
+			if($this->sex == 2)
+				return Yii::app()->getRequest()->getBaseUrl(true).'/'.'images/'.$size.'user_female.jpg';
+			elseif($this->sex == 1)
+				return Yii::app()->getRequest()->getBaseUrl(true).'/'.'images/'.$size.'user_male.jpg';
+			else
+				return Yii::app()->getRequest()->getBaseUrl(true).'/'.'images/'.$size.'user_unisex.jpg';
+		}else{
+			return Yii::app()->getRequest()->getBaseUrl(true).'/'.Yii::app()->params['user_img_path'].'/'.$size.$this->image_name;		
+		}
 	}
 
 	/**

@@ -299,6 +299,44 @@ class UserController extends Controller
 				if(! $this->model->Day) $this->model->Day = 01;
 				$this->model->birthdate = strtotime($this->model->Year."/".$this->model->Month."/".$this->model->Day);
 			}
+			
+			if($this->model->validate()){
+				//Delete image reference if marked
+				if($this->model->deleteimage) $this->model->image_name = '';
+				//Save the image if any
+				$image=CUploadedFile::getInstance($this->model,'image');
+				if (get_class($image) == 'CUploadedFile'){
+					if($image->getSize() > (1024 * 1024 * Yii::app()->params['max_image_size'])){  $this->model->addError('image','Please select an image smaller than 7MB.');
+					$error = true;}//MB
+					$types = array("image/jpg", "image/png", "image/gif", "image/jpeg");
+					if (! in_array(CFileHelper::getMimeType($image->getName()), $types)){ $this->model->addError('image','File type '.CFileHelper::getMimeType($image->getName()).' not supported .Please select a valid image type.'); $error = true;} 
+				}
+				if(! $error){
+					Yii::import('ext.EUploadedImage');
+					if($image){
+						$img_extension = ($image->getExtensionName()) ? $image->getExtensionName() : '';
+						$img_name = $this->model->id.'.'.$img_extension;
+						$this->model->image_name = $img_name;
+						$this->model->image = EUploadedImage::getInstance($this->model,'image');
+						$this->model->image->maxWidth = 980;
+						$this->model->image->maxHeight = 750;
+						 
+						$this->model->image->thumb = array(
+							'maxWidth' => 45,	
+							'maxHeight' => 45,
+							'keepratio'=>false,
+							//'dir' => Yii::app()->params['dirroot'] . '/'.$img_path,
+							'prefix' => 'small_',
+						);
+						 
+						if (! $this->model->image->saveAs(Yii::app()->params['webdir'].DIRECTORY_SEPARATOR.Yii::app()->params['user_img_path'].DIRECTORY_SEPARATOR.$img_name)){
+							$this->model->addError('image','We could not save the image in the disk.'); 
+							return false;
+						}
+					}
+				}
+				
+			}
 			if($this->model->save())
 			Yii::app()->user->setFlash('profile_success','Profile Settings updated successfully');
 				//$this->redirect(array('index'));

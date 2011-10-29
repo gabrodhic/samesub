@@ -61,6 +61,7 @@ class EUploadedImage extends CComponent
 	 */
 	public $maxWidth = false;
 	public $maxHeight = false;
+	public $keepratio = true;
 
 	/**
 	 * Returns an instance of the specified uploaded image.
@@ -234,14 +235,15 @@ class EUploadedImage extends CComponent
 			$this->imagePrepare(NULL, NULL);
 			if ($this->saveImage(substr_replace($file, 'org_', strrpos($file, DIRECTORY_SEPARATOR) + 1, 0))) {
 				// save the medium size
-				$this->imagePrepare($this->maxWidth, $this->maxHeight);
+				$this->imagePrepare($this->maxWidth, $this->maxHeight,$this->keepratio);
 				if ($this->saveImage($file)) {
 					// create the thumbnail
 					if ($this->thumb) {
 						// create the thumbnail of the requested dimensions
 						$thumb_max_width = isset($this->thumb['maxWidth']) ? $this->thumb['maxWidth'] : false;
 						$thumb_max_height = isset($this->thumb['maxHeight']) ? $this->thumb['maxHeight'] : false; 
-						$this->imagePrepare($thumb_max_width, $thumb_max_height);
+						$keepratio = isset($this->thumb['keepratio']) ? $this->thumb['keepratio'] : true; 
+						$this->imagePrepare($thumb_max_width, $thumb_max_height,$keepratio);
 						// get the thumb folder
 						$thumb_dir = isset($this->thumb['dir']) ? $this->thumb['dir'].DIRECTORY_SEPARATOR : NULL;
 						// get the thumb prefix
@@ -263,8 +265,9 @@ class EUploadedImage extends CComponent
 	 * @param int $maxWidth image max width. is false if none is given
 	 * @param int $maxHeight image max height. is false if none is given
 	 */
-	private function imagePrepare($maxWidth, $maxHeight)
+	private function imagePrepare($maxWidth, $maxHeight, $keepratio=true)
 	{
+		if(! $keepratio) { $this->resizeImage($maxWidth, $maxHeight); return ;}
 		if (is_int($maxWidth) && $this->_width > $maxWidth) {
 			$this->resizeImage($maxWidth, ($maxWidth * $this->_height / $this->_width));
 		}
