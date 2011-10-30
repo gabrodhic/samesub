@@ -54,11 +54,14 @@ foreach($comments as $comment): ?>
 	<div style="padding-left:30px;">
 		<div class="detail_section">
 		<h3 class="detail_header">Author</h3>
+		<div style="float:left;"><?php echo SiteHelper::get_user_picture((int)$model->user_id,'medium_','mysub');?></div>
+		<div style="float:left; padding-left:10px">
 			<?php 
 			$user = User::model()->with('ucountry')->findByPk($model->user_id);
 			echo CHtml::link($user->username,array('mysub/'.$user->username));?><br>
 			<?php echo ucwords(strtolower($user->ucountry->name)); ?>
-
+		</div>
+		<div class="clear_both"></div>
 		</div>
 		<div class="detail_section">
 			<h3 class="detail_header">Sub Information</h3>

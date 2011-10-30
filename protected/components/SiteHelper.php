@@ -231,4 +231,32 @@ class SiteHelper extends CHtml
 		return $ogtags;
 	}
 	
+	/**
+	 * Get the user picture
+	 * @param mixed $username_id the user id or username
+	 * @param string $size the size
+	 * @param string $link wether to set a link to the image. ie: user profile or mysub page
+	 * @return string the img tag code, otherwise false if user_id is not found
+	 */
+	public function get_user_picture($username_id, $size='small_',$link='')
+	{
+		if(is_int($username_id))
+			$user=User::model()->findByPk((int)$username_id);
+		else
+			$user=User::model()->find('username=:username',array(':username'=>$username_id));
+			
+		if($user===null) return false;
+		$dimension ='';
+		if($size == 'small_') $dimension = 'width="25" height="25"';
+		if($size == 'medium_') {$dimension = 'width="45" height="45"'; $size = 'small_';}
+		if($size == 'large_') $size = '';
+		$link1 = '';
+		$link2 = '';
+		if($link === 'mysub') $link1 = '<a href="'.Yii::app()->createUrl('mysub/'.$user->username).'">';
+		if($link === 'profile') $link1 = '<a href="'.Yii::app()->createUrl('user/update').'">';
+		if($link1) $link2 = '</a>';
+		return $link1.'<img src='.$user->getUserImage($size).' '.$dimension .'>'.$link2;
+		
+	}
+	
 }

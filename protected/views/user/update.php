@@ -1,4 +1,4 @@
-<h1>Profile Settings</h1>
+<h1>Update Profile</h1>
 <?php if(Yii::app()->user->hasFlash('profile_success')): ?>
 <br>
 <div class=flash-success>
@@ -95,7 +95,7 @@
 	</div>
 	
 	<div class="row buttons">
-		<?php echo CHtml::submitButton('Update Settings'); ?>
+		<?php echo CHtml::submitButton('Update Profile'); ?>
 	</div>
 
 <?php $this->endWidget(); ?>

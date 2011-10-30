@@ -51,7 +51,8 @@ class UserController extends Controller
 		//.$this->action->Id
 		$arr_titles = array();
 		$arr_titles['index'] = 'Welcome';
-		$arr_titles['update'] = 'Profile Settings';
+		$arr_titles['mysub'] = 'MySub';
+		$arr_titles['update'] = 'Update Profile';
 		$arr_titles['changepassword'] = 'Change Password';
 		$this->breadcrumbs=array(
 		'User'=>array('index'),
@@ -60,6 +61,7 @@ class UserController extends Controller
 
 		$this->menu=array(
 		array('label'=>$arr_titles['index'], 'url'=>array('user/index')),//Note:we have to indicate the controller also, for the CMenu widget activateItems propoerty work properly
+		array('label'=>$arr_titles['mysub'], 'url'=>array('mysub/')),
 		array('label'=>$arr_titles['update'], 'url'=>array('user/update')),		
 		array('label'=>$arr_titles['changepassword'], 'url'=>array('user/changepassword')),
 		//array('label'=>$arr_titles['changepassword'], 'url'=>array('user/changepassword', 'id'=>Yii::app()->user->id)),
