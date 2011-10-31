@@ -121,7 +121,7 @@ class UserController extends Controller
 	 * Creates a new model.
 	 * If creation is successful, the browser will be redirected to the 'view' page.
 	 */
-	public function actionRegister()
+	public function actionRegister($sh,$t)
 	{
 		$this->model=new User('register');
 
@@ -148,6 +148,10 @@ class UserController extends Controller
 			
 			
 			if($this->model->save()){
+				//Assign the subject to the new user if he/she registered after adding a subject
+				if($sh and $t)
+				Subject::model()->updateAll(array('user_id'=>$this->model->id), 'time_submitted=:time_submitted AND hash=:hash', array(':time_submitted'=>$t, ':hash'=>$sh));
+				
 				$headers="From: Samesub Contact <".Yii::app()->params['contactEmail'].">\r\nReply-To: ".Yii::app()->params['contactEmail'];
 				$mail_message = "Hi {$this->model->email}, welcome to samesub!\n\n";
 				$mail_message .= "Name:  " . $this->model->username."\n";
@@ -189,7 +193,7 @@ class UserController extends Controller
 		}
 
 		$this->render('register',array(
-			'model'=>$this->model,
+			'model'=>$this->model,'sh'=>$sh,'t'=>$t,
 		));
 	}
 	/**

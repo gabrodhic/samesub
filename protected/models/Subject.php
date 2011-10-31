@@ -124,6 +124,8 @@ class Subject extends CActiveRecord
 			//also validatecontenttype
 		}
 		else{
+			//Assign subject hash(for guest users that want to register and own an added subject)
+			$this->hash = md5(uniqid(""));
 			//Generate the urn for this subject
 			if(! $this->urn = $this->generateUrn($this->title)){
 				$this->addError('title','Please change something in the title.'); return false;

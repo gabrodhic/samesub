@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Oct 29, 2011 at 11:27 AM
+-- Generation Time: Oct 30, 2011 at 10:05 PM
 -- Server version: 5.1.33
 -- PHP Version: 5.2.9
 
@@ -386,6 +386,7 @@ CREATE TABLE `subject` (
   category varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   views int(11) NOT NULL DEFAULT '0',
   live_views int(11) NOT NULL DEFAULT '0',
+  `hash` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (id),
   UNIQUE KEY urn (urn),
   KEY user_id (user_id),

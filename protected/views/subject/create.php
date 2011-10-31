@@ -40,10 +40,14 @@ Yii::app()->clientScript->registerScript('tagscodeid',$code);
 <div class="flash-success">
 	<?php echo Yii::app()->user->getFlash('subject_added'); ?>
 </div>
-
-<div class="flash-success">
-	<?php echo Yii::app()->user->getFlash('subject_added_info'); ?>
-</div>
+<?php if(Yii::app()->user->isGuest){ ?>
+	<br>
+	<div>
+		<b>NOTE:</b> You have uploaded this subject as anonymous(guest) user. If you <a href="<?php echo $this->createUrl('user/register?sh='.$model->hash.'&t='.$model->time_submitted);?>">click here</a> and register, the system will asign this subject to the new account you register. (Don't worry, we don't ask much about you when registering. Just your email, username, and password. We hate to ask much to the user.)
+	</div>
+	<div class="clear_both"></div>
+	<br><br>
+<?php } ?>
 
 <?php else: ?>
 

@@ -13,7 +13,7 @@
 
 <?php $form=$this->beginWidget('CActiveForm', array(
 	'id'=>'user-form',
-	'action'=>CHtml::normalizeUrl(array('user/register')),//Set action url explicitly so that if we are partial rendering fron login page action is alwasy the same
+	'action'=>CHtml::normalizeUrl(array('user/register?sh='.$sh.'&t='.$t)),//Set action url explicitly so that if we are partial rendering fron login page action is alwasy the same
 	'enableAjaxValidation'=>false,
 )); ?>
 
@@ -52,7 +52,7 @@ $("#User_email").keyup(function (){ $("#email_verify").text($("#User_email").val
 
 </script>
 </div><!-- form -->
-<div style="width:300px; margin:0px 30px 0px 30px; padding:20px; float:right; background-color: #F4F4FF;">
+<div style="width:300px; margin:0px 30px 0px 30px; padding:20px; float:left; background-color: #F4F4FF;">
 <h2>Benefits of registering</h2>
 <ul>
 <li>Know about the status of each subject you upload.</li>
