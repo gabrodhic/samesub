@@ -364,3 +364,9 @@ padding-bottom: 7px;
 border-bottom: 1px solid #EEE;
 margin-bottom:6px;
 }
+.detail_cell{
+padding-bottom:20px;
+}
+tbody tr:nth-child(even) td.detail_cell {
+background:#FFFFFF;
+}

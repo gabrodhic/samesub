@@ -235,7 +235,7 @@ class SiteHelper extends CHtml
 	 * Get the user picture
 	 * @param mixed $username_id the user id or username
 	 * @param string $size the size
-	 * @param string $link wether to set a link to the image. ie: user profile or mysub page
+	 * @param string $link wether to set a link to the image. ie: user profile or mysub page or image
 	 * @return string the img tag code, otherwise false if user_id is not found
 	 */
 	public function get_user_picture($username_id, $size='small_',$link='')
@@ -253,7 +253,8 @@ class SiteHelper extends CHtml
 		$link1 = '';
 		$link2 = '';
 		if($link === 'mysub') $link1 = '<a href="'.Yii::app()->createUrl('mysub/'.$user->username).'">';
-		if($link === 'profile') $link1 = '<a href="'.Yii::app()->createUrl('user/update').'">';
+		if($link === 'profile') $link1 = '<a href="'.Yii::app()->createUrl('profile/'.$user->username).'">';
+		if($link === 'image') $link1 = '<a href="'.$user->getUserImage('').'">';
 		if($link1) $link2 = '</a>';
 		return $link1.'<img src='.$user->getUserImage($size).' '.$dimension .'>'.$link2;
 		

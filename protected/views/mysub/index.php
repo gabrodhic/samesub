@@ -1,10 +1,10 @@
 <div id="column_2_container">
 	<div id="column_left">
-		<div><?php echo SiteHelper::get_user_picture((int)$model->user_id,'medium_','mysub');?></div>
+		<div><?php echo SiteHelper::get_user_picture((int)$model->user_id,'medium_','profile');?></div>
 		<div>
 			<?php 
 			$user = User::model()->with('ucountry')->findByPk($model->user_id);
-			echo CHtml::link($user->username,array('mysub/'.$user->username));?>
+			echo CHtml::link($user->username,array('profile/'.$user->username));?>
 			<br>
 			<?php echo $user->firstname . ' '. $user->lastname; ?>
 			<?php if ($user->sex) {
@@ -20,13 +20,15 @@
 			}
 			?>
 			<?php 
-				if($user->about){
+				if($user->about and $user->share_about == 1){
 				echo "<br><h4>About:</h4>";
 				echo $user->about; 
 			}
 			?>
 			<br><br>
-			<?php if(Yii::app()->user->id == (int)$model->user_id) echo CHtml::link('Update Profile',array('user/update')); ?>
+			<?php 
+			echo CHtml::link('View Profile',array('profile/'.$user->username)).'<br>';
+			if(Yii::app()->user->id == (int)$model->user_id) echo CHtml::link('Update Profile',array('user/update')); ?>
 		</div>
 	</div>
 	<div id="column_right">

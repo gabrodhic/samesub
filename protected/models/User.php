@@ -73,6 +73,7 @@ class User extends CActiveRecord
 			array('interests, activities, about',  'length', 'max'=>65500),
 			array('image,deleteimage', 'safe', 'on'=>'update'),//So that it can be massively assigned, either way its gonna be validated by validateContentType
 			array('image_url', 'url', 'on'=>'update'),
+			array('share_email, share_birthdate, share_region, share_city, share_interests, share_activities, share_about', 'numerical', 'on'=>'update'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
 			array('id, username, password, email, ip_created, ip_last_access, user_status_id, user_type_id, time_created, time_last_access, time_modified, country, type, status, subs', 'safe', 'on'=>'search'),
@@ -121,7 +122,7 @@ class User extends CActiveRecord
 			'time_last_access' => 'Time Last Access',
 			'time_modified' => 'Time Modified',
 			'country_id' => 'Country',
-			'notify_subject'=>'Notify me when going LIVE',
+			'notify_subject'=>'Notify me when mysubs go LIVE',
 		);
 	}
 
@@ -139,6 +140,8 @@ class User extends CActiveRecord
 		$criteria->compare('id',$this->id);
 		$criteria->compare('username',$this->username,true);
 		$criteria->compare('password',$this->password,true);
+		$criteria->compare('firstname',$this->firstname);
+		$criteria->compare('lastname',$this->lastname);
 		$criteria->compare('email',$this->email,true);
 		$criteria->compare('ip_created',$this->ip_created,true);
 		$criteria->compare('ip_last_access',$this->ip_last_access,true);

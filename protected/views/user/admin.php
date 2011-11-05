@@ -89,7 +89,7 @@ or <b>=</b>) at the beginning of each of your search values to specify how the c
 		array(
 			'header'=>'Details',
 			'type'=>'html',
-			'value'=>'CHtml::link( "Details", Yii::app()->createUrl("user/view/".$data->id))',
+			'value'=>'CHtml::link( "Details", Yii::app()->createUrl("profile/".$data->username))',
 			'headerHtmlOptions'=>array('width'=>'50px'),
 		),
 	),

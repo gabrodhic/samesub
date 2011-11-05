@@ -20,6 +20,15 @@ class UserController extends Controller
 			'accessControl', // perform access control for CRUD operations
 		);
 	}
+	
+	public function actions()
+    {
+        return array(
+            'textImage'=>array(
+                'class' => 'application.extensions.ETextImage.ETextImageAction',
+            ),
+        );
+    }
 
 	/**
 	 * Specifies the access control rules.
@@ -30,15 +39,15 @@ class UserController extends Controller
 	{
 		return array(
 			array('allow',  // allow all users to perform 'register' actions
-				'actions'=>array('register','resetpassword','resetpasswordnext'),
+				'actions'=>array('register','resetpassword','resetpasswordnext','profile','textImage'),
 				'users'=>array('*'),
 			),
 			array('allow', // allow authenticated user to perform 'index' and 'update' actions
 				'actions'=>array('index','update','changepassword'),
 				'users'=>array('@'),
 			),
-			array('allow', // allow admin user to perform 'admin','view'
-				'actions'=>array('admin','view'),
+			array('allow', // allow admin user to perform 'admin'
+				'actions'=>array('admin'),
 				'users'=>array('admin','super'),
 			),
 			array('deny',  // deny all users
@@ -77,17 +86,27 @@ class UserController extends Controller
 	 * Displays a particular model.
 	 * @param integer $id the ID of the model to be displayed
 	 */
-	public function actionView($id)
+	public function actionProfile($username)
 	{
-		$this->model=$this->loadModel($id);
+		$this->layout='//layouts/column1';
+		if(! $this->model = User::model()->find('username=:username', array(':username'=>$username))) 
+			throw new CHttpException(404,'The username '.$username.' does not exist.');
+		//$this->model=$this->loadModel($id);
 		$this->model->country = Country::model()->findByPk($this->model->country_id)->name;
 		$status = Yii::app()->db->createCommand()->select('*')->from('user_status')->queryRow();
 		$this->model->status = $status['name'];
 		$type = Yii::app()->db->createCommand()->select('*')->from('user_type')->queryRow();
 		$this->model->type = $type['name'];
 		$this->model->country_created = Country::model()->findByPk($this->model->country_id_created)->name;
+		$stat_subs = Subject::model()->count('user_id=:user_id', array(':user_id'=>$this->model->id));
+		$stat_comments = Comment::model()->count('user_id=:user_id', array(':user_id'=>$this->model->id));
+		$stat_usage_counter = Log::model()->count('user_id=:user_id', array(':user_id'=>$this->model->id));
+		$last_log_line = Log::model()->find(array('limit'=>2, 'offset'=>1, 'order'=>'t.id DESC', 'params'=>array(':user_id'=>$this->model->id)));
+		
+		
 		$this->render('view',array(
-			'model'=>$this->model
+			'model'=>$this->model,'stat_subs'=>$stat_subs,'stat_comments'=>$stat_comments,'stat_last_online'=>$last_log_line->time
+			,'stat_usage_counter'=>$stat_usage_counter
 		));
 	}
 

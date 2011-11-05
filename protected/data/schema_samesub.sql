@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Oct 30, 2011 at 10:05 PM
+-- Generation Time: Nov 04, 2011 at 09:20 AM
 -- Server version: 5.1.33
 -- PHP Version: 5.2.9
 
@@ -337,6 +337,18 @@ CREATE TABLE priority (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table 'share_type'
+--
+
+CREATE TABLE share_type (
+  id int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
+  PRIMARY KEY (id)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table 'sourcemessage'
 --
 
@@ -489,6 +501,13 @@ CREATE TABLE `user` (
   activities text COLLATE utf8_unicode_ci,
   about text COLLATE utf8_unicode_ci,
   image_name varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  share_email tinyint(4) NOT NULL DEFAULT '1',
+  share_birthdate tinyint(4) NOT NULL DEFAULT '1',
+  share_region tinyint(4) NOT NULL DEFAULT '1',
+  share_city tinyint(4) NOT NULL DEFAULT '1',
+  share_interests tinyint(4) NOT NULL DEFAULT '1',
+  share_activities tinyint(4) NOT NULL DEFAULT '1',
+  share_about tinyint(4) NOT NULL DEFAULT '1',
   PRIMARY KEY (id),
   UNIQUE KEY username (username),
   UNIQUE KEY email (email),
