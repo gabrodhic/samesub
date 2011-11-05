@@ -69,9 +69,14 @@ $this->pageTitle=Yii::app()->name . ' - '. $model->firstname.' '.$model->lastnam
 				</tr>';
 				}
 				if($model->birthdate and $model->share_birthdate == 1 ){
+				$ageTime = $model->birthdate;
+				$t = time();
+				$age = ($ageTime < 0) ? ( $t + ($ageTime * -1) ) : $t - $ageTime;
+				$year = 60 * 60 * 24 * 365;
+				$ageYears = $age / $year;
 				echo '<tr>
 					<td width="80" class="detail_cell"><b>Birth Date</b></td>
-					<td class="detail_cell">'.date("Y/m/d",$model->birthdate).'</td>
+					<td class="detail_cell">'.date("Y/m/d",$model->birthdate).' Age: '.floor($ageYears) . ' years old.</td>
 				</tr>';
 				}
 				if($model->interests and $model->share_interests == 1 ){

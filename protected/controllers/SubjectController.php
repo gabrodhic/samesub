@@ -256,8 +256,30 @@ class SubjectController extends Controller
 					//http://www.iso.org/iso/english_country_names_and_code_elements
 					$country=Country::model()->find('code=:code', array(':code'=>$geoIp->countryCode)); 
 					$this->model->authorizer_country_id = $country->id;
-					if($this->model->save())
-						$this->redirect(array('manage'));	
+					if($this->model->save()){
+						
+						$user = User::model()->findByPk($this->model->user_id); 
+						if($user->notify_subject_authorized){
+							$headers="From: Samesub Contact <".Yii::app()->params['contactEmail'].">\r\nReply-To: ".Yii::app()->params['contactEmail'];
+							$mail_message = "Hi {$user->username} \n\n";
+							$mail_message .= "This is a automatic message to notify that your subject has been authorized.\n";
+							$mail_message .= "That means it is going to get LIVE(homepage) very soon, so be alert.\n\n";
+							$mail_message .= "Details\n\n";
+							$mail_message .= "Subject Title: {$this->model->title}\n";
+							$mail_message .= "Uploaded time: ".date("Y/m/d H:i", $this->model->time_submitted)." UTC\n";
+							$mail_message .= "Current time: ".date("Y/m/d H:i", SiteLibrary::utc_time())." UTC (time of this message)\n\n";
+							$mail_message .= "NOTE: This message is supposed be received only by the uploader user. If you\n";
+							$mail_message .= "are not the uploader of this subject please notify us by replaying to this mail.\n\n";
+							$mail_message .= "Thanks\n\n";
+							$mail_message .= "Sincerely\n";
+							$mail_message .= "Samesub Team\n";
+							$mail_message .= "www.samesub.com";				
+							@mail($user->email,"Subject Authorized",$mail_message,$headers);
+						}
+						
+						
+						$this->redirect(array('manage'));
+					}
 			}
 
 			$this->render('authorize',array(

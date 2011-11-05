@@ -66,7 +66,7 @@ class User extends CActiveRecord
 			array('username, email', 'unique', 'on'=>'register'),
 			//TODO: implement restrictions to username??? array('username', 'match', 'pattern'=>'/^[a-z]+[0-9]*$/', 'message'=>'Only alphanumeric(a-z 0-9) characters allowed. nO UpperCase aLloWed. Can\'t start with number.', 'on'=>'register'),
 			array('email', 'email', 'on'=>'register,resetpassword'),
-			array('country_id, notify_subject, sex, birthdate, Day, Month, Year', 'numerical'),
+			array('country_id, notify_subject_live, notify_subject_authorized, sex, birthdate, Day, Month, Year', 'numerical'),
 			array('username, password, email', 'length', 'max'=>50, 'min'=>3, 'on'=>'register'),
 			array('firstname, lastname',  'length', 'max'=>50),
 			array('region, city',  'length', 'max'=>100),
@@ -122,7 +122,8 @@ class User extends CActiveRecord
 			'time_last_access' => 'Time Last Access',
 			'time_modified' => 'Time Modified',
 			'country_id' => 'Country',
-			'notify_subject'=>'Notify me when mysubs go LIVE',
+			'notify_subject_live'=>'Notify me when mysubs go LIVE',
+			'notify_subject_authorized'=>'Notify me when mysubs get authorized',
 		);
 	}
 

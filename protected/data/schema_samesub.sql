@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Nov 04, 2011 at 09:20 AM
+-- Generation Time: Nov 04, 2011 at 09:59 PM
 -- Server version: 5.1.33
 -- PHP Version: 5.2.9
 
@@ -490,7 +490,8 @@ CREATE TABLE `user` (
   time_modified int(11) NOT NULL,
   country_id int(11) NOT NULL DEFAULT '1',
   country_id_created int(11) NOT NULL DEFAULT '1',
-  notify_subject tinyint(4) NOT NULL DEFAULT '1',
+  notify_subject_live tinyint(4) NOT NULL DEFAULT '1',
+  notify_subject_authorized tinyint(4) NOT NULL DEFAULT '1',
   firstname varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
   lastname varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
   sex tinyint(4) NOT NULL DEFAULT '0',

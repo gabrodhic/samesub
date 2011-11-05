@@ -34,9 +34,14 @@
 		<?php echo $form->error($model,'lastname'); ?>
 	</div>
 	<div class="row">
-		<?php echo $form->labelEx($model,'notify_subject'); ?>
-		<?php echo $form->DropDownList($model, 'notify_subject',array('0'=>'No', '1'=>'Yes')); ?>
-		<?php echo $form->error($model,'notify_subject'); ?>
+		<?php echo $form->labelEx($model,'notify_subject_live'); ?>
+		<?php echo $form->DropDownList($model, 'notify_subject_live',array('0'=>'No', '1'=>'Yes')); ?>
+		<?php echo $form->error($model,'notify_subject_live'); ?>
+	</div>
+	<div class="row">
+		<?php echo $form->labelEx($model,'notify_subject_authorized'); ?>
+		<?php echo $form->DropDownList($model, 'notify_subject_authorized',array('0'=>'No', '1'=>'Yes')); ?>
+		<?php echo $form->error($model,'notify_subject_authorized'); ?>
 	</div>
 	<div class="row">
 		<?php echo $form->labelEx($model,'sex'); ?>
@@ -53,7 +58,7 @@
 		<?php echo $form->labelEx($model,'email'); ?>
 		<?php echo CHtml::encode($model->email); ?>
 	</div>
-	<div style="float:right;"><?php echo $form->DropDownList($model, 'share_email',array('1'=>'Public','3'=>'Only Me')); ?></div>
+	<div style="float:right;"><br><?php echo $form->DropDownList($model, 'share_email',array('1'=>'Public','3'=>'Only Me')); ?></div>
 	<div class="clear_both"></div>
 	<div class="row" style="float:left;">
 		<?php echo $form->labelEx($model,'birthdate'); ?>
@@ -75,42 +80,42 @@
 		?>
 		<?php echo $form->error($model,'birthdate'); ?>
 	</div>
-	<div style="float:right;"><?php echo $form->DropDownList($model, 'share_birthdate',array('1'=>'Public','3'=>'Only Me')); ?></div>
+	<div style="float:right;"><br><?php echo $form->DropDownList($model, 'share_birthdate',array('1'=>'Public','3'=>'Only Me')); ?></div>
 	<div class="clear_both"></div>
 	<div class="row"style="float:left;">
 		<?php echo $form->labelEx($model,'region'); ?>
 		<?php echo $form->textField($model,'region',array('size'=>25,'maxlength'=>100)); ?>
 		<?php echo $form->error($model,'region'); ?>
 	</div>
-	<div style="float:right;"><?php echo $form->DropDownList($model, 'share_region',array('1'=>'Public','3'=>'Only Me')); ?></div>
+	<div style="float:right;"><br><?php echo $form->DropDownList($model, 'share_region',array('1'=>'Public','3'=>'Only Me')); ?></div>
 	<div class="clear_both"></div>
 	<div class="row"style="float:left;">
 		<?php echo $form->labelEx($model,'city'); ?>
 		<?php echo $form->textField($model,'city',array('size'=>25,'maxlength'=>100)); ?>
 		<?php echo $form->error($model,'city'); ?>
 	</div>
-	<div style="float:right;"><?php echo $form->DropDownList($model, 'share_city',array('1'=>'Public','3'=>'Only Me')); ?></div>
+	<div style="float:right;"><br><?php echo $form->DropDownList($model, 'share_city',array('1'=>'Public','3'=>'Only Me')); ?></div>
 	<div class="clear_both"></div>
 	<div class="row" style="float:left;">
 		<?php echo $form->labelEx($model,'interests'); ?>
 		<?php echo $form->textArea($model,'interests',array('rows'=>6, 'cols'=>50)); ?>
 		<?php echo $form->error($model,'interests'); ?>
 	</div>
-	<div style="float:right;"><?php echo $form->DropDownList($model, 'share_interests',array('1'=>'Public','3'=>'Only Me')); ?></div>
+	<div style="float:right;"><br><?php echo $form->DropDownList($model, 'share_interests',array('1'=>'Public','3'=>'Only Me')); ?></div>
 	<div class="clear_both"></div>
 	<div class="row" style="float:left;">
 		<?php echo $form->labelEx($model,'activities'); ?>
 		<?php echo $form->textArea($model,'activities',array('rows'=>6, 'cols'=>50)); ?>
 		<?php echo $form->error($model,'activities'); ?>
 	</div>
-	<div style="float:right;"><?php echo $form->DropDownList($model, 'share_activities',array('1'=>'Public','3'=>'Only Me')); ?></div>
+	<div style="float:right;"><br><?php echo $form->DropDownList($model, 'share_activities',array('1'=>'Public','3'=>'Only Me')); ?></div>
 	<div class="clear_both"></div>
 	<div class="row" style="float:left;">
 		<?php echo $form->labelEx($model,'about'); ?>
 		<?php echo $form->textArea($model,'about',array('rows'=>6, 'cols'=>50)); ?>
 		<?php echo $form->error($model,'about'); ?>
 	</div>
-	<div style="float:right;"><?php echo $form->DropDownList($model, 'share_about',array('1'=>'Public','3'=>'Only Me')); ?></div>
+	<div style="float:right;"><br><?php echo $form->DropDownList($model, 'share_about',array('1'=>'Public','3'=>'Only Me')); ?></div>
 	<div class="clear_both"></div>
 	
 	<div class="row buttons">

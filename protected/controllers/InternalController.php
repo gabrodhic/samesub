@@ -179,7 +179,7 @@ class InternalController extends Controller
 		//Notify subject owner via email that his subject its gonna get LIVE
 		$subject = Subject::model()->findByPk($next_subject_id_2);
 		$user = User::model()->findByPk($subject->user_id);
-		if($user->id <> 1 and $user->notify_subject == 1){
+		if($user->id <> 1 and $user->notify_subject_live == 1){
 			$headers="From: Samesub Contact <".Yii::app()->params['contactEmail'].">\r\nReply-To: ".Yii::app()->params['contactEmail'];
 			$mail_message = "Hi {$user->username}, \n\n";
 			$mail_message .= "We are writing to notify you that your subject got approved and that it is\n";
