@@ -32,6 +32,7 @@ class User extends CActiveRecord
 	public $Year;
 	public $Month;
 	public $Day;
+	public $verifyCode;
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @return User the static model class
@@ -74,6 +75,8 @@ class User extends CActiveRecord
 			array('image,deleteimage', 'safe', 'on'=>'update'),//So that it can be massively assigned, either way its gonna be validated by validateContentType
 			array('image_url', 'url', 'on'=>'update'),
 			array('share_email, share_birthdate, share_region, share_city, share_interests, share_activities, share_about', 'numerical', 'on'=>'update'),
+			// verifyCode needs to be entered correctly
+			array('verifyCode', 'captcha', 'allowEmpty'=>!CCaptcha::checkRequirements(), 'on'=>'register'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
 			array('id, username, password, email, ip_created, ip_last_access, user_status_id, user_type_id, time_created, time_last_access, time_modified, country, type, status, subs', 'safe', 'on'=>'search'),

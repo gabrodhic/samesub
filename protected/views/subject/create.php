@@ -128,6 +128,17 @@ Yii::app()->clientScript->registerScript('tagscodeid',$code);
 		<?php echo $form->DropDownList($model, 'priority_id',array('1'=>'Low', '2'=>'Medium','3'=>'High')); ?>
 		<?php echo $form->error($model,'priority_id'); ?>
 	</div>
+	<?php if(extension_loaded('gd')): ?>
+	<div class="row">
+		<?php echo $form->labelEx($model,'verifyCode'); ?>
+		<div>
+		<?php $this->widget('CCaptcha',array('clickableImage'=>true,)); ?>
+		<?php echo $form->textField($model,'verifyCode'); ?>
+		</div>
+		<div class="hint">Please enter the letters as they are shown in the image above.
+		<br/>Letters are not case-sensitive.</div>
+	</div>
+	<?php endif; ?>
 	
 	<div class="row">
 	By submitting this content you agree with the <a href="<?php echo $this->createUrl('site/page/view/terms');?>">Terms of Use</a>.

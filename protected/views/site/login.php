@@ -46,7 +46,7 @@ $this->breadcrumbs=array(
 </div>
 
 
-<div style="margin-left: 100px;float:left; height:150px; width:10px; border-left:1px #CCCCCC solid; padding:30px;">
+<div style="margin-left: 100px;float:left; height:250px; width:10px; border-left:1px #CCCCCC solid; padding:30px;">
 </div>
 <div style="padding-left:3px; float:left;">
 <?php 

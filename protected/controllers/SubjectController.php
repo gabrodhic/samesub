@@ -4,6 +4,20 @@ class SubjectController extends Controller
 {
 
 	/**
+	 * Declares class-based actions.
+	 */
+	public function actions()
+	{
+		return array(
+			// captcha action renders the CAPTCHA image displayed on the contact page
+			'captcha'=>array(
+				'class'=>'CCaptchaAction',
+				'backColor'=>0xFFFFFF,
+			),
+		);
+	}
+	
+	/**
 	 * @return array action filters
 	 */
 	public function filters()
@@ -22,7 +36,7 @@ class SubjectController extends Controller
 	{
 		return array(
 			array('allow',  // allow all users to perform 'index' 'add' 'view' actions
-				'actions'=>array('index','view','add','fetch','gettags'),
+				'actions'=>array('index','view','add','fetch','gettags','captcha'),
 				'users'=>array('*'),
 			),
 			array('allow', // allow authenticated user to perform 'update' actions

@@ -31,6 +31,7 @@ class Subject extends CActiveRecord
 	public $urn;
 	public $content;
 	public $username;
+	public $verifyCode;
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @return Subject the static model class
@@ -79,6 +80,8 @@ class Subject extends CActiveRecord
 			
 			array('authorized', 'numerical', 'integerOnly'=>true, 'on'=>'authorize'),
 			array('authorized', 'validateAuthorization', 'on'=>'authorize'),
+			// verifyCode needs to be entered correctly
+			array('verifyCode', 'captcha', 'allowEmpty'=>!CCaptcha::checkRequirements(), 'on'=>'add'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
 			array('id, user_id, user_ip, user_comment, title, urn, content_type_id, approved, authorized, disabled, deleted, content_id, country_id, moderator_id, moderator_ip, moderator_comment, time_submitted, time_moderated, priority_id, show_time', 'safe', 'on'=>'manage'),

@@ -39,6 +39,17 @@
 		<?php echo $form->passwordField($model,'password',array('size'=>25,'maxlength'=>50)); ?>
 		<?php echo $form->error($model,'password'); ?>
 	</div>
+	<?php if(extension_loaded('gd')): ?>
+	<div class="row">
+		<?php echo $form->labelEx($model,'verifyCode'); ?>
+		<div>
+		<?php $this->widget('CCaptcha',array('clickableImage'=>true,'showRefreshButton'=>false,)); ?>
+		<br>
+		<?php echo $form->textField($model,'verifyCode'); ?>
+		</div>
+		<div class="hint">Letters NOT case-sensitive.</div>
+	</div>
+	<?php endif; ?>
 
 
 

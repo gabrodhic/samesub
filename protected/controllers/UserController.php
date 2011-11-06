@@ -27,6 +27,11 @@ class UserController extends Controller
             'textImage'=>array(
                 'class' => 'application.extensions.ETextImage.ETextImageAction',
             ),
+			// captcha action renders the CAPTCHA image displayed on the contact page
+			'captcha'=>array(
+				'class'=>'CCaptchaAction',
+				'backColor'=>0xFFFFFF,
+			),
         );
     }
 
@@ -39,7 +44,7 @@ class UserController extends Controller
 	{
 		return array(
 			array('allow',  // allow all users to perform 'register' actions
-				'actions'=>array('register','resetpassword','resetpasswordnext','profile','textImage'),
+				'actions'=>array('register','resetpassword','resetpasswordnext','profile','textImage','captcha'),
 				'users'=>array('*'),
 			),
 			array('allow', // allow authenticated user to perform 'index' and 'update' actions
