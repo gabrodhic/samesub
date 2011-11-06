@@ -30,6 +30,7 @@ class Subject extends CActiveRecord
 	public $video;
 	public $urn;
 	public $content;
+	public $username;
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @return Subject the static model class
@@ -81,7 +82,7 @@ class Subject extends CActiveRecord
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
 			array('id, user_id, user_ip, user_comment, title, urn, content_type_id, approved, authorized, disabled, deleted, content_id, country_id, moderator_id, moderator_ip, moderator_comment, time_submitted, time_moderated, priority_id, show_time', 'safe', 'on'=>'manage'),
-			array('title, urn, tag, content_type_id, country_id, time_submitted, priority_id, show_time', 'safe', 'on'=>'history'),
+			array('username, title, urn, tag, content_type_id, country_id, time_submitted, priority_id, show_time', 'safe', 'on'=>'history'),
 		);
 	}
 	
@@ -609,6 +610,10 @@ class Subject extends CActiveRecord
 
 		$criteria->compare('id',$this->id);
 		$criteria->compare('user_id',$this->user_id);
+		//$jaja = User::model()->find('username=:username',array(':username='=>'admin'));
+		if($this->username) $user_id = User::model()->find('username=:username',array(':username'=>$this->username));
+		if($this->username) $user_id = ($user_id) ? $user_id->id : 0;
+		if($this->username) $criteria->compare('user_id', $user_id);
 		$criteria->compare('user_ip',$this->user_ip,true);
 		$criteria->compare('user_comment',$this->user_comment,true);
 		$criteria->compare('title',$this->title,true);
