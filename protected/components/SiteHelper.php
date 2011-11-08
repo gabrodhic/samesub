@@ -247,14 +247,16 @@ class SiteHelper extends CHtml
 			
 		if($user===null) return false;
 		$dimension ='';
-		if($size == 'small_') $dimension = 'width="25" height="25"';
-		if($size == 'medium_') {$dimension = 'width="45" height="45"'; $size = 'small_';}
+		
+		if($size == 'small_') $dimension = 'width="45" height="45"';
+		if($size == 'icon_') {$dimension = 'width="25" height="25"';$size = 'small_';}
+		if($size == 'medium_') {$dimension = 'width="130" height="120"'; $size = '';}
 		if($size == 'large_') $size = '';
 		$link1 = '';
 		$link2 = '';
 		if($link === 'mysub') $link1 = '<a href="'.Yii::app()->createUrl('mysub/'.$user->username).'">';
 		if($link === 'profile') $link1 = '<a href="'.Yii::app()->createUrl('profile/'.$user->username).'">';
-		if($link === 'image') $link1 = '<a href="'.$user->getUserImage('').'">';
+		if($link === 'image') $link1 = '<a href="'.$user->getUserImage('').'" class="nyroModal">';
 		if($link1) $link2 = '</a>';
 		return $link1.'<img src='.$user->getUserImage($size).' '.$dimension .'>'.$link2;
 		

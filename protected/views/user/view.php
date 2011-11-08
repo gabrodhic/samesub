@@ -3,42 +3,63 @@ $this->breadcrumbs=array(
 	'Users'=>array('index'),
 	'Profile',
 );
+
 ?>
+<link rel="stylesheet" href="<?php echo Yii::app()->request->baseUrl;?>/css/nyroModal.css" type="text/css" media="screen" />
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
+<script type="text/javascript" src="<?php echo Yii::app()->request->baseUrl;?>/js/jquery.nyroModal.custom.min.js"></script>
+<!--[if IE 6]>
+	<script type="text/javascript" src="<?php echo Yii::app()->request->baseUrl;?>/js/jquery.nyroModal-ie6.min.js"></script>
+<![endif]-->
+<script type="text/javascript">
+$(function() {
+  $('.nyroModal').nyroModal(
+  {
+  anim: {	// Animation names to use
+    def: donothing,			// Default animation set to use if sspecific are not defined or doesn't exist
+    showBg: donothing,		// Set to use for showBg animation
+    hideBg: donothing,		// Set to use for hideBg animation
+    showLoad: donothing,	// Set to use for showLoad animation
+    hideLoad: donothing,	// Set to use for hideLoad animation
+    showCont: donothing,	// Set to use for showCont animation
+    hideCont: donothing,	// Set to use for hideCont animation
+    showTrans: donothing,	// Set to use for showTrans animation
+    hideTrans: donothing,	// Set to use for hideTrans animation
+    resize: donothing		// Set to use for resize animation
+  }
+  }
+  );
+  
+  function donothing(){}
+});
+
+</script>
 
 <?php
 $this->pageTitle=Yii::app()->name . ' - '. $model->firstname.' '.$model->lastname.' ('.$model->username.')';
 ?>
 
 <div id="left_container" class="form">
-		<div style="float:left;"><?php echo SiteHelper::get_user_picture((int)$model->id,'medium_','image');?></div>
+		<div style="float:left;" class="nyroModal"><?php echo SiteHelper::get_user_picture((int)$model->id,'medium_','image');?></div>
 		<div style="float:left; padding-left:10px">
 			<h2 style="padding:0px"><?php 			
 			echo $model->firstname .' '.$model->lastname;?></h2>
 			<?php echo CHtml::link($model->username,array('mysub/'.$model->username)); ?>
+			<br><?php if ($model->sex) echo($model->sex == 1) ? 'Male' : 'Female';?>
+			<br><?php if($model->country_id) echo ucwords(strtolower($model->ucountry->name)); ?>
 		</div>
 		<div class="clear_both"></div>
-		<br>
+		<br><br>
 		<div class="detail_section">
 			<h3 class="detail_header">User Information</h3>
 			
 			<table border="0" width="100%">
-				<?php if ($model->sex) { 
+				<?php 
 				echo '<tr>
 					<td width="80" class="detail_cell"><b>Member Since</b></td>
 					<td class="detail_cell">'.date("Y/m/d",$model->time_created).'</td>
 				</tr>';
-				echo '<tr>
-						<td width="80" class="detail_cell"><b>Sex</b></td>
-						<td class="detail_cell">'; echo($model->sex == 1) ? 'Male' : 'Female';
-				echo '</td>
-					</tr>';
-				 } 
-				if($model->country_id){
-				echo '<tr>
-					<td width="80" class="detail_cell"><b>Country Name</b></td>
-					<td class="detail_cell">'.ucwords(strtolower($model->ucountry->name)).'</td>
-				</tr>';
-				}
+
 				if($model->region and $model->share_region == 1 ){
 				echo '<tr>
 					<td width="80" class="detail_cell"><b>Region</b></td>
@@ -51,20 +72,24 @@ $this->pageTitle=Yii::app()->name . ' - '. $model->firstname.' '.$model->lastnam
 					<td class="detail_cell">'.$model->city.'</td>
 				</tr>';
 				}
-				if($model->email and $model->share_email == 1 ){
+				if($model->email and $model->share_email == 1){
 				echo '<tr>
 					<td width="80" class="detail_cell"><b>Email</b></td>
 					<td class="detail_cell">';
-					$this->widget('application.extensions.ETextImage.ETextImage',
-                        array(
-                              'textImage' => $model->email,
-                              'fontSize' => 12,
-                              'fontFile' => 'arial',
-                              'transparent'=>false,//buggy, when setting transparent, or dont understand well how it works
-                              'foreColor'=>0x000000, 
-                              'backColor'=>0xFFFFFF,
-                             )
-                       );
+					if(Yii::app()->user->isGuest) {
+						$this->widget('application.extensions.ETextImage.ETextImage',
+							array(
+								  'textImage' => $model->email,
+								  'fontSize' => 12,
+								  'fontFile' => 'arial',
+								  'transparent'=>false,//buggy, when setting transparent, or dont understand well how it works
+								  'foreColor'=>0x000000, 
+								  'backColor'=>0xFFFFFF,
+								 )
+						   );
+					   }else{
+						echo CHtml::encode($model->email);
+					   }
 				echo '</td>
 				</tr>';
 				}
@@ -112,8 +137,6 @@ $this->pageTitle=Yii::app()->name . ' - '. $model->firstname.' '.$model->lastnam
 			<div style="float:left;"><h4>Subs:</h4></div><div style="float:right;"><?php echo CHtml::link($stat_subs,array('mysub/'.$model->username)); ?></div>
 			<div class="clear_both"></div>
 			<div style="float:left;"><h4>Comments:</h4></div><div style="float:right;"><? echo $stat_comments;?></div>
-			<div class="clear_both"></div>
-			<div style="float:left;"><h4>Site usage counter:</h4></div><div style="float:right;"><? echo $stat_usage_counter;?></div>
 			<div class="clear_both"></div>
 			<div style="float:left;"><h4>Last time Online:</h4></div><div style="float:right;"><? echo  date("Y/m/d H:i:s", $stat_last_online);?></div>
 			<div class="clear_both"></div>

@@ -1,6 +1,6 @@
 <div id="column_2_container">
 	<div id="column_left">
-		<div><?php echo SiteHelper::get_user_picture((int)$model->user_id,'medium_','profile');?></div>
+		<div><?php echo SiteHelper::get_user_picture((int)$model->user_id,'small_','profile');?></div>
 		<div>
 			<?php 
 			$user = User::model()->with('ucountry')->findByPk($model->user_id);
