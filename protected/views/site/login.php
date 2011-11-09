@@ -6,7 +6,7 @@ $this->breadcrumbs=array(
 ?>
 <div style="float:left;">
 <h1>Login</h1>
-
+<br><br>
 
 
 	<div class="form">
@@ -18,17 +18,15 @@ $this->breadcrumbs=array(
 
 		<div class="row">
 			<?php echo $form->labelEx($model,'email'); ?>
-			<?php echo $form->textField($model,'email'); ?>
+			<?php echo $form->textField($model,'email',array('style'=>'width: 170px;')); ?>
 			<?php echo $form->error($model,'email'); ?>
 		</div>
 
 		<div class="row">
 			<?php echo $form->labelEx($model,'password'); ?>
-			<?php echo $form->passwordField($model,'password'); ?>
+			<?php echo $form->passwordField($model,'password',array('style'=>'width: 170px;')); ?>
 			<?php echo $form->error($model,'password'); ?>
-			<p class="hint">
-				Forgot your password? <a href="<?php echo Yii::app()->createUrl('user/resetpassword');?>">Click here</a>.
-			</p>
+
 		</div>
 
 		<div class="row rememberMe">
@@ -40,19 +38,23 @@ $this->breadcrumbs=array(
 		<div class="row buttons">
 			<?php echo CHtml::submitButton('Login'); ?>
 		</div>
+		<br><br>
+		<p class="hint">
+			Forgot your password? <a href="<?php echo Yii::app()->createUrl('user/resetpassword');?>">Click here</a>.
+		</p>
 
 	<?php $this->endWidget(); ?>
 	</div><!-- form -->
 </div>
 
 
-<div style="margin-left: 100px;float:left; height:250px; width:10px; border-left:1px #CCCCCC solid; padding:30px;">
+<div style="margin-left: 65px;float:left; height:240px; width:10px; border-left:1px #CCCCCC solid; padding:30px;">
 </div>
-<div style="padding-left:3px; float:left;">
-<?php 
-	$model2=new User('register');
-	$this->renderPartial('../user/register',array(
-	'model'=>$model2,
-)); ?>
+<div style="padding-left:55px; float:left;">
+<a href="<?php echo Yii::app()->createUrl('user/register');?>"><h1>Register</h1></a>
+<br><br><br>
+<p>
+	Only one step. <a href="<?php echo Yii::app()->createUrl('user/register');?>">Click here</a>.
+</p>
 </div>
 <div class="clear_both"></div>
