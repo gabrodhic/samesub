@@ -41,12 +41,12 @@ Yii::app()->clientScript->registerScript('tagscodeid',$code);
 	<?php echo Yii::app()->user->getFlash('subject_added'); ?>
 </div>
 <?php if(Yii::app()->user->isGuest){ ?>
-	<br>
-	<div>
-		<b>NOTE:</b> You have uploaded this subject as anonymous(guest) user. If you <a href="<?php echo $this->createUrl('user/register?sh='.$model->hash.'&t='.$model->time_submitted);?>">click here</a> and register, the system will asign this subject to the new account you register. (Don't worry, we don't ask much about you when registering. Just your email, username, and password. We hate to ask much to the user.)
+	<br><br>
+	<div style="font-size: 16px;">
+		<b>NOTE:</b> You have uploaded this subject as anonymous(guest) user. If you <a href="<?php echo $this->createUrl('user/register?sh='.$model->hash.'&t='.$model->time_submitted);?>">Click Here</a> and register, the system will asign this subject to the new account you register. You may <a href="<?php echo $this->createUrl('site/login?sh='.$model->hash.'&t='.$model->time_submitted);?>">Click Here</a> also to login if you are already registered.
 	</div>
 	<div class="clear_both"></div>
-	<br><br>
+	
 <?php } ?>
 
 <?php else: ?>
@@ -189,3 +189,4 @@ $("#Subject_content_type_id").change(function (){ show_content_input();});
 </script>
 </div><!-- form -->
 <?php endif; ?>
+<br><br><br><br><br><br><br><br><br><br><br><br>

@@ -94,7 +94,7 @@ class SiteController extends Controller
 	/**
 	 * Displays the login page
 	 */
-	public function actionLogin()
+	public function actionLogin($sh='',$t='')
 	{
 		$this->model=new LoginForm;
 
@@ -110,8 +110,18 @@ class SiteController extends Controller
 		{
 			$this->model->attributes=$_POST['LoginForm'];
 			// validate user input and redirect to the previous page if valid
-			if($this->model->validate() && $this->model->login())
-				$this->redirect(Yii::app()->user->returnUrl);
+			if($this->model->validate() && $this->model->login()){
+				
+				//Assign the subject to the new user if he/she registered after adding a subject
+				if($sh and $t){
+					//Allow asignment only within 15 minutes since subject added
+					if((SiteLibrary::utc_time() - $t) < 900)
+					Subject::model()->updateAll(array('user_id'=>Yii::app()->user->id), 'time_submitted=:time_submitted AND hash=:hash', array(':time_submitted'=>$t, ':hash'=>$sh));
+					$this->redirect(array('mysub/'.Yii::app()->user->name));
+				}else{
+					$this->redirect(Yii::app()->user->returnUrl);
+				}
+			}
 		}
 		// display the login form
 		$this->render('login',array('model'=>$this->model));

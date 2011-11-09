@@ -172,9 +172,11 @@ class UserController extends Controller
 			
 			
 			if($this->model->save()){
-				//Assign the subject to the new user if he/she registered after adding a subject
-				if($sh and $t)
-				Subject::model()->updateAll(array('user_id'=>$this->model->id), 'time_submitted=:time_submitted AND hash=:hash', array(':time_submitted'=>$t, ':hash'=>$sh));
+				if($sh and $t){
+					//Allow asignment only within 15 minutes since subject added
+					if((SiteLibrary::utc_time() - $t) < 900)
+					Subject::model()->updateAll(array('user_id'=>$this->model->id), 'time_submitted=:time_submitted AND hash=:hash', array(':time_submitted'=>$t, ':hash'=>$sh));
+				}
 				
 				$headers="From: Samesub Contact <".Yii::app()->params['contactEmail'].">\r\nReply-To: ".Yii::app()->params['contactEmail'];
 				$mail_message = "Hi {$this->model->email}, welcome to samesub!\n\n";
@@ -205,8 +207,8 @@ class UserController extends Controller
 				$model2->password=$_POST['User']['password'];
 				// validate user input and redirect to the previous page if valid
 				if($model2->validate() && $model2->login()){
-					Yii::app()->user->setFlash('registration_success','Registration has been completed successfully. '.$mail_sent);
-					$this->redirect(array('index'));
+					Yii::app()->user->setFlash('layout_flash_success','Registration has been completed successfully. '.$mail_sent. ' You may now optionally add more information to your profile.');
+					$this->redirect(array('update'));
 				}
 				
 			}else{
