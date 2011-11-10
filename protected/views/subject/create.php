@@ -75,7 +75,11 @@ Yii::app()->clientScript->registerScript('tagscodeid',$code);
 	</div>
 	
 	<div class="row">
-		<label>Please upload an image from your computer OR paste a url on the field bellow.</label>
+		<label>Image source</label>
+		<?php echo $form->DropDownList($model, 'image_source',  array('0'=>'My Computer', '1'=>'Link or URL')); ?>		
+	</div>
+	
+	<div class="row">		
 		<?php echo $form->labelEx($model,'image'); ?>		
 		<?php echo $form->FileField($model, 'image');?>
 		<?php echo $form->error($model,'image'); ?>
@@ -156,25 +160,33 @@ function show_content_input(){
 	switch($("#Subject_content_type_id").val())
 	{
 	case '':
-	  $("#Subject_image,#Subject_image_url").parent().hide();
+	  $("#Subject_image,#Subject_image_url,#Subject_image_source").parent().hide();
 	  $("#Subject_text").parent().hide();
 	  $("#Subject_video").parent().hide();
 	  $("#Subject_user_comment").parent().hide();
 	  break;
 	case '1':
-	  $("#Subject_image,#Subject_image_url").parent().show();
+	  $("#Subject_image_source").parent().show();
+	  if( $("#Subject_image_source").val() == '0' ){
+		$("#Subject_image").parent().show();
+		$("#Subject_image_url").parent().hide();
+	  }else{
+		$("#Subject_image_url").parent().show();
+		$("#Subject_image").parent().hide();
+	  }
+
 	  $("#Subject_text").parent().hide();
 	  $("#Subject_video").parent().hide();
 	  $("#Subject_user_comment").parent().show();
 	  break;
 	case '2':
-	  $("#Subject_image,#Subject_image_url").parent().hide();
+	  $("#Subject_image,#Subject_image_url,#Subject_image_source").parent().hide();
 	  $("#Subject_text").parent().show();
 	  $("#Subject_video").parent().hide();
 	  $("#Subject_user_comment").parent().show();
 	  break;
 	case '3':
-	  $("#Subject_image,#Subject_image_url").parent().hide();
+	  $("#Subject_image,#Subject_image_url,#Subject_image_source").parent().hide();
 	  $("#Subject_text").parent().hide();
 	  $("#Subject_video").parent().show();
 	  $("#Subject_user_comment").parent().show();
@@ -185,6 +197,7 @@ function show_content_input(){
 }
 show_content_input();
 $("#Subject_content_type_id").change(function (){ show_content_input();});
+$("#Subject_image_source").change(function (){ show_content_input();});
 
 </script>
 </div><!-- form -->

@@ -32,6 +32,7 @@ class Subject extends CActiveRecord
 	public $content;
 	public $username;
 	public $verifyCode;
+	public $image_source;
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @return Subject the static model class
@@ -65,7 +66,7 @@ class Subject extends CActiveRecord
 			array('content_type_id,country_id', 'numerical', 'integerOnly'=>true, 'on'=>'add,update'),			
 			array('title', 'length', 'max'=>240, 'on'=>'add,update'),
 			array('user_comment', 'type', 'type'=>'string', 'on'=>'add,update'),			
-			array('image', 'safe', 'on'=>'add,update'),//So that it can be massively assigned, either way its gonna be validated by validateContentType
+			array('image,image_source', 'safe', 'on'=>'add,update'),//So that it can be massively assigned, either way its gonna be validated by validateContentType
 			array('image_url', 'url', 'on'=>'add,update'),
 			array('text', 'safe', 'on'=>'add,update'),//So that it can be massively assigned, either way its gonna be validated by validateContentType
 			array('video', 'safe', 'on'=>'add,update'),//So that it can be massively assigned, either way its gonna be validated by validateContentType
@@ -597,6 +598,7 @@ class Subject extends CActiveRecord
 			'video'=>'Video link or embed code',
 			'tag'=>'Tags',
 			'category'=>'Category',
+			'image_url'=>'Image link or URL',
 		);
 	}
 
