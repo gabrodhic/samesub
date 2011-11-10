@@ -123,6 +123,7 @@ class SubjectController extends Controller
 			$this->model->attributes=$_POST['Subject'];
 			// Assign the user_id 1 if is a guest
 			$this->model->user_id=(Yii::app()->user->id) ? Yii::app()->user->id : 1;
+			$this->model->deleted = (Yii::app()->user->isGuest) ? 1 : 0;//Hide the subject by default if its a guest
 			$this->model->time_submitted = SiteLibrary::utc_time();
 			$this->model->user_ip = $_SERVER['REMOTE_ADDR'];
 			$this->model->user_country_id = $country_id;
@@ -417,7 +418,7 @@ class SubjectController extends Controller
 			->from('live_subject')
 			->queryRow();
 			if(! isset($this->model->disabled)) $this->model->disabled = 0;//Set to view only NOT disabled subjects by default(notice isset insted of a simple if)
-			if(! isset($this->model->deleted)) $this->model->deleted = 0;
+			
 			$this->render('manage',array(
 				'model'=>$this->model,'live_subject'=>$live_subject,
 			));
