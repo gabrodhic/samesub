@@ -385,16 +385,16 @@ $bots[] = "Nederland.zoek";
 	public function attributeLabels()
 	{
 		return array(
-			'id' => 'ID',
-			'time' => 'Time',
-			'session_id' => 'Session',
-			'user_id' => 'User',
-			'controller' => 'Controller',
-			'action' => 'Action',
-			'uri' => 'Uri',
-			'model' => 'Model',
-			'model_id' => 'Model',
-			'theme' => 'Theme',
+			'id' => Yii::t('site','ID'),
+			'time' => Yii::t('site','Time'),
+			'session_id' => Yii::t('site','Session'),
+			'user_id' => Yii::t('site','User'),
+			'controller' => Yii::t('site','Controller'),
+			'action' => Yii::t('site','Action'),
+			'uri' => Yii::t('site','Uri'),
+			'model' => Yii::t('site','Model'),
+			'model_id' => Yii::t('site','Model'),
+			'theme' => Yii::t('site','Theme'),
 		);
 	}
 

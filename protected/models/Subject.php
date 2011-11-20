@@ -120,7 +120,7 @@ class Subject extends CActiveRecord
 			if( Yii::app()->db->createCommand("SELECT * FROM live_subject WHERE subject_id_1 = {$this->id} OR subject_id_2 = {$this->id}")->queryRow())
 			{
 				if(Yii::app()->controller->action->id != 'fetch' and Yii::app()->controller->action->id != 'view'){
-					$this->addError('title','Right now this subject is either in the comming up queue or in the live-now stream. You can not modify it.');
+					$this->addError('title',Yii::t('subject', 'Right now this subject is either in the comming up queue or in the live-now stream. You can not modify it.'));
 					return false;
 				}
 			}
@@ -133,7 +133,7 @@ class Subject extends CActiveRecord
 			$this->hash = md5(uniqid(""));
 			//Generate the urn for this subject
 			if(! $this->urn = $this->generateUrn($this->title)){
-				$this->addError('title','Please change something in the title.'); return false;
+				$this->addError('title',Yii::t('subject', 'Please change something in the title.')); return false;
 			}
 			
 			//Insert the content type on its proper table
@@ -144,7 +144,7 @@ class Subject extends CActiveRecord
 						if(! Yii::app()->db->createCommand()
 						->insert('content_image', array('url'=>$this->image_url)))
 						{
-							$this->addError('image','We could not save the image url in the database.'); 
+							$this->addError('image',Yii::t('subject', 'We could not save the image url in the database.')); 
 							return false;				
 						}
 						break;
@@ -160,7 +160,7 @@ class Subject extends CActiveRecord
 					if(! Yii::app()->db->createCommand()
 					->insert('content_image', array('path'=>$img_path,'extension'=>$img_extension,'type'=>$img_type,'size'=>$img_size)))
 					{
-						$this->addError('image','We could not save the image in the database.'); 
+						$this->addError('image',Yii::t('subject', 'We could not save the image in the database.')); 
 						return false;				
 					}
 					$img_name = Yii::app()->db->getLastInsertID().'.'.$img_extension;
@@ -184,7 +184,7 @@ class Subject extends CActiveRecord
 					);
 					 
 					if (! $this->image->saveAs(Yii::app()->params['webdir'].DIRECTORY_SEPARATOR.$img_path.DIRECTORY_SEPARATOR.$img_name)){
-						$this->addError('image','We could not save the image in the disk.'); 
+						$this->addError('image',Yii::t('subject', 'We could not save the image in the disk.')); 
 						return false;
 					}
 					
@@ -194,7 +194,7 @@ class Subject extends CActiveRecord
 					//Text
 					if(! Yii::app()->db->createCommand()->insert('content_text', array('text'=>$this->text)))
 					{
-						$this->addError('text','We could not save the text.'); 
+						$this->addError('text',Yii::t('subject', 'We could not save the text.')); 
 						return false;
 					}
 					break;
@@ -202,7 +202,7 @@ class Subject extends CActiveRecord
 					//Video
 					if(! Yii::app()->db->createCommand()->insert('content_video', array('embed_code'=>$this->video)))
 					{
-						$this->addError('video','We could not save the video.'); 
+						$this->addError('video',Yii::t('subject', 'We could not save the video.')); 
 						return false;
 					}
 					break;
@@ -271,7 +271,7 @@ class Subject extends CActiveRecord
 	 */
 	public function validateApprobation($attribute,$params)
     {	//$this object loaded values from db and request
-		if( $this->authorized ) $this->addError('approved','Sorry, but the subject has already been authorized.');
+		if( $this->authorized ) $this->addError('approved',Yii::t('subject', 'Sorry, but the subject has already been authorized.'));
 	}
 	
 	/**
@@ -280,7 +280,7 @@ class Subject extends CActiveRecord
 	 */
 	public function validateAuthorization($attribute,$params)
     {	//$this object loaded values from db and request
-		if(! $this->approved ) $this->addError('authorized','Sorry, but the subject needs to be approved first in order to be authorized.');
+		if(! $this->approved ) $this->addError('authorized',Yii::t('subject', 'Sorry, but the subject needs to be approved first in order to be authorized.'));
 	}
 	
 	/**
@@ -296,29 +296,29 @@ class Subject extends CActiveRecord
 				$this->image=CUploadedFile::getInstance($this,'image');
 				if(get_class($this->image) <> 'CUploadedFile'){
 					if(strlen($this->image_url) < 2) {
-						$this->addError('content_type_id','Please upload OR insert an image url.');
+						$this->addError('content_type_id',Yii::t('subject', 'Please upload OR insert an image url.'));
 						break; 
 					}
 				}else{
-					if($this->image->getHasError()){ $this->addError('image','Please select an image.');break; }
-					if($this->image->getSize() > (1024 * 1024 * Yii::app()->params['max_image_size'])){  $this->addError('image','Please select an image smaller than 7MB.');break;}//MB
+					if($this->image->getHasError()){ $this->addError('image',Yii::t('subject', 'Please select an image.'));break; }
+					if($this->image->getSize() > (1024 * 1024 * Yii::app()->params['max_image_size'])){  $this->addError('image',Yii::t('subject', 'Please select an image smaller than 7MB.'));break;}//MB
 					$types = array("image/jpg", "image/png", "image/gif", "image/jpeg");
-					if (! in_array(CFileHelper::getMimeType($this->image->getName()), $types)) $this->addError('image','File type '.CFileHelper::getMimeType($this->image->getName()).' not supported .Please select a valid image type.');
+					if (! in_array(CFileHelper::getMimeType($this->image->getName()), $types)) $this->addError('image', Yii::t('subject', 'File type {filetype} not supported .Please select a valid image type.', array('{filetype}'=>CFileHelper::getMimeType($this->image->getName()))));
 				}
 				break;
 			case 2:
 				//Text
 				//At least 1 char lengh
-				if(strlen($this->text) < 2 ) $this->addError('text',$this->text.'Please insert text.');
+				if(strlen($this->text) < 2 ) $this->addError('text',Yii::t('subject', 'Please insert text.'));
 				break;
 			case 3:
 				//Video
 				//Needs more validation here
-				if(strlen($this->video) < 2) $this->addError('video','Please insert the video embed code.');
+				if(strlen($this->video) < 2) $this->addError('video',Yii::t('subject', 'Please insert the video embed code.'));
 				break;
 			default:
 				//The content type its not listed
-				$this->addError('content_type_id','You are providing an unsopported content type.');
+				$this->addError('content_type_id',Yii::t('subject', 'You are providing an unsopported content type.'));
 		}
 		
     }
@@ -576,29 +576,30 @@ class Subject extends CActiveRecord
 	public function attributeLabels()
 	{
 		return array(
-			'id' => 'ID',
-			'user_id' => 'User',
-			'user_ip' => 'User Ip',
-			'user_country_id' => 'User Country',
-			'user_comment' => 'User Comment',
-			'title' => 'Title',
-			'urn' => 'Urn',
-			'content_type_id' => 'Content Type',
-			'approved' => 'Approved',
-			'authorized' => 'Authorized',
-			'content_id' => 'Content',
-			'country_id' => 'Country of Subject',
-			'moderator_id' => 'Moderator',
-			'moderator_ip' => 'Moderator Ip',
-			'moderator_comment' => 'Moderator Comment',
-			'time_submitted' => 'Time Submitted',
-			'time_moderated' => 'Time Moderated',
-			'priority_id' => 'Priority',
-			'show_time' => 'Show Time',
-			'video'=>'Video link or embed code',
-			'tag'=>'Tags',
-			'category'=>'Category',
-			'image_url'=>'Image link or URL',
+			'id' => Yii::t('site', 'ID'),
+			'user_id' => Yii::t('site', 'User'),
+			'user_ip' => Yii::t('site', 'User Ip'),
+			'user_country_id' => Yii::t('site', 'User Country'),
+			'user_comment' => Yii::t('site', 'User Comment'),
+			
+			'title' => Yii::t('site','Title'),
+			'urn' => Yii::t('site','Urn'),
+			'content_type_id' => Yii::t('site','Content Type'),
+			'approved' => Yii::t('site','Approved'),
+			'authorized' => Yii::t('site','Authorized'),
+			'content_id' => Yii::t('site','Content'),
+			'country_id' => Yii::t('subject','Country of Subject'),
+			'moderator_id' => Yii::t('site','Moderator'),
+			'moderator_ip' => Yii::t('site','Moderator Ip'),
+			'moderator_comment' => Yii::t('site','Moderator Comment'),
+			'time_submitted' => Yii::t('site','Time Submitted'),
+			'time_moderated' => Yii::t('site','Time Moderated'),
+			'priority_id' => Yii::t('site','Priority'),
+			'show_time' => Yii::t('site','Show Time'),
+			'video'=>Yii::t('subject','Video link or embed code'),
+			'tag'=>Yii::t('site','Tags'),
+			'category'=>Yii::t('site','Category'),
+			'image_url'=>Yii::t('subject','Image link or URL'),
 		);
 	}
 

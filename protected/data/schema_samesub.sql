@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Nov 04, 2011 at 09:59 PM
+-- Generation Time: Nov 20, 2011 at 08:31 AM
 -- Server version: 5.1.33
 -- PHP Version: 5.2.9
 
@@ -353,11 +353,11 @@ CREATE TABLE share_type (
 --
 
 CREATE TABLE sourcemessage (
-  id int(11) NOT NULL,
+  id int(11) NOT NULL AUTO_INCREMENT,
   category varchar(32) COLLATE utf8_unicode_ci DEFAULT NULL,
   message text COLLATE utf8_unicode_ci,
   PRIMARY KEY (id)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 

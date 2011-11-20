@@ -66,11 +66,11 @@ class ContentImage extends CActiveRecord
 	public function attributeLabels()
 	{
 		return array(
-			'id' => 'ID',
-			'path' => 'Path',
-			'extension' => 'Extension',
-			'type' => 'Type',
-			'size' => 'Size',
+			'id' => Yii::t('site', 'ID'),
+			'path' => Yii::t('site', 'Path'),
+			'extension' => Yii::t('site', 'Extension'),
+			'type' => Yii::t('site', 'Type'),
+			'size' => Yii::t('site', 'Size'),
 		);
 	}
 

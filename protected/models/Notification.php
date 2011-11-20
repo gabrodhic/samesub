@@ -100,11 +100,11 @@ class Notification extends CActiveRecord
 	public function attributeLabels()
 	{
 		return array(
-			'id' => 'ID',
-			'enabled' => 'Enabled',
-			'fixed' => 'Fixed',
-			'notification_type_id' => 'Notification Type',
-			'message' => 'Message',
+			'id' => Yii::t('site', 'ID'),
+			'enabled' => Yii::t('site', 'Enabled'),
+			'fixed' => Yii::t('site', 'Fixed'),
+			'notification_type_id' => Yii::t('site', 'Notification Type'),
+			'message' => Yii::t('site', 'Message'),
 		);
 	}
 

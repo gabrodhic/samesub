@@ -59,8 +59,8 @@ class ContentText extends CActiveRecord
 	public function attributeLabels()
 	{
 		return array(
-			'id' => 'ID',
-			'text' => 'Text',
+			'id' => Yii::t('site', 'ID'),
+			'text' => Yii::t('site', 'Text'),
 		);
 	}
 

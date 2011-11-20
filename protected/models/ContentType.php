@@ -62,8 +62,8 @@ class ContentType extends CActiveRecord
 	{
 		return array(
 			'id' => 'ID',
-			'name' => 'Name',
-			'fullname' => 'Name',
+			'name' => Yii::t('site', 'Name'),
+			'fullname' => Yii::t('site', 'Name'),
 		);
 	}
 

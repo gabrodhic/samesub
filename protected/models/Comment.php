@@ -113,13 +113,13 @@ class Comment extends CActiveRecord
 	public function attributeLabels()
 	{
 		return array(
-			'id' => 'ID',
-			'user_id' => 'User',
-			'user_ip' => 'User ip',
-			'country_id' => 'Country',
-			'subject_id' => 'Subject',
-			'time' => 'Time',
-			'comment' => 'Comment',
+			'id' => Yii::t('site', 'ID'),
+			'user_id' => Yii::t('site', 'User'),
+			'user_ip' => Yii::t('site', 'User ip'),
+			'country_id' => Yii::t('site', 'Country'),
+			'subject_id' => Yii::t('site', 'Subject'),
+			'time' => Yii::t('site', 'Time'),
+			'comment' => Yii::t('site', 'Comment'),
 		);
 	}
 

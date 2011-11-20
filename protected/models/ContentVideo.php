@@ -60,8 +60,8 @@ class ContentVideo extends CActiveRecord
 	public function attributeLabels()
 	{
 		return array(
-			'id' => 'ID',
-			'embed_code' => 'Embed Code',
+			'id' => Yii::t('site', 'ID'),
+			'embed_code' => Yii::t('site', 'Embed Code'),
 		);
 	}
 

@@ -59,8 +59,8 @@ class SubjectCategory extends CActiveRecord
 	public function attributeLabels()
 	{
 		return array(
-			'id' => 'ID',
-			'name' => 'Name',
+			'id' => Yii::t('site','ID'),
+			'name' => Yii::t('site','Name'),
 		);
 	}
 

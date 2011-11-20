@@ -88,7 +88,7 @@ class User extends CActiveRecord
 	public function validateOne($attribute,$params)
     {
 		if (($this->username==null)and($this->email==null)){
-			$this->addError('username,email','Please submit at least one data');
+			$this->addError('username,email',Yii::t('user', 'Please submit at least one data'));
 		}
 	}
 	
@@ -110,23 +110,23 @@ class User extends CActiveRecord
 	public function attributeLabels()
 	{
 		return array(
-			'id' => 'ID',
-			'username' => 'Username',
-			'password' => 'Password',
-			'oldpassword' => 'Old Password',
-			'newpassword' => 'New Password',
-			'newpassword2' => 'Retype New Password',
-			'email' => 'Email',
-			'ip_created' => 'Ip Created',
-			'ip_last_access' => 'Ip Last Access',
-			'user_status_id' => 'User State',
-			'user_type_id' => 'User Type',
-			'time_created' => 'Time Created',
-			'time_last_access' => 'Time Last Access',
-			'time_modified' => 'Time Modified',
-			'country_id' => 'Country',
-			'notify_subject_live'=>'Notify me when mysubs go LIVE',
-			'notify_subject_authorized'=>'Notify me when mysubs get authorized',
+			'id' => Yii::t('site', 'ID'),
+			'username' => Yii::t('user', 'Username'),
+			'password' => Yii::t('user', 'Password'),
+			'oldpassword' => Yii::t('user', 'Old Password'),
+			'newpassword' => Yii::t('user', 'New Password'),
+			'newpassword2' => Yii::t('user', 'Retype New Password'),
+			'email' => Yii::t('user', 'Email'),
+			'ip_created' => Yii::t('site', 'Ip Created'),
+			'ip_last_access' => Yii::t('site', 'Ip Last Access'),
+			'user_status_id' => Yii::t('user', 'User State'),
+			'user_type_id' => Yii::t('user', 'User Type'),
+			'time_created' => Yii::t('site', 'Time Created'),
+			'time_last_access' => Yii::t('user', 'Time Last Access'),
+			'time_modified' => Yii::t('site', 'Time Modified'),
+			'country_id' => Yii::t('site', 'Country'),
+			'notify_subject_live'=> Yii::t('user', 'Notify me when mysubs go LIVE'),
+			'notify_subject_authorized'=> Yii::t('user', 'Notify me when mysubs get authorized'),
 		);
 	}
 
