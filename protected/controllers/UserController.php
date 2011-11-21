@@ -64,12 +64,12 @@ class UserController extends Controller
 	public function filterMenu($filterChain){
 		//.$this->action->Id
 		$arr_titles = array();
-		$arr_titles['index'] = 'Welcome';
-		$arr_titles['mysub'] = 'MySub';
-		$arr_titles['update'] = 'Update Profile';
-		$arr_titles['changepassword'] = 'Change Password';
+		$arr_titles['index'] = Yii::t('site','Welcome');
+		$arr_titles['mysub'] = Yii::t('site','MySub');
+		$arr_titles['update'] = Yii::t('site','Update Profile');
+		$arr_titles['changepassword'] = Yii::t('site','Change Password');
 		$this->breadcrumbs=array(
-		'User'=>array('index'),
+		Yii::t('site','User')=>array('index'),
 		$arr_titles[$this->action->Id] ,
 		);
 
@@ -127,11 +127,11 @@ class UserController extends Controller
 		{
 			
 			$this->model->attributes=$_POST['User'];
-			if(! $this->model->validatePassword($this->model->oldpassword)) $this->model->addError('oldpassword','The old password is incorrect.');
+			if(! $this->model->validatePassword($this->model->oldpassword)) $this->model->addError('oldpassword',Yii::t('user','The old password is incorrect.'));
 			$this->model->salt = $this->model->generateSalt();//lets give it a new salt also, just in case
 			$this->model->password = $this->model->hashPassword($this->model->newpassword, $this->model->salt);
 			if($this->model->save()){
-				Yii::app()->user->setFlash('changepass_success','Your password has been changed successfully.');
+				Yii::app()->user->setFlash('changepass_success',Yii::t('user','Your password has been changed successfully.'));
 			}else{
 				$this->model->password=$_POST['User']['password'];
 			}
@@ -179,35 +179,46 @@ class UserController extends Controller
 				}
 				
 				$headers="From: Samesub Contact <".Yii::app()->params['contactEmail'].">\r\nReply-To: ".Yii::app()->params['contactEmail'];
-				$mail_message = "Hi {$this->model->email}, welcome to samesub!\n\n";
-				$mail_message .= "Name:  " . $this->model->username."\n";
-				$mail_message .= "Email: " . $this->model->email."\n\n";
-				$mail_message .= "Thanks for registering.\n\n";
-				$mail_message .= "Remember that our mission:\n\n";
-				$mail_message .= "Is that there be a unique point of union on the internet where all users connected\n";
-				$mail_message .= "to it can interact with one 'Same Subject' synchronously, giving an impact in the way we stay in touch\n";
-				$mail_message .= "with the world, a way in which everybody adapts to one thing in common, a subject in common:\n";
-				$mail_message .= "Samesub\n\n";
-				$mail_message .= "Know that you can always help us to achive this goal in any of one of these ways:\n";
-				$mail_message .= "With your visits.\nSharing to your friends.\nWith your submission of content.\nWith your code contribution.\n\n";
-				$mail_message .= "If you want to become a moderator, authorizer, or help the samesub team in any way, please write to us\n";
-				$mail_message .= "with the email you registered from.\n\n";
-				$mail_message .= "Thanks\n\n";
-				$mail_message .= "Sincerely\n";
-				$mail_message .= "Samesub Team\n";
-				$mail_message .= "www.samesub.com";				
+$mail_message = Yii::t('user',"Hi {username}, welcome to samesub!
+
+Username:  {username}
+Email: {email}
+
+Thanks for registering.
+
+Remember that our mission:
+Is that there be a unique point of union on the internet where all users connected
+to it can interact with one 'Same Subject' synchronously, giving an impact in the way we stay in touch
+with the world, a way in which everybody adapts to one thing in common, a subject in common:
+Samesub
+
+Know that you can always help us to achive this goal in any of one of these ways:
+With your visits.
+Sharing to your friends.
+With your submission of content.
+With your code contribution.
+
+If you want to become a moderator, authorizer, or help the samesub team in any way, please write to us
+with the email you registered from.",array('{username}'=>$this->model->username,'{email}'=>$this->model->email));
+				
+				
+$mail_message .= "\n\n";		
+$mail_message .= Yii::t('site',"Thanks
+Sincerely
+Samesub Team
+www.samesub.com");				
 	
-				if(@mail($this->model->email,"Registration successful",$mail_message,$headers)){
-					$mail_sent = "An email has been sent to you.";
+				if(@mail($this->model->email,Yii::t('user',"Registration successful"),$mail_message,$headers)){
+					$mail_sent = Yii::t('user',"An email has been sent to you.");
 				}else{
-					$mail_sent = "Email could not be sent.";
+					$mail_sent = Yii::t('user',"Email could not be sent.");
 				}
 				$model2=new LoginForm;
 				$model2->email=$this->model->email;
 				$model2->password=$_POST['User']['password'];
 				// validate user input and redirect to the previous page if valid
 				if($model2->validate() && $model2->login()){
-					Yii::app()->user->setFlash('layout_flash_success','Registration has been completed successfully. '.$mail_sent. ' You may now optionally add more information to your profile.');
+					Yii::app()->user->setFlash('layout_flash_success',Yii::t('user','Registration has been completed successfully. {mail_sent} You may now optionally add more information to your profile.',array('{mail_sent}'=>$mail_sent)));
 					$this->redirect(array('update'));
 				}
 				
@@ -239,7 +250,7 @@ class UserController extends Controller
 			if($this->model->validate()){
 				
 				if(! $model2 = User::model()->find('username=:username OR email=:email',array(':username'=>$this->model->username,':email'=>$this->model->email))){
-					$this->model->addError('username, email','The username or email was not found in our database.');
+					$this->model->addError('username, email',Yii::t('user','The username or email was not found in our database.'));
 				}else{
 					$this->model = $model2;//to be able to log model id
 
@@ -248,26 +259,29 @@ class UserController extends Controller
 					
 					//Set up the mail message
 					$headers="From: Samesub Contact <".Yii::app()->params['contactEmail'].">\r\nReply-To: ".Yii::app()->params['contactEmail'];
-					$mail_message = "Hi {$this->model->username}!\n\n";
-					$mail_message .= "We recently received a request to reset your password.\n";
-					$mail_message .= "If you did not request this, please ignore this message and the steps described in it.\n\n";
-					$mail_message .= "Username:  " . $this->model->username."\n";
-					$mail_message .= "Email: " . $this->model->email."\n\n";					
-					$mail_message .= "To reset your password please click or visit the link bellow and complete the steps \n";
-					$mail_message .= "described there.\n\n";
-					$mail_message .= Yii::app()->getRequest()->getBaseUrl(true)."/user/resetpasswordnext?reset_hash=".$this->model->reset_hash;
-					$mail_message .= "\n\nThanks\n\n";
-					$mail_message .= "Sincerely\n";
-					$mail_message .= "Samesub Team\n";
-					$mail_message .= "www.samesub.com";				
+					$mail_message = Yii::t('user',"Hi {username}!
+					We recently received a request to reset your password.
+					If you did not request this, please ignore this message and the steps described in it.
+					Username:  {username}
+					Email: {email}
+					To reset your password please click or visit the link bellow and complete the steps 
+					described there.
+					{url}",array('{username}'=>$this->model->username,'{email}'=>$this->model->email,'{url}'=>Yii::app()->getRequest()->getBaseUrl(true)."/user/resetpasswordnext?reset_hash=".$this->model->reset_hash));
+
+				
+$mail_message .= "\n\n";		
+$mail_message .= Yii::t('site',"Thanks
+Sincerely
+Samesub Team
+www.samesub.com");				
 		
 
 					if($this->model->save()){
 					//User::model()->updateByPk($model2->id, array('reset_hash'=>md5(rand(100,9000)),'reset_time'=>SiteLibrary::utc_time()));
 						if(@mail($this->model->email,"Password Reset",$mail_message,$headers)){
-							Yii::app()->user->setFlash('resetpassword_success','An email has been sent to your address '. '***'.substr($model2->email, 3).' with the link to reset your password. Please verify your email spam folder if you do not see the message.');
+							Yii::app()->user->setFlash('resetpassword_success',Yii::t('user','An email has been sent to your address ***{email} with the link to reset your password. Please verify your email spam folder if you do not see the message.',array('{email}'=>substr($model2->email, 3))));
 						}else{
-							Yii::app()->user->setFlash('resetpassword_success','Ooops!. We could not sent an email to your address. We need to send an email to your address to reset your password automatically. Please contact us to request a password reset manually.');
+							Yii::app()->user->setFlash('resetpassword_success',Yii::t('user','Ooops!. We could not sent an email to your address. We need to send an email to your address to reset your password automatically. Please contact us to request a password reset manually.'));
 						}
 					}
 				}
@@ -287,7 +301,7 @@ class UserController extends Controller
 	{
 		if(! $this->model = User::model()->find('reset_hash=:reset_hash AND reset_time>:reset_time',
 			array(':reset_hash'=>$reset_hash,':reset_time'=>(SiteLibrary::utc_time() - 604800)  ))){ //expires in 1 week
-			throw new CHttpException(404,'Sorry but the reset code in the link is incorrect or has expired, or you have already reset your password. Please repeat the process or contact us.');
+			throw new CHttpException(404,Yii::t('user','Sorry but the reset code in the link is incorrect or has expired, or you have already reset your password. Please repeat the process or contact us.'));
 		}
 		
 		$this->model->scenario='resetpasswordnext';
@@ -299,7 +313,7 @@ class UserController extends Controller
 			$this->model->password = $this->model->hashPassword($this->model->newpassword, $this->model->salt);
 			$this->model->reset_hash = rand(1000,9000)."_". SiteLibrary::utc_time()."_" .$this->model->reset_hash;
 			if($this->model->save()){
-				Yii::app()->user->setFlash('layout_flash_success','Your password has been changed successfully. You may now login with your new password.');
+				Yii::app()->user->setFlash('layout_flash_success',Yii::t('user','Your password has been changed successfully. You may now login with your new password.'));
 				$this->redirect(array('site/login'));
 			}else{
 				$this->model->password=$_POST['User']['password'];
@@ -338,10 +352,10 @@ class UserController extends Controller
 				//Save the image if any
 				$image=CUploadedFile::getInstance($this->model,'image');
 				if (get_class($image) == 'CUploadedFile'){
-					if($image->getSize() > (1024 * 1024 * Yii::app()->params['max_image_size'])){  $this->model->addError('image','Please select an image smaller than 7MB.');
+					if($image->getSize() > (1024 * 1024 * Yii::app()->params['max_image_size'])){  $this->model->addError('image',Yii::t('user','Please select an image smaller than 7MB.'));
 					$error = true;}//MB
 					$types = array("image/jpg", "image/png", "image/gif", "image/jpeg");
-					if (! in_array(CFileHelper::getMimeType($image->getName()), $types)){ $this->model->addError('image','File type '.CFileHelper::getMimeType($image->getName()).' not supported .Please select a valid image type.'); $error = true;} 
+					if (! in_array(CFileHelper::getMimeType($image->getName()), $types)){ $this->model->addError('image',Yii::t('user','File type {filetype} not supported. Please select a valid image type.',array('{filetype}'=>CFileHelper::getMimeType($image->getName())))); $error = true;} 
 				}
 				if(! $error){
 					Yii::import('ext.EUploadedImage');
@@ -362,7 +376,7 @@ class UserController extends Controller
 						);
 						 
 						if (! $this->model->image->saveAs(Yii::app()->params['webdir'].DIRECTORY_SEPARATOR.Yii::app()->params['user_img_path'].DIRECTORY_SEPARATOR.$img_name)){
-							$this->model->addError('image','We could not save the image in the disk.'); 
+							$this->model->addError('image',Yii::t('user','We could not save the image in the disk.')); 
 							return false;
 						}
 					}
@@ -370,7 +384,7 @@ class UserController extends Controller
 				
 			}
 			if($this->model->save())
-			Yii::app()->user->setFlash('profile_success','Profile Settings updated successfully');
+			Yii::app()->user->setFlash('profile_success',Yii::t('user','Profile Settings updated successfully.'));
 				//$this->redirect(array('index'));
 		}
 
@@ -396,7 +410,7 @@ class UserController extends Controller
 				$this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin'));
 		}
 		else
-			throw new CHttpException(400,'Invalid request. Please do not repeat this request again.');
+			throw new CHttpException(400,Yii::t('site','Invalid request. Please do not repeat this request again.'));
 	}
 
 	/**
@@ -431,7 +445,7 @@ class UserController extends Controller
 	{
 		$model=User::model()->findByPk((int)$id);
 		if($model===null)
-			throw new CHttpException(404,'The requested page does not exist.');
+			throw new CHttpException(404,Yii::t('site','The requested page does not exist.'));
 		return $model;
 	}
 

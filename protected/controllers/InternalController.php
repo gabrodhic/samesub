@@ -181,22 +181,24 @@ class InternalController extends Controller
 		$user = User::model()->findByPk($subject->user_id);
 		if($user->id <> 1 and $user->notify_subject_live == 1){
 			$headers="From: Samesub Contact <".Yii::app()->params['contactEmail'].">\r\nReply-To: ".Yii::app()->params['contactEmail'];
-			$mail_message = "Hi {$user->username}, \n\n";
-			$mail_message .= "We are writing to notify you that your subject got approved and that it is\n";
-			$mail_message .= "going to be placed in the live stream(Homepage) in the next 5 minutes.\n\n";
-			$mail_message .= "Details\n\n";
-			$mail_message .= "Subject Title: {$subject->title}\n";
-			$mail_message .= "Uploaded time: ".date("Y/m/d H:i", $subject->time_submitted)." UTC\n";
-			$mail_message .= "Current time: ".date("Y/m/d H:i", SiteLibrary::utc_time())." UTC (time of this message)\n";
-			$mail_message .= "Estimated time: ".date("Y/m/d H:i", (SiteLibrary::utc_time()+300))." UTC (about 5 minutes)\n\n";
-			$mail_message .= "It is even more cool if you chat with your friends about your upcomming subject.\n";
-			$mail_message .= "So, invite them to go to samesub.com now, you still have 4 minutes.\n\n";
-			$mail_message .= "If you do not want to receive this type of notification you can update the settings in\n";
-			$mail_message .= "your user profile anytime you want.\n\n";
-			$mail_message .= "Thanks\n\n";
-			$mail_message .= "Sincerely\n";
-			$mail_message .= "Samesub Team\n";
-			$mail_message .= "www.samesub.com";				
+			$mail_message = Yii::t('subject',"Hi {username}, 
+We are writing to notify you that your subject got approved and that it is
+going to be placed in the live stream(Homepage) in the next 5 minutes.
+Details
+Subject Title: {title}
+Uploaded time: {uploaded_time} UTC
+Current time: {current_time} UTC (time of this message)
+Estimated time: {estimated_time} UTC (about 5 minutes)
+It is even more cool if you chat with your friends about your upcomming subject.
+So, invite them to go to samesub.com now, you still have 4 minutes.
+If you do not want to receive this type of notification you can update the settings in
+your user profile anytime you want.",array('{username}'=>$user->username,'{title}'=>$subject->title,'{uploaded_time}'=>date("Y/m/d H:i", $subject->time_submitted), '{current_time}'=>date("Y/m/d H:i", SiteLibrary::utc_time()),'{estimated_time}'=>date("Y/m/d H:i", (SiteLibrary::utc_time()+300))));
+
+$mail_message .= "\n\n";		
+$mail_message .= Yii::t('site',"Thanks
+Sincerely
+Samesub Team
+www.samesub.com");				
 
 			if(@mail($user->email,"Your subject is going LIVE",$mail_message,$headers)){
 				echo "An email has been sent.";

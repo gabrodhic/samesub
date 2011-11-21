@@ -130,8 +130,8 @@ class SubjectController extends Controller
 			
 			if($this->model->save()){
 				$wait = Subject::getPrognostic($this->model->id);
-				Yii::app()->user->setFlash('subject_added','Subject succesfully submitted!. Your subject has just been sended to a moderator for its approval. If your subject gets approved, it will go to the homepage(livestram) on an estimated time.');
-				Yii::app()->user->setFlash('subject_added_info','Here is your prognostic: your subject is on position <b>'.$wait['position'].'</b> of the queue and has a wating time of <b>'.$wait['time'].'</b> minutes approximately.');
+				Yii::app()->user->setFlash('subject_added',Yii::t('subject','Subject succesfully submitted!. Your subject has just been sended to a moderator for its approval. If your subject gets approved, it will go to the homepage(livestram) on an estimated time.'));
+				Yii::app()->user->setFlash('subject_added_info',Yii::t('subject','Here is your prognostic: your subject is on position <b>{position}</b> of the queue and has a wating time of <b>{time}</b> minutes approximately.',array('{position}'=>$wait['position'],'{time}'=>$wait['time'])));
 				
 				//Notify manager users
 				//$users = User::model()->findAll('user_type_id > 2 AND user_status_id = 1');
@@ -144,22 +144,24 @@ class SubjectController extends Controller
 					if($send_mail){
 						$headers="From: Samesub Contact <".Yii::app()->params['contactEmail'].">\r\nReply-To: ".Yii::app()->params['contactEmail'];
 						//$mail_message = "Hi {$user->username}, \n\n";
-						$mail_message .= "This is a automatic message to notify you that a subject has been added by a user an that it is\n";
-						$mail_message .= "pending for approval by a samesub moderator.\n\n";
-						$mail_message .= "Details\n\n";
-						$mail_message .= "Subject Title: {$this->model->title}\n";
-						$mail_message .= "Uploaded time: ".date("Y/m/d H:i", $this->model->time_submitted)." UTC\n";
-						$mail_message .= "Current time: ".date("Y/m/d H:i", SiteLibrary::utc_time())." UTC (time of this message)\n\n";
-						$mail_message .= "You can go right now and approve this subject so that the final user can\n";
-						$mail_message .= "see his/her subject in the LIVE stream(homepage) as soon as posible.\n\n";
-						$mail_message .= Yii::app()->getRequest()->getBaseUrl(true)."/subject/manage";
-						$mail_message .= "\n\nNOTE: This message is supposed be received only by moderator users. If you\n";
-						$mail_message .= "are not a moderator or authorizer please notify us replaying to this mail.\n\n";
-						$mail_message .= "Thanks\n\n";
-						$mail_message .= "Sincerely\n";
-						$mail_message .= "Samesub Team\n";
-						$mail_message .= "www.samesub.com";				
-						@mail("contact@samesub.com","New subject added ".$this->model->id,$mail_message,$headers);
+						$mail_message = Yii::t('subject',"This is a automatic message to notify you that a subject has been added by a user an that it is
+pending for approval by a samesub moderator.
+Details
+Subject Title: {title}
+Uploaded time: {uploaded_time} UTC
+Current time: {current_time} UTC (time of this message)
+You can go right now and approve this subject so that the final user can
+see his/her subject in the LIVE stream(homepage) as soon as posible.
+
+{link}
+NOTE: This message is supposed be received only by moderator users. If you
+are not a moderator or authorizer please notify us replaying to this mail.",array('{title}'=>$this->model->title,'{uploaded_time}'=>date("Y/m/d H:i", $this->model->time_submitted), '{current_time}'=>date("Y/m/d H:i", SiteLibrary::utc_time()),'{url}'=>Yii::app()->getRequest()->getBaseUrl(true)."/subject/manage"));
+$mail_message .= "\n\n";		
+$mail_message .= Yii::t('site',"Thanks
+Sincerely
+Samesub Team
+www.samesub.com");							
+						@mail("contact@samesub.com",Yii::t('subject',"New subject added {id}",array('{id}'=>$this->model->id)),$mail_message,$headers);
 					}
 				//}
 					
@@ -199,7 +201,7 @@ class SubjectController extends Controller
 					$this->redirect(array('view','id'=>$this->model->id));
 			}else
 			{
-				throw new CHttpException(403,'You are not allowed to update this subject.');
+				throw new CHttpException(403,Yii::t('subject','You are not allowed to update this subject.'));
 			}
 		}
 		
@@ -243,7 +245,7 @@ class SubjectController extends Controller
 			));
 		}else
 		{
-			throw new CHttpException(403,'You are not allowed to moderate this subject.');
+			throw new CHttpException(403,Yii::t('subject','You are not allowed to moderate this subject.'));
 		}
 	}
 	
@@ -276,20 +278,23 @@ class SubjectController extends Controller
 						$user = User::model()->findByPk($this->model->user_id); 
 						if($user->notify_subject_authorized){
 							$headers="From: Samesub Contact <".Yii::app()->params['contactEmail'].">\r\nReply-To: ".Yii::app()->params['contactEmail'];
-							$mail_message = "Hi {$user->username} \n\n";
-							$mail_message .= "This is a automatic message to notify that your subject has been authorized.\n";
-							$mail_message .= "That means it is going to get LIVE(homepage) very soon, so be alert.\n\n";
-							$mail_message .= "Details\n\n";
-							$mail_message .= "Subject Title: {$this->model->title}\n";
-							$mail_message .= "Uploaded time: ".date("Y/m/d H:i", $this->model->time_submitted)." UTC\n";
-							$mail_message .= "Current time: ".date("Y/m/d H:i", SiteLibrary::utc_time())." UTC (time of this message)\n\n";
-							$mail_message .= "NOTE: This message is supposed be received only by the uploader user. If you\n";
-							$mail_message .= "are not the uploader of this subject please notify us by replaying to this mail.\n\n";
-							$mail_message .= "Thanks\n\n";
-							$mail_message .= "Sincerely\n";
-							$mail_message .= "Samesub Team\n";
-							$mail_message .= "www.samesub.com";				
-							@mail($user->email,"Subject Authorized",$mail_message,$headers);
+							$mail_message = Yii::t('subject',"Hi {username} 
+This is a automatic message to notify that your subject has been authorized.
+That means it is going to get LIVE(homepage) very soon, so be alert.
+Details
+Subject Title: {title}
+Uploaded time: {uploaded_time} UTC
+Current time: {current_time} UTC (time of this message)
+NOTE: This message is supposed be received only by the uploader user. If you
+are not the uploader of this subject please notify us by replaying to this mail."
+,array('{username}'=>$user->username,'{title}'=>$this->model->title,'{uploaded_time}'=>date("Y/m/d H:i", $this->model->time_submitted), '{current_time}'=>date("Y/m/d H:i", SiteLibrary::utc_time())));
+
+$mail_message .= "\n\n";		
+$mail_message .= Yii::t('site',"Thanks
+Sincerely
+Samesub Team
+www.samesub.com");			
+							@mail($user->email,Yii::t('subject',"Subject Authorized"),$mail_message,$headers);
 						}
 						
 						
@@ -302,7 +307,7 @@ class SubjectController extends Controller
 			));
 		}else
 		{
-			throw new CHttpException(403,'You are not allowed to authorize this subject.');
+			throw new CHttpException(403,Yii::t('subject','You are not allowed to authorize this subject.'));
 		}
 	}
 
@@ -325,10 +330,10 @@ class SubjectController extends Controller
 					$this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin'));
 			}
 			else
-				throw new CHttpException(400,'Invalid request. Please do not repeat this request again.');
+				throw new CHttpException(400,Yii::t('site','Invalid request. Please do not repeat this request again.'));
 		}else
 		{
-			throw new CHttpException(403,'You are not allowed to delete this subject.');
+			throw new CHttpException(403,Yii::t('subject','You are not allowed to delete this subject.'));
 		}
 	}
 	
@@ -424,7 +429,7 @@ class SubjectController extends Controller
 			));
 		}else
 		{
-			throw new CHttpException(403,'You are not allowed to manage subjects.');
+			throw new CHttpException(403,Yii::t('subject','You are not allowed to manage subjects.'));
 		}
 	}
 
@@ -437,7 +442,7 @@ class SubjectController extends Controller
 	{
 		$model=Subject::model()->findByPk((int)$id);
 		if($model===null)
-			throw new CHttpException(404,'The requested page does not exist.');
+			throw new CHttpException(404,Yii::t('site','The requested page does not exist.'));
 		return $model;
 	}
 
