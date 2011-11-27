@@ -2,15 +2,10 @@
 $this->breadcrumbs=array(
 	'Subjects'=>array('index'),
 	$model->title=>array('view','id'=>$model->id),
-	'Moderate',
+	Yii::t('subject','Moderate'),
 );
 
-$this->menu=array(
-	array('label'=>'List Subject', 'url'=>array('index')),
-	array('label'=>'Create Subject', 'url'=>array('add')),
-	array('label'=>'View Subject', 'url'=>array('view', 'id'=>$model->id)),
-	array('label'=>'Manage Subject', 'url'=>array('manage')),
-);
+
 
 Yii::app()->clientScript->registerScriptFile(Yii::app()->request->baseUrl.'/js/tag.js');
 Yii::app()->clientScript->registerCss('tagssugest',

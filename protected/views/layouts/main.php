@@ -7,7 +7,7 @@
 	<?php 
 	if( strtolower($this->id) == 'site' and strtolower($this->action->Id) == 'index'){
 	?>
-	<meta name="description" content="Samesub is a space where only one subject is transmitted at a time in a synchronous manner, thus, everyone connected to the site interact with that same subject">
+	<meta name="description" content="<?php echo Yii::t('site','Samesub is a space where only one subject is transmitted at a time in a synchronous manner, thus, everyone connected to the site interact with that same subject');?>">
 	<?php } ?>
 	<meta name="keywords" content="<?php echo  str_replace(" ", ",", str_replace(",", "", $this->pageTitle));?>">
 
@@ -62,11 +62,11 @@ if( Yii::app()->session->get('site_loaded') != "yes" and (strtolower($this->id) 
 ?>
 <div id="preload" style="padding-top:100px; position:fixed; width: 680px; left: 50%; margin:20px 0px 0px -340px;font-family: Trebuchet MS, Arial, Helvetica, sans-serif;">
 	<div style="text-align:center; padding:50px;"><a href="<?php echo Yii::app()->createUrl('site/index');?>"><img src="<?php echo Yii::app()->request->baseUrl; ?>/images/logo.jpg"></a></div>
-	<div style="font-size: 12px;"><b>NOW: </b><?php echo '<a href="'.Yii::app()->createUrl('subject/index').'">'.$this->pageTitle.'</a>';?></div>
+	<div style="font-size: 12px;"><b><?php echo Yii::t('site','NOW: {live_title}', array('{live_title}'=>'</b><a href="'.Yii::app()->createUrl('subject/index').'">'.$this->pageTitle.'</a>'));?></div>
 	<hr style="border: 1px solid grey;" />
 	<div style="font-size: 20px; color:#303030;"><?php echo Notification::getNotification()->note;?></div>
 	<hr style="border: 1px solid grey;" />
-	<div style="margin:50px 0px 0px 0px; font-size: 16px;">Page is loading, get ready ...</div>
+	<div style="margin:50px 0px 0px 0px; font-size: 16px;"><?php echo Yii::t('site','Page is loading, get ready ...');?></div>
 </div>
 <?php 
 }else{
@@ -87,10 +87,10 @@ preload_time_passed = 5;
 					<div class="navigation">
 							<?php $this->widget('zii.widgets.CMenu',array(
 							'items'=>array(
-								array('label'=>'Live', 'url'=>array('site/index')),
-								array('label'=>'Add Subject', 'url'=>array('subject/add')),
-								array('label'=>'Mysub', 'url'=>array((Yii::app()->user->isGuest) ? '/mysub' : 'mysub/'.Yii::app()->user->name)),
-								array('label'=>'History', 'url'=>array('subject/index')),
+								array('label'=>Yii::t('site','Live'), 'url'=>array('site/index')),
+								array('label'=>Yii::t('site','Add Subject'), 'url'=>array('subject/add')),
+								array('label'=>Yii::t('site','Mysub'), 'url'=>array((Yii::app()->user->isGuest) ? '/mysub' : 'mysub/'.Yii::app()->user->name)),
+								array('label'=>Yii::t('site','History'), 'url'=>array('subject/index')),
 
 							),
 						)); ?>					
@@ -98,12 +98,12 @@ preload_time_passed = 5;
 				</div>
 				<div id="menu_right">
 					
-					<span><?php echo (Yii::app()->user->isGuest) ? '<a href="'. Yii::app()->createUrl('site/login').'">Login</a>' 
+					<span><?php echo (Yii::app()->user->isGuest) ? '<a href="'. Yii::app()->createUrl('site/login').'">'.Yii::t('site','Login').'</a>' 
 					:  '<span>'.SiteHelper::get_user_picture((int)Yii::app()->user->id,'icon_','profile').'|<a href="'. Yii::app()->createUrl('profile/'.Yii::app()->user->name).'">'.Yii::app()->user->name.'</a></span>'
-					.'| <span><a href="'. Yii::app()->createUrl('site/logout').'">Logout</a></span>';?></span>
+					.'| <span><a href="'. Yii::app()->createUrl('site/logout').'">'.Yii::t('site','Logout').'</a></span>';?></span>
 					<?php if(strtolower(Yii::app()->controller->action->id) == 'index' and strtolower(Yii::app()->controller->id) == 'site')
-					echo '<span><b> | UTC NOW: </b></span><span id="utc_clock"></span>'; ?>
-					<span> | <a href="<? echo Yii::app()->getRequest()->getBaseUrl(true);?>/site/contact">Feedback</a></span>
+					echo '<span><b> | '.Yii::t('site','UTC NOW:').' </b></span><span id="utc_clock"></span>'; ?>
+					<span> | <a href="<? echo Yii::app()->getRequest()->getBaseUrl(true);?>/site/contact"><?php echo Yii::t('site','Feedback');?></a></span>
 				</div>
 			</div>
 		</div>
@@ -137,11 +137,11 @@ preload_time_passed = 5;
 	<div id="footer" class="bounded">
 		
 			<span style="margin-right:20px">&copy; <?php echo date('Y'); ?> Samesub</span>
-			<span><a href="<? echo Yii::app()->getRequest()->getBaseUrl(true);?>/site/contact">Contact us</a></span>
-			<span><b> | </b><a href="<? echo Yii::app()->getRequest()->getBaseUrl(true);?>/site/page/view/about">About</a></span>
-			<span><b> | </b><a href="<? echo Yii::app()->getRequest()->getBaseUrl(true);?>/site/page/view/faq">FAQ</a></span>
-			<span><b> | </b><a href="<? echo Yii::app()->getRequest()->getBaseUrl(true);?>/site/page/view/terms">Terms of Use</a></span>
-			<span><b> | </b><a href="<? echo Yii::app()->getRequest()->getBaseUrl(true);?>/site/page/view/privacy">Privacy Statement</a></span>
+			<span><a href="<? echo Yii::app()->getRequest()->getBaseUrl(true);?>/site/contact"><?php echo Yii::t('site','Contact us');?></a></span>
+			<span><b> | </b><a href="<? echo Yii::app()->getRequest()->getBaseUrl(true);?>/site/page/view/about"><?php echo Yii::t('site','About');?></a></span>
+			<span><b> | </b><a href="<? echo Yii::app()->getRequest()->getBaseUrl(true);?>/site/page/view/faq"><?php echo Yii::t('site','FAQ');?></a></span>
+			<span><b> | </b><a href="<? echo Yii::app()->getRequest()->getBaseUrl(true);?>/site/page/view/terms"><?php echo Yii::t('site','Terms of Use');?></a></span>
+			<span><b> | </b><a href="<? echo Yii::app()->getRequest()->getBaseUrl(true);?>/site/page/view/privacy"><?php echo Yii::t('site','Privacy Statement');?></a></span>
 		<br/>
 	</div>
 

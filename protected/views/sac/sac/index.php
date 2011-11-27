@@ -6,6 +6,10 @@ Links to the various system administration options.
 </p>
 	<br>
 	<div class="row">
+		<?php echo CHtml::link('Texts Manager',Yii::app()->createUrl('sac/text')); ?> 
+	</div>
+	<br>
+	<div class="row">
 		<?php echo CHtml::link('Notification Messages',Yii::app()->createUrl('sac/notification')); ?> 
 	</div>
 	<br>

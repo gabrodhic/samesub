@@ -29,11 +29,11 @@ $this->ogtags = SiteHelper::get_ogtags($this->pageTitle,
 
 <?php echo SiteHelper::share_links($model->urn,$model->title); ?>
 <br>
-<h3 class="detail_header">Comments</h3>
+<h3 class="detail_header"><?php echo Yii::t('subject','Comments');?></h3>
 <?php 
 $comments=Comment::model()->with('user','country')->findAll("subject_id = {$model->id}");
 $total_comments = count($comments);
-if($total_comments == 0) echo "<h4>NO COMMENTS</h4>";
+if($total_comments == 0) echo "<h4>".Yii::t('subject','NO COMMENTS')."</h4>";
 foreach($comments as $comment): ?>
 <div class="comment" id="c<?php echo $comment->id; ?>">
 	<div class="time">
@@ -48,7 +48,7 @@ foreach($comments as $comment): ?>
 </div><!-- comment -->
 <?php endforeach; ?>
 <br>
-<div class="flash-notice" style="border:none">NOTE: Comments are allowed only on Live Subjects(<a href ="<?php echo Yii::app()->createUrl('site/index');?>">homepage</a>).</div>
+<div class="flash-notice" style="border:none"><?php echo Yii::t('subject','NOTE: Comments are allowed only on Live Subjects({link_begin}homepage{link_end}).', array('{link_begin}'=>'<a href ="'.Yii::app()->createUrl('site/index').'">', '{link_end}'=>'</a>'));?></div>
 </div><!-- form -->
 <div id="right_container">
 	<div style="padding-left:30px;">
@@ -65,26 +65,26 @@ foreach($comments as $comment): ?>
 		<div class="clear_both"></div>
 		</div>
 		<div class="detail_section">
-			<h3 class="detail_header">Sub Information</h3>
-			<div style="float:left;"><h4>Country:</h4></div><div style="float:right;"><?php echo $model->country->name; ?></div>
+			<h3 class="detail_header"><?php echo Yii::t('subject','Sub Information');?></h3>
+			<div style="float:left;"><h4><?php echo Yii::t('subject','Country');?>:</h4></div><div style="float:right;"><?php echo $model->country->name; ?></div>
 			<div class="clear_both"></div>
-			<div style="float:left;"><h4>Submmited on:</h4></div><div style="float:right;"><?php echo CHtml::encode(date("Y/m/d H:i", $model->time_submitted)." UTC"); ?></div>
+			<div style="float:left;"><h4><?php echo Yii::t('subject','Submmited on');?>:</h4></div><div style="float:right;"><?php echo CHtml::encode(date("Y/m/d H:i", $model->time_submitted)." UTC"); ?></div>
 			<div class="clear_both"></div>
-			<div style="float:left;"><h4>Show time(homepage):</h4></div><div style="float:right;"><?php echo CHtml::encode(date("Y/m/d H:i", $model->show_time)." UTC"); ?></div>
+			<div style="float:left;"><h4><?php echo Yii::t('subject','Show time(homepage)');?>:</h4></div><div style="float:right;"><?php echo CHtml::encode(date("Y/m/d H:i", $model->show_time)." UTC"); ?></div>
 			<div class="clear_both"></div>
-			<div style="float:left;"><h4>LIVE Views:</h4></div><div style="float:right;"><?php echo $model->live_views; ?></div>
+			<div style="float:left;"><h4><?php echo Yii::t('subject','LIVE Views');?>:</h4></div><div style="float:right;"><?php echo $model->live_views; ?></div>
 			<div class="clear_both"></div>
-			<div style="float:left;"><h4>Type:</h4></div><div style="float:right;"><?php echo ucwords($model->content_type->name); ?></div>
+			<div style="float:left;"><h4><?php echo Yii::t('subject','Type');?>:</h4></div><div style="float:right;"><?php echo ucwords($model->content_type->name); ?></div>
 			<div class="clear_both"></div>
-			<div style="float:left;"><h4>Priority:</h4></div><div style="float:right;"><?php echo ucwords($model->priority_type->name); ?></div>
+			<div style="float:left;"><h4><?php echo Yii::t('subject','Priority');?>:</h4></div><div style="float:right;"><?php echo ucwords($model->priority_type->name); ?></div>
 			<div class="clear_both"></div>
-			<div style="float:left;"><h4>Comments:</h4></div><div style="float:right;"><?php echo $total_comments; ?></div>
+			<div style="float:left;"><h4><?php echo Yii::t('subject','Comments');?>:</h4></div><div style="float:right;"><?php echo $total_comments; ?></div>
 			<div class="clear_both"></div>
-			<div style="float:left;"><h4>Page Views:</h4></div><div style="float:right;"><?php echo $model->views; ?></div>
+			<div style="float:left;"><h4><?php echo Yii::t('subject','Page Views');?>:</h4></div><div style="float:right;"><?php echo $model->views; ?></div>
 			<div class="clear_both"></div>
 		</div>
 		<div id="detail_section">
-			<h3 class="detail_header">Tags</h3>
+			<h3 class="detail_header"><?php echo Yii::t('subject','Tags');?></h3>
 			<div id="tags_list">
 				<ul>
 				<?php 
@@ -96,7 +96,7 @@ foreach($comments as $comment): ?>
 		</div>
 		<div class="clear_both"></div>
 		<div class="detail_section">
-		<h3 class="detail_header">Categories</h3>
+		<h3 class="detail_header"><?php echo Yii::t('subject','Categories');?></h3>
 				<div id="tags_list">
 				<ul>
 				<?php
@@ -106,7 +106,7 @@ foreach($comments as $comment): ?>
 				<?php if($model->category){ foreach($tags as $tag) echo "<li>".
 				'<a href="'.Yii::app()->getRequest()->getBaseUrl(true).'/subject/index?'.urlencode('Subject[category]').'='.$tag.'&ajax=subject-grid">&#32;&#149;&#32;'.$tag.'</a>'
 				."</li>"; 
-				}else{ echo "No categories";}
+				}else{ echo Yii::t('subject',"No categories");}
 				?>
 				</ul>
 			</div>

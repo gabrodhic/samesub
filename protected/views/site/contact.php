@@ -1,11 +1,11 @@
 <?php
-$this->pageTitle=Yii::app()->name . ' - Contact Us';
+$this->pageTitle=Yii::app()->name . ' - '.Yii::t('site','Contact Us');
 $this->breadcrumbs=array(
-	'Contact',
+	Yii::t('site','Contact Us'),
 );
 ?>
 
-<h1>Contact Us</h1>
+<h1><?php echo Yii::t('site','Contact Us');?></h1>
 
 <?php if(Yii::app()->user->hasFlash('contact')): ?>
 
@@ -16,14 +16,14 @@ $this->breadcrumbs=array(
 <?php else: ?>
 
 <p>
-Put your questions, feedback, or any inquiries here. Make sure to write your email if you want a reply. Thanks.
+<?php echo Yii::t('site','Put your questions, feedback, or any inquiries here. Make sure to write your email if you want a reply. Thanks.')?>
 </p>
 
 <div class="form">
 
 <?php $form=$this->beginWidget('CActiveForm'); ?>
 
-	<p class="note">Fields with <span class="required">*</span> are required.</p>
+	<p class="note"><?php echo Yii::t('site','Fields with {1} are required.',array('{1}'=>'<span class="required">*</span>'));?></p>
 
 	<?php echo $form->errorSummary($model); ?>
 

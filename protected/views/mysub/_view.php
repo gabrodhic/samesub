@@ -25,7 +25,7 @@
 	<?php 
 	$comments=Comment::model()->with('user')->findAll(array('condition'=>"subject_id = {$data->id}", 'limit'=>5, 'order'=>'t.id DESC'));
 	foreach($comments as $comment): $i++;?>
-	<?php if($i == 1) echo "<h4>Last 5 Comments:</h4>";?>
+	<?php if($i == 1) echo "<h4>".Yii::t('subject','Last 5 Comments').":</h4>";?>
 	<div class="comment" id="c<?php echo $comment->id; ?>">
 
 		<div class="time">
@@ -39,6 +39,6 @@
 
 	</div><!-- comment -->
 	<?php endforeach; ?>
-	<?php if(! $i) echo "NO COMMENTS";?>
+	<?php if(! $i) echo Yii::t('subject',"NO COMMENTS");?>
 
 </div>

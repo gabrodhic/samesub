@@ -1,11 +1,11 @@
 <?php
-$this->pageTitle=Yii::app()->name . ' - Login';
+$this->pageTitle=Yii::app()->name . ' - '.Yii::t('site','Login');
 $this->breadcrumbs=array(
-	'Login',
+	Yii::t('site','Login'),
 );
 ?>
 <div style="float:left;">
-<h1>Login</h1>
+<h1><? echo Yii::t('site','Login');?></h1>
 <br><br>
 
 
@@ -40,7 +40,7 @@ $this->breadcrumbs=array(
 		</div>
 		<br><br>
 		<p class="hint">
-			Forgot your password? <a href="<?php echo Yii::app()->createUrl('user/resetpassword');?>">Click here</a>.
+			<?php echo Yii::t('site','Forgot your password?  {link_begin}Click here{link_end}.', array('{link_begin}'=>'<a href="'.Yii::app()->createUrl('user/resetpassword').'">','{link_end}'=>'</a>')); ?>
 		</p>
 
 	<?php $this->endWidget(); ?>
@@ -51,10 +51,10 @@ $this->breadcrumbs=array(
 <div style="margin-left: 65px;float:left; height:240px; width:10px; border-left:1px #CCCCCC solid; padding:30px;">
 </div>
 <div style="padding-left:55px; float:left;">
-<a href="<?php echo Yii::app()->createUrl('user/register');?>"><h1>Register</h1></a>
+<a href="<?php echo Yii::app()->createUrl('user/register');?>"><h1><? echo Yii::t('site','Register');?></h1></a>
 <br><br><br>
 <p>
-	Only one step. <a href="<?php echo Yii::app()->createUrl('user/register');?>">Click here</a>.
+	<?php echo Yii::t('site','Only one step. {link_begin}Click here{link_end}.', array('{link_begin}'=>'<a href="'.Yii::app()->createUrl("user/register").'">','{link_end}'=>'</a>')); ?>
 </p>
 </div>
 <div class="clear_both"></div>

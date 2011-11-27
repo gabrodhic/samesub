@@ -32,7 +32,7 @@ function get_Contents(callback){
 
 			}
 			
-			$('#header_top_frame').contents().find('body').html('LIVE NOW: <a target="_top" style="color: #046381;" href="<?php echo Yii::app()->createUrl('site/index');?>">' + json.title_1 + '</a>');
+			$('#header_top_frame').contents().find('body').html('<?php echo Yii::t('site','LIVE NOW: {1}',array('{1}'=>'<a target="_top" style="color: #046381;" href="'.Yii::app()->createUrl('site/index').'">\' + json.title_1 + \'</a>'));?>');
 			if(callback === undefined) {
 				setTimeout(function (){$("#header_top_frame").contents().find('body, body a').css("color", "white");},500);
 				setTimeout(function (){$("#header_top_frame").contents().find('body, body a').css("color", "");},1000);
@@ -51,7 +51,7 @@ function get_Contents(callback){
 		},
 		function(){
 
-			$("#header_top_frame").contents().find('body').html("LIVE: There was an error getting data from the server to your device. Please check your internet connection. Retrying in 15 seconds.");
+			$("#header_top_frame").contents().find('body').html("<?php echo Yii::t('site','LIVE: There was an error getting data from the server to your device. Please check your internet connection. Retrying in 15 seconds.');?>");
 			
 			var bb = setTimeout(function(){$("#header_top_frame").contents().find('body').html(".")},10000);
 			var bb = setTimeout("get_Contents()",15000);//There was an error loading content, lets make a new request to try to get content again

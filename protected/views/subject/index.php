@@ -14,10 +14,10 @@ $('.search-form form').submit(function(){
 ");
 ?>
 
-<h1>Subjects History</h1>
+<h1><?php echo Yii::t('subject','Subjects History');?></h1>
 
 <p>
-The following list shows all the subjects that has been placed in the live stream(homepage). Note that the time is in UTC.
+<?php echo Yii::t('subject','The following list shows all the subjects that has been placed in the live stream(homepage). Note that the time is in UTC.');?>
 </p>
 
 
@@ -81,7 +81,7 @@ The following list shows all the subjects that has been placed in the live strea
 			'sortable'=>true,
         ),
 		array(
-			'header'=>'Subject',
+			'header'=>Yii::t('subject','Search'),
             'name'=>'title',
 			'type'=>'html',
 			'value'=>'CHtml::link($data->title,Yii::app()->getRequest()->getBaseUrl(true)."/sub/".$data->urn)',

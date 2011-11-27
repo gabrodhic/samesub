@@ -1,7 +1,7 @@
 <?php
 $this->breadcrumbs=array(
-	'Users'=>array('index'),
-	'Profile',
+	Yii::t('site','Users')=>array('index'),
+	Yii::t('site','Profile'),
 );
 
 ?>
@@ -45,36 +45,36 @@ $this->pageTitle=Yii::app()->name . ' - '. $model->firstname.' '.$model->lastnam
 			<h2 style="padding:0px"><?php 			
 			echo $model->firstname .' '.$model->lastname;?></h2>
 			<?php echo CHtml::link($model->username,array('mysub/'.$model->username)); ?>
-			<br><?php if ($model->sex) echo($model->sex == 1) ? 'Male' : 'Female';?>
+			<br><?php if ($model->sex) echo($model->sex == 1) ? Yii::t('site','Male') : Yii::t('site','Female');?>
 			<br><?php if($model->country_id) echo ucwords(strtolower($model->ucountry->name)); ?>
 		</div>
 		<div class="clear_both"></div>
 		<br><br>
 		<div class="detail_section">
-			<h3 class="detail_header">User Information</h3>
+			<h3 class="detail_header"><?php echo Yii::t('user','User Information');?></h3>
 			
 			<table border="0" width="100%">
 				<?php 
 				echo '<tr>
-					<td width="80" class="detail_cell"><b>Member Since</b></td>
+					<td width="80" class="detail_cell"><b>'.Yii::t('user','Member Since').'</b></td>
 					<td class="detail_cell">'.date("Y/m/d",$model->time_created).'</td>
 				</tr>';
 
 				if($model->region and $model->share_region == 1 ){
 				echo '<tr>
-					<td width="80" class="detail_cell"><b>Region</b></td>
+					<td width="80" class="detail_cell"><b>'.Yii::t('site','Region').'</b></td>
 					<td class="detail_cell">'.CHtml::encode($model->region).'</td>
 				</tr>';
 				}
 				if($model->city and $model->share_city == 1 ){
 				echo '<tr>
-					<td width="80" class="detail_cell"><b>City</b></td>
+					<td width="80" class="detail_cell"><b>'.Yii::t('site','City').'</b></td>
 					<td class="detail_cell">'.$model->city.'</td>
 				</tr>';
 				}
 				if($model->email and $model->share_email == 1){
 				echo '<tr>
-					<td width="80" class="detail_cell"><b>Email</b></td>
+					<td width="80" class="detail_cell"><b>'.Yii::t('site','Email').'</b></td>
 					<td class="detail_cell">';
 					if(Yii::app()->user->isGuest) {
 						$this->widget('application.extensions.ETextImage.ETextImage',
@@ -100,25 +100,25 @@ $this->pageTitle=Yii::app()->name . ' - '. $model->firstname.' '.$model->lastnam
 				$year = 60 * 60 * 24 * 365;
 				$ageYears = $age / $year;
 				echo '<tr>
-					<td width="80" class="detail_cell"><b>Birth Date</b></td>
-					<td class="detail_cell">'.date("Y/m/d",$model->birthdate).' Age: '.floor($ageYears) . ' years old.</td>
+					<td width="80" class="detail_cell"><b>'.Yii::t('user','Birth Date').'</b></td>
+					<td class="detail_cell">'.Yii::t('user','{birthdate} Age: {years_old} years old.',array('{birthdate}'=>date("Y/m/d",$model->birthdate),'{years_old}'=>floor($ageYears))).'</td>
 				</tr>';
 				}
 				if($model->interests and $model->share_interests == 1 ){
 				echo '<tr>
-					<td width="80" class="detail_cell"><b>Interests</b></td>
+					<td width="80" class="detail_cell"><b>'.Yii::t('user','Interests').'</b></td>
 					<td class="detail_cell">'.nl2br(CHtml::encode($model->interests)).'</td>
 				</tr>';
 				}
 				if($model->activities and $model->share_activities == 1 ){
 				echo '<tr>
-					<td width="80" class="detail_cell"><b>Activities</b></td>
+					<td width="80" class="detail_cell"><b>'.Yii::t('user','Activities').'</b></td>
 					<td class="detail_cell">'.nl2br(CHtml::encode($model->activities)).'</td>
 				</tr>';
 				}
 				if($model->about and $model->share_about == 1 ){
 				echo '<tr>
-					<td width="80" class="detail_cell"><b>About</b></td>
+					<td width="80" class="detail_cell"><b>'.Yii::t('user','About').'</b></td>
 					<td class="detail_cell">'.nl2br(CHtml::encode($model->about)).'</td>
 				</tr>';
 				}
@@ -127,18 +127,18 @@ $this->pageTitle=Yii::app()->name . ' - '. $model->firstname.' '.$model->lastnam
 			</table>
 			
 			<br>
-			<?php if(Yii::app()->user->id == (int)$model->id) echo CHtml::link('Update Profile',array('user/update')); ?>
+			<?php if(Yii::app()->user->id == (int)$model->id) echo CHtml::link(Yii::t('user','Update Profile'),array('user/update')); ?>
 		</div>
 </div>
 <div id="right_container">
 	<div style="padding-left:30px;">
 		<div class="detail_section">
-			<h3 class="detail_header">Statistics</h3>
-			<div style="float:left;"><h4>Subs:</h4></div><div style="float:right;"><?php echo CHtml::link($stat_subs,array('mysub/'.$model->username)); ?></div>
+			<h3 class="detail_header"><?php echo Yii::t('user','Statistics');?></h3>
+			<div style="float:left;"><h4><?php echo Yii::t('user','Subs:');?></h4></div><div style="float:right;"><?php echo CHtml::link($stat_subs,array('mysub/'.$model->username)); ?></div>
 			<div class="clear_both"></div>
-			<div style="float:left;"><h4>Comments:</h4></div><div style="float:right;"><? echo $stat_comments;?></div>
+			<div style="float:left;"><h4><?php echo Yii::t('user','Comments:');?></h4></div><div style="float:right;"><? echo $stat_comments;?></div>
 			<div class="clear_both"></div>
-			<div style="float:left;"><h4>Last time Online:</h4></div><div style="float:right;"><? echo  date("Y/m/d H:i:s", $stat_last_online);?></div>
+			<div style="float:left;"><h4><?php echo Yii::t('user','Last time Online:');?></h4></div><div style="float:right;"><? echo  date("Y/m/d H:i:s", $stat_last_online);?></div>
 			<div class="clear_both"></div>
 			
 		</div>

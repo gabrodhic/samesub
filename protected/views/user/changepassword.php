@@ -1,4 +1,4 @@
-<h1>Change user password</h1>
+<h1><?php echo Yii::t('site','Change password');?></h1>
 <?php if(Yii::app()->user->hasFlash('changepass_success')): ?>
 <br>
 <div class=flash-success>
@@ -12,7 +12,7 @@
 	'enableAjaxValidation'=>false,
 )); ?>
 
-	<p class="note">Fields with <span class="required">*</span> are required.</p>
+	<p class="note"><?php echo Yii::t('site','Fields with {1} are required.',array('{1}'=>'<span class="required">*</span>'));?></p>
 
 	<?php echo $form->errorSummary($model); ?>
 
@@ -37,7 +37,7 @@
 
 
 	<div class="row buttons">
-		<?php echo CHtml::submitButton('Change Password'); ?>
+		<?php echo CHtml::submitButton(Yii::t('site','Submit')); ?>
 	</div>
 
 <?php $this->endWidget(); ?>

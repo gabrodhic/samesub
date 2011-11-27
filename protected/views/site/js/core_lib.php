@@ -71,7 +71,7 @@ $(document).ready(function() {
 		}
 	});
 
-	$("#comment_textarea").val('Write your comments here!');
+	$("#comment_textarea").val('<?php echo Yii::t('site','Write your comments here!');?>');
 	var first_focus = false;
 	$("#comment_textarea").focus(function(){
 		if(first_focus==false) $("#comment_textarea").val('');
@@ -90,12 +90,12 @@ function send_comment(){
 				$("#comment_textarea").val('');
 				//$("#comment_status").fadeTo("fast", 1.0);//notice, this is just to reset it to original opacity
 				$("#comment_status").show();
-				$("#comment_status").html('Sent, wait few seconds');
+				$("#comment_status").html('<?php echo Yii::t('site','Sent, wait few seconds');?>');
 				setTimeout(function(){$("#comment_status").hide();},1000); 
 				//$("#comment_status").fadeTo("slow", 0.0);
 			},
 			function(){ },
-			function(){$("#comment_status").show(); $("#comment_status").html('Error: check connection'); },
+			function(){$("#comment_status").show(); $("#comment_status").html('<?php echo Yii::t('site','Error: check connection');?>'); },
 			"POST"
 		);
 	}
@@ -161,7 +161,7 @@ function load_comments(comments){
 	//alert('entro comm');
 	
 	if(reset_comment == true) {
-		$("#comments_board").html("Waiting for comments");
+		$("#comments_board").html("<?php echo Yii::t('site','Waiting for comments');?>");
 		comment_number = 0;
 		last_comment_number = 0;
 	}
@@ -289,7 +289,7 @@ function get_Contents(callback){
 		function(){
 			if(callback != undefined) callback();
 			setTimeout(function(){
-				$("#header_error").text("There was an error getting data from the server to your device. Please check your internet connection. Retrying in 10 seconds.");
+				$("#header_error").text("<?php echo Yii::t('site','There was an error getting data from the server to your device. Please check your internet connection. Retrying in 10 seconds.');?>");
 				$("#header_error").show();
 				}
 			,5000);

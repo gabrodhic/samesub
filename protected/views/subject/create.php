@@ -1,13 +1,10 @@
 <?php
 $this->breadcrumbs=array(
-	'Subjects'=>array('index'),
-	'Create',
+	Yii::t('subject','Subjects')=>array('index'),
+	Yii::t('subject','Add'),
 );
 
-$this->menu=array(
-	array('label'=>'List Subject', 'url'=>array('index')),
-	array('label'=>'Manage Subject', 'url'=>array('manage')),
-);
+
 
 
 Yii::app()->clientScript->registerScriptFile(Yii::app()->request->baseUrl.'/js/tag.js');
@@ -33,7 +30,7 @@ $('#Subject_tag').tagSuggest({
 Yii::app()->clientScript->registerScript('tagscodeid',$code);
 ?>
 
-<h1>Add Subject</h1>
+<h1><?php echo Yii::t('subject','Add Subject');?></h1>
 
 <?php if(Yii::app()->user->hasFlash('subject_added')): ?>
 <br>
@@ -43,7 +40,7 @@ Yii::app()->clientScript->registerScript('tagscodeid',$code);
 <?php if(Yii::app()->user->isGuest){ ?>
 	<br><br>
 	<div style="font-size: 16px;">
-		<b>NOTE:</b> You have uploaded this subject as anonymous(guest) user. If you <a href="<?php echo $this->createUrl('user/register?sh='.$model->hash.'&t='.$model->time_submitted);?>">Click Here</a> and register, the system will asign this subject to the new account you register. You may <a href="<?php echo $this->createUrl('site/login?sh='.$model->hash.'&t='.$model->time_submitted);?>">Click Here</a> also to login if you are already registered.
+		<?php echo Yii::t('subject','{1}NOTE:{2} You have uploaded this subject as anonymous(guest) user. If you {link_begin1}Click Here{link_end} and register, the system will asign this subject to the new account you register. You may {link_begin2}Click Here{link_end} also to login if you are already registered.',array('{1}'=>'<b>','{2}'=>'</b>','{link_begin1}'=>'<a href="'.$this->createUrl('user/register?sh='.$model->hash.'&t='.$model->time_submitted).'">','{link_end}'=>'<a href="'.$this->createUrl('site/login?sh='.$model->hash.'&t='.$model->time_submitted).'">','{link_end}'=>'</a>'));?>		
 	</div>
 	<div class="clear_both"></div>
 	
@@ -58,7 +55,7 @@ Yii::app()->clientScript->registerScript('tagscodeid',$code);
 	'enableAjaxValidation'=>false,'htmlOptions'=>array('enctype' => 'multipart/form-data'),
 )); ?>
 
-	<p class="note">Fields with <span class="required">*</span> are required.</p>
+	<p class="note"><?php echo Yii::t('site','Fields with {1} are required.',array('{1}'=>'<span class="required">*</span>'));?></p>
 
 	<?php echo $form->errorSummary($model); ?>
 
@@ -75,8 +72,8 @@ Yii::app()->clientScript->registerScript('tagscodeid',$code);
 	</div>
 	
 	<div class="row">
-		<label>Image source</label>
-		<?php echo $form->DropDownList($model, 'image_source',  array('0'=>'My Computer', '1'=>'Link or URL')); ?>		
+		<label><?php echo Yii::t('subject','Image source');?></label>
+		<?php echo $form->DropDownList($model, 'image_source',  array('0'=>Yii::t('subject','My Computer'), '1'=>Yii::t('subject','Link or URL'))); ?>		
 	</div>
 	
 	<div class="row">		
@@ -139,17 +136,16 @@ Yii::app()->clientScript->registerScript('tagscodeid',$code);
 		<?php $this->widget('CCaptcha',array('clickableImage'=>true,)); ?>
 		<?php echo $form->textField($model,'verifyCode'); ?>
 		</div>
-		<div class="hint">Please enter the letters as they are shown in the image above.
-		<br/>Letters are not case-sensitive.</div>
+		<div class="hint"><?php echo Yii::t('subject','Please enter the letters as they are shown in the image above.{1}Letters are not case-sensitive.',array('{1}'=>'<br/>'));?></div>
 	</div>
 	<?php endif; ?>
 	
 	<div class="row">
-	By submitting this content you agree with the <a href="<?php echo $this->createUrl('site/page/view/terms');?>">Terms of Use</a>.
+	<?php echo Yii::t('subject','By submitting this content you agree with the {link_begin}Terms of Use{link_end}.',array('{link_begin}'=>'<a href="'.$this->createUrl('site/page/view/terms').'">','{link_end}'=>'</a>'));?>
 	</div>
 	
 	<div class="row buttons">
-		<?php echo CHtml::submitButton($model->isNewRecord ? 'Send' : 'Save'); ?>
+		<?php echo CHtml::submitButton(Yii::t('site','Submit')); ?>
 	</div>
 
 <?php $this->endWidget(); ?>

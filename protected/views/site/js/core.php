@@ -128,8 +128,7 @@ function display_elements(obj_json){
 		reset_comment = true;
 		current_id = obj_json.id_1;//id
 		current_title = obj_json.title_1;//title
-		submit_info = 'by <a href="<?php echo Yii::app()->getRequest()->getBaseUrl(true);?>/mysub/'+obj_json.username_1+'">' + obj_json.username_1 + '</a> at ' 
-		+time_submitted.getHours()+':'+time_submitted.getMinutes()+' UTC';
+		submit_info = '<?php echo Yii::t('site','by {username} at {time} UTC',array('{username}'=>'<a href="'.Yii::app()->getRequest()->getBaseUrl(true).'/mysub/\'+obj_json.username_1+\'">\' + obj_json.username_1 + \'</a>','{time}'=>"'+time_submitted.getHours()+':'+time_submitted.getMinutes()+'"));?>';
 		share_html = '<?php echo SiteHelper::share_links("'+obj_json.urn_1+'","'+obj_json.title_1+'"); ?>';
 		$('#content_div_1').html('<?php echo SiteHelper::content_html("'+obj_json.content_html_1+'","'+obj_json.user_comment_1+'","'+submit_info+'","'+share_html+'"); ?> ');
 		current_info = '<b>'+obj_json.country_name_1+'</b> | ';
@@ -183,7 +182,7 @@ function display_elements(obj_json){
 					if(countdown == 120){
 						var backup_title = $("#header_title h1").html();
 						$("#header_title h1").attr("style", "color:#1C75CE");
-						$("#header_title h1").html('Subject changes in 2 minutes, comments close in 1 minute 50 seconds');
+						$("#header_title h1").html('<?php echo Yii::t('site','Subject changes in 2 minutes, comments close in 1 minute 50 seconds');?>');
 						$('#header_title h1').typewriter( 2000, function(){
 							setTimeout(function(){$("#header_title h1").html(backup_title); $("#header_title h1").attr("style", "");},4000);
 						}, new Date());						
@@ -192,16 +191,16 @@ function display_elements(obj_json){
 					if(countdown > 60){
 						$("#comment_timer").css("color", "#686868");
 						hms = secondsToTime(countdown);
-						$("#comment_timer").html('<span>Time remaining: </span><span>'+ hms.m + 'min ' +  hms.s + 's</span>');
+						$("#comment_timer").html('<span><?php echo Yii::t('site','Time remaining:');?> </span><span>'+ hms.m + 'min ' +  hms.s + 's</span>');
 					}else{
 
-						$("#comment_timer").html('<span>Time remaining: </span><span>'+countdown.toString()+ ' seconds</span>');
+						$("#comment_timer").html('<span><?php echo Yii::t('site','Time remaining:');?> </span><span>'+countdown.toString()+ ' seconds</span>');
 						
 						if(countdown < 30){
 							if(countdown > 25){
 								$("#comments_title").fadeTo("fast", 1.0);//notice, this is just to reset it to original opacity
 								$("#comments_title").css("color", "black");
-								$("#comments_title").html('Comments closing...');
+								$("#comments_title").html('<?php echo Yii::t('site','Comments closing...');?>');
 								$("#comments_title").fadeTo("medium", 0.0);
 							}else if(countdown > 15){
 								$("#comments_title").attr("style", "");
@@ -221,7 +220,7 @@ function display_elements(obj_json){
 								
 							}else if(countdown > 6){
 								$("#comments_title").attr("style", "color:red");//notice, we are overriding the style property fully cleans all other previous styles by jquery(opacity, filter, etc)							
-								$("#comments_title").html('Comments CLOSED');
+								$("#comments_title").html('<?php echo Yii::t('site','Comments CLOSED');?>');
 								
 								$("#comment_textarea").attr('disabled',true);								
 								//$("#comment_timer").attr("style", "");
@@ -230,7 +229,7 @@ function display_elements(obj_json){
 							}else{
 								if(countdown == 6){
 									$("#header_title h1").attr("style", "color:#1C75CE");
-									$("#header_title h1").html('Changing to next subject, get ready!');
+									$("#header_title h1").html('<?php echo Yii::t('site','Changing to next subject, get ready!');?>');
 									$('#header_title h1').typewriter( 1000, function(){
 										setTimeout(function(){$("#header_title h1").attr("style", "");},3000);
 									}, new Date());
@@ -252,8 +251,7 @@ function display_elements(obj_json){
 		cached = true;
 		cache_div_id = obj_json.id_2;
 		time_submitted = fromUnixTime(obj_json.time_submitted_2);
-		submit_info = 'by <a href="<?php echo Yii::app()->getRequest()->getBaseUrl(true);?>/mysub/'+obj_json.username_2+'">' + obj_json.username_2 + '</a> at ' 
-		+time_submitted.getHours()+':'+time_submitted.getMinutes()+' UTC';
+		submit_info = '<?php echo Yii::t('site','by {username} at {time} UTC',array('{username}'=>'<a href="'.Yii::app()->getRequest()->getBaseUrl(true).'/mysub/\'+obj_json.username_2+\'">\' + obj_json.username_2 + \'</a>','{time}'=>"'+time_submitted.getHours()+':'+time_submitted.getMinutes()+'"));?>';
 		share_html = '<?php echo SiteHelper::share_links("'+obj_json.urn_2+'","'+obj_json.title_2+'"); ?>';
 		cache_div_title = obj_json.title_2;
 		if($("#content_div_1").css("display") == 'none'){
@@ -311,7 +309,7 @@ $(document).ready(function() {
 		//adata a as swf flash that dont have wmode=opaque
 		$('<iframe src="about:blank" width="980" height="900" id="frame_box" frameBorder="0" scrolling="no" style="display:none; background-color:white; z-index:9000; position:absolute;"></iframe>').prependTo('#main_body');
 		 setTimeout(function (){
-		 $('#frame_box').contents().find('body').html('<p align="center">&nbsp;</p><p align="center">&nbsp;</p><p align="center">&nbsp;</p><p align="center">&nbsp;</p><p align="center"><b><font size="7" face="Trebuchet MS" color="#3F3F3F">Next sub is:</font></b></p>');
+		 $('#frame_box').contents().find('body').html('<p align="center">&nbsp;</p><p align="center">&nbsp;</p><p align="center">&nbsp;</p><p align="center">&nbsp;</p><p align="center"><b><font size="7" face="Trebuchet MS" color="#3F3F3F"><?php echo Yii::t('site','Next sub is:');?></font></b></p>');
 		 },3000); 
 		 
 });

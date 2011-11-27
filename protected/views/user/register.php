@@ -1,5 +1,5 @@
 <?php $this->layout='//layouts/main';?>
-<h1>Register</h1>
+<h1><?php echo Yii::t('site','Register');?></h1>
 
 <?php if(Yii::app()->user->hasFlash('registration_success')): ?>
 <br>
@@ -48,14 +48,14 @@
 		<br>
 		<?php echo $form->textField($model,'verifyCode'); ?>
 		</div>
-		<div class="hint">Letters NOT case-sensitive.</div>
+		<div class="hint"><?php echo Yii::t('site','Letters NOT case-sensitive.');?></div>
 	</div>
 	<?php endif; ?>
 
 
 
 	<div class="row buttons">
-		<?php echo CHtml::submitButton('Register'); ?>
+		<?php echo CHtml::submitButton(Yii::t('site','Register')); ?>
 	</div>
 
 <?php $this->endWidget(); ?>
@@ -65,13 +65,15 @@ $("#User_email").keyup(function (){ $("#email_verify").text($("#User_email").val
 </script>
 </div><!-- form -->
 <div style="width:300px; margin:0px 30px 0px 210px; padding:20px; float:left; background-color: #F4F4FF;">
-<h2>Benefits of registering</h2>
-<ul>
-<li>Know about the status of each subject you upload.</li>
-<li>You can get notified via email when your subject is going to get to the LIVE stream.</li>
-<li>Have your own site with your subs that you can share with your friends. A url like: samesub.com/mysub/username.</li>
-<li>Every subject you upload will have your username signature.</li>
-<li>Other samesub users can contact you and vice versa.</li>
-</ul>
+<h2><?php echo Yii::t('user','Benefits of registering');?></h2>
+<?php echo nl2br(Yii::t('user','Know about the status of each subject you upload.
+
+You can get notified via email when your subject is going to get to the LIVE stream.
+
+Have your own site with your subs. A url like: samesub.com/mysub/username.
+
+Every subject you upload will have your username signature.
+
+Other samesub users can contact you and vice versa.'));?>
 </div>
 <?php endif; ?>

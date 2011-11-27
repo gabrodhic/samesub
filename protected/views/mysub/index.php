@@ -8,31 +8,31 @@
 			<br>
 			<?php echo $user->firstname . ' '. $user->lastname; ?>
 			<?php if ($user->sex) {
-				echo "<br><h4>Sex:</h4>";
-				echo ($user->sex == 1) ? 'Male' : 'Female'; 
+				echo "<br><h4>".Yii::t('user','Sex').":</h4>";
+				echo ($user->sex == 1) ? Yii::t('site','Male') : Yii::t('site','Female'); 
 			}
 			?>
 					
 			<?php 
 				if($user->country_id){
-				echo "<br><h4>Country:</h4>";
+				echo "<br><h4>".Yii::t('site','Country').":</h4>";
 				echo ucwords(strtolower($user->ucountry->name)); 
 			}
 			?>
 			<?php 
 				if($user->about and $user->share_about == 1){
-				echo "<br><h4>About:</h4>";
+				echo "<br><h4>".Yii::t('user','About').":</h4>";
 				echo $user->about; 
 			}
 			?>
 			<br><br>
 			<?php 
-			echo CHtml::link('View Profile',array('profile/'.$user->username)).'<br>';
-			if(Yii::app()->user->id == (int)$model->user_id) echo CHtml::link('Update Profile',array('user/update')); ?>
+			echo CHtml::link(Yii::t('user','View Profile'),array('profile/'.$user->username)).'<br>';
+			if(Yii::app()->user->id == (int)$model->user_id) echo CHtml::link(Yii::t('user','Update Profile'),array('user/update')); ?>
 		</div>
 	</div>
 	<div id="column_right">
-		<h1><?php echo $username;?> subs</h1>
+		<h1><?php echo Yii::t('subject','{username} subs',array('{username}'=>$username));?></h1>
 		<?php echo SiteHelper::share_links($username,$username.' subs','/mysub/'); ?>
 		<?php
 		$dataProvider=$model->search();
