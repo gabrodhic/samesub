@@ -24,7 +24,7 @@ class Message extends CActiveRecord
 	 */
 	public function tableName()
 	{
-		return 'message';
+		return 'Message';
 	}
 
 	/**

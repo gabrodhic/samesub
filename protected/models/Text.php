@@ -27,7 +27,7 @@ class Text extends CActiveRecord
 	 */
 	public function tableName()
 	{
-		return 'sourcemessage';
+		return 'SourceMessage';
 	}
 
 	/**
@@ -87,7 +87,7 @@ class Text extends CActiveRecord
 		$criteria->compare('m.language',$this->language, true,'OR');
 		$criteria->compare('m.translation',$this->translation,true);
 		
-		$criteria->join = 'LEFT JOIN message as m ON m.id = t.id';
+		$criteria->join = 'LEFT JOIN Message as m ON m.id = t.id';
 		$criteria->select = 't.id, t.category, t.message, m.language as language, m.translation as translation';
 
 		return new CActiveDataProvider($this, array(

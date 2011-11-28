@@ -59,7 +59,7 @@ class TextController extends Controller
 		// $this->performAjaxValidation($this->model);
 		
 		$this->model=Text::model()->find(
-			array('join' => 'LEFT JOIN message as m ON m.id = t.id'
+			array('join' => 'LEFT JOIN Message as m ON m.id = t.id'
 			, 'select' => 't.id, m.id as messageid, t.category, t.message, m.language, m.translation as translation'
 			,'condition'=>('t.id = '.$id))
 		);
