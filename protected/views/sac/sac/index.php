@@ -32,3 +32,8 @@ Links to the various system administration options.
 	<div class="row">
 		<?php echo CHtml::link('Subject Categories',Yii::app()->createUrl('subjectCategory')); ?> 
 	</div>
+	<br>
+	<div class="row">
+		<?php echo CHtml::link('WebSite Stats Analyzer','http://samesub.com/cgi-bin/awstats/awstats.pl?config=samesub.com'); ?> 
+	</div>
+	
