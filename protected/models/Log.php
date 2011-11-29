@@ -24,6 +24,8 @@ class Log extends CActiveRecord
 	public $language;
 	public $referer;
 	public $agent;
+	public $request_ip;
+	public $client_ip;
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @return Log the static model class
@@ -429,12 +431,13 @@ $bots[] = "Nederland.zoek";
 		$criteria->compare('device',$this->device);
 		$criteria->compare('c.id',$this->country);
 		
-		$criteria->join = 'LEFT JOIN user as u ON u.id = t.user_id 
+		$criteria->join = 'LEFT JOIN user as u ON u.id = t.user_id
 		LEFT JOIN log_detail as ld ON ld.session = t.session_id
-		LEFT JOIN country as c ON c.id = ld.client_country_id OR c.id = ld.request_country_id
+		LEFT JOIN country as c ON c.id = ld.client_country_id
+		LEFT JOIN country as cc ON cc.id = ld.request_country_id
 		';
 		$criteria->select = 't.id, t.time, t.session_id, u.username as username, t.user_id, t.controller, t.action, t.theme,
-		ld.device, c.name as country, t.uri, ld.language, ld.charset, ld.referer, ld.agent';
+		ld.device, c.name as country, t.uri, ld.language, ld.charset, ld.referer, ld.agent, ld.request_ip, ld.client_ip';
 		
 
 		return new CActiveDataProvider($this, array(

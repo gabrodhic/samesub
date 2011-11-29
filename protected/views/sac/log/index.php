@@ -88,7 +88,7 @@ or <b>=</b>) at the beginning of each of your search values to specify how the c
 			'header'=>'Details',
 			'filter'=>'<a href="#" class="show_button" onClick="$(\'.show_hide_content\').show()">Show</a>/<a href="#" class="hide_button" onClick="$(\'.show_hide_content\').hide()">Hide</a>',
 			'type'=>'html',
-			'value'=>'CHtml::decode("<span class=\"show_button\">Show</span>/<span class=\"hide_button\">Hide</span><div class=\"show_hide_content\" style=\"display:none;\">$data->charset $data->language $data->referer  $data->agent</div>")',
+			'value'=>'CHtml::decode("<span class=\"show_button\">Show</span>/<span class=\"hide_button\">Hide</span><div class=\"show_hide_content\" style=\"display:none;\">$data->charset <br> $data->language <br> $data->referer <br> $data->agent <br> $data->request_ip <rb> $data->client_ip</div>")',
 			'headerHtmlOptions'=>array('width'=>'400px'),
 			//'filter'=>CHtml::listData(Country::model()->findAll(),'id','name'),
 			//'sortable'=>true,
