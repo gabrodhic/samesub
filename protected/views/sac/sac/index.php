@@ -26,6 +26,10 @@ Links to the various system administration options.
 	</div>
 	<br>
 	<div class="row">
+		<?php echo CHtml::link('Subjects Timeboard',Yii::app()->createUrl('subject/timeboard')); ?> 
+	</div>
+	<br>
+	<div class="row">
 		<?php echo CHtml::link('Mail Messages',Yii::app()->createUrl('sac/mail')); ?> 
 	</div>
 	<br>

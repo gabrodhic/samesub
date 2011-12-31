@@ -23,7 +23,7 @@ $('.search-form form').submit(function(){
 ");
 ?>
 
-<h1>Manage Subjects</h1>
+<h1>Time Board</h1>
 
 <p>
 You may optionally enter a comparison operator (<b>&lt;</b>, <b>&lt;=</b>, <b>&gt;</b>, <b>&gt;=</b>, <b>&lt;&gt;</b>
@@ -36,11 +36,36 @@ or <b>=</b>) at the beginning of each of your search values to specify how the c
 	'model'=>$model,
 )); ?>
 </div><!-- search-form -->
+<script>
+
+function change_position(id){
+	
+}
+
+///function bind_click_positions(){
+  $(".set_position").live('click', function(){
+	var id = $(this).html();
+	$.fn.yiiGridView.update("subject-grid", {url:"",data:{"id":id, "day":$("#Subject_Position_day_"+id).val()
+	,"hour":$("#Subject_Position_hour_"+id).val(), "minute":$("#Subject_Position_minute_"+id).val()   } });
+  });
+//}
+
+//Auto update the grid timeboard every subject change interval
+
+function refresh_timeboard()
+{  
+  $.fn.yiiGridView.update("subject-grid", {url:""});
+  //self.setInterval("refresh_timeboard()",<?php echo (Yii::app()->params['subject_interval'] * 60);?>000);
+}
+
+
+</script>
+
 
 <p>Legend: <span class="row_red">RED</span> => Live NOW</p>
 <?php 
-	$dataProvider=$model->search();
-	$dataProvider->pagination->pageSize=50;
+	$dataProvider=$model->search('t.position ASC');
+	$dataProvider->pagination->pageSize=30;
 	$this->widget('zii.widgets.grid.CGridView', array(
 	'id'=>'subject-grid',
 	'dataProvider'=>$dataProvider,
@@ -50,11 +75,33 @@ or <b>=</b>) at the beginning of each of your search values to specify how the c
 		array(
             'name'=>'id',
 			'id'=>$live_subject["subject_id"].'_'.$live_subject["subject_id_2"],//id its just a temporal space for the $live_subject variable since we cant access it on the cssexpression
-            'value'=>'$data->id',
+			'type'=>'html',
+            'value'=>'"<div class=\"set_position\" onClick=\"\">".$data->id."</div>"',
 			'headerHtmlOptions'=>array('width'=>'25px'),
 			'cssClassExpression'=>'($data->id == substr($this->id, 0, strpos($this->id, "_"))) ? row_red : something',
 			'sortable'=>true,
         ),
+		array(
+            'name'=>'position',
+			'header'=>'Position Da/Ho/Mi',
+			'filter'=>'',
+			'type'=>'raw',
+            'value'=>'CHtml::DropDownList("Subject_Position_day_".$data->id, date("j",$data->position), SiteLibrary::get_time_intervals("day")) . CHtml::DropDownList("Subject_Position_hour_".$data->id, date("G",$data->position), SiteLibrary::get_time_intervals("hour")). CHtml::DropDownList("Subject_Position_minute_".$data->id, date("i",$data->position), SiteLibrary::get_time_intervals("minute"))',
+			'headerHtmlOptions'=>array('width'=>'175px'),
+			'sortable'=>true,
+        ),
+		array(
+            'name'=>'user_position',
+			'header'=>'User Position',
+			'type'=>'raw',
+			'value'=>'($data->user_position) ? date("d",$data->user_position) . " " . date("H",$data->user_position) ." ". date("i",$data->user_position) : "--  --  --"',
+		),
+		array(
+            'name'=>'manager_position',
+			'header'=>'Manager Position',
+			'type'=>'raw',
+			'value'=>'($data->manager_position) ? date("d",$data->manager_position) . " " . date("H",$data->manager_position) ." ". date("i",$data->manager_position) : "--  --  --"',
+		),
 		array(
             'name'=>'user_id',
    			'type'=>'html',
@@ -79,7 +126,9 @@ or <b>=</b>) at the beginning of each of your search values to specify how the c
         ),
 		array(
             'name'=>'title',
-			'headerHtmlOptions'=>array('width'=>'410px'),
+			'headerHtmlOptions'=>array('width'=>'200px'),
+			'type'=>'html',
+			'value'=>'CHtml::link($data->title,Yii::app()->getRequest()->getBaseUrl(true)."/sub/".$data->urn)',
         ),
 		array(
             'name'=>'priority_id',
@@ -101,36 +150,6 @@ or <b>=</b>) at the beginning of each of your search values to specify how the c
 			'headerHtmlOptions'=>array('width'=>'100px'),
 			'sortable'=>true,
         ),
-		array(
-			'name'=>'approved',
-			'type'=>'html',
-			'value'=>'CHtml::link(SiteHelper::yesno($data->approved),"moderate/".$data->id)',
-			'headerHtmlOptions'=>array('width'=>'20px'),
-			'filter'=>array('0'=>'No','1'=>'Yes'),
-			'sortable'=>true,
-		),
-		array(
-			'name'=>'authorized',
-			'type'=>'html',
-			'value'=>'CHtml::link(SiteHelper::yesno($data->authorized),"authorize/".$data->id)',
-			'headerHtmlOptions'=>array('width'=>'20px'),
-			'filter'=>array('0'=>'No','1'=>'Yes'),
-			'sortable'=>true,
-		),
-		array(
-			'name'=>'disabled',
-			'value'=>'SiteHelper::yesno($data->disabled)',
-			'headerHtmlOptions'=>array('width'=>'20px'),
-			'filter'=>array('0'=>'No','1'=>'Yes'),
-			'sortable'=>true,
-		),
-		array(
-			'name'=>'deleted',
-			'value'=>'SiteHelper::yesno($data->deleted)',
-			'headerHtmlOptions'=>array('width'=>'20px'),
-			'filter'=>array('0'=>'No','1'=>'Yes'),
-			'sortable'=>true,
-		),
 	),
 	'enablePagination'=>true,
 )); ?>

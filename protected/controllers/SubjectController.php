@@ -40,7 +40,7 @@ class SubjectController extends Controller
 				'users'=>array('*'),
 			),
 			array('allow', // allow authenticated user to perform 'update' actions
-				'actions'=>array('update','moderate','authorize','manage'),
+				'actions'=>array('update','moderate','authorize','manage','timeboard'),
 				'users'=>array('@'),
 			),
 			array('allow', // allow admin user to perform 'admin' and 'delete' actions
@@ -169,6 +169,7 @@ www.samesub.com");
 			}
 		}else{
 			$this->model->country_id = $country_id;
+			$this->model->user_position_anydatetime = 1;
 		}
 		
 		$this->render('create',array(
@@ -343,25 +344,23 @@ www.samesub.com");
 	 * This action returns data about a subject in an encoded format for data interchange(JSON,XML,etc.)
 	 * It can be used for API implementation.
 	 */
-	public function actionFetch($subject_id_2=0,$comment_number=0)
+	public function actionFetch($subject_id=0,$comment_number=0)
 	{
 		//in case params are sent via POST
-		if(isset($_POST['subject_id_2'])) $subject_id_2 = $_POST['subject_id_2'];
+		if(isset($_POST['subject_id'])) $subject_id = $_POST['subject_id'];
 		if(isset($_POST['comment_number'])) $comment_number = $_POST['comment_number'];
 		//PHP casts any string to 0. so its ok. We need to cast in case we receive a string.
-		$subject_id_2 =  (int)$subject_id_2;
+		$subject_id =  (int)$subject_id;
 		$comment_number = (int)$comment_number;
 		$data = NULL;
-		$data = Subject::getLiveData($subject_id_2,$comment_number,false);
+		$data = Subject::getLiveData($subject_id,$comment_number,false);
 		if($data['new_sub'] == 0) $this->no_log = true;//This is just to control the logging functionality(client dont receive this info)
 		
 		
 		if($data['new_sub'] <> 0) {
-			if(isset($_GET['subject_id_2'])){//Only if its not comming from site.php js(that script does not sends that param)
-				if($data['id_1'])
-						$this->model=$this->loadModel($data['id_1']);
-					else
-						$this->model=$this->loadModel($data['id_2']);
+			if(isset($_GET['subject_id'])){//Only if its not comming from site.php js(that script does not sends that param)
+				if($data['id'])	$this->model=$this->loadModel($data['id']);
+
 						
 				if(!(Yii::app()->session['subject_view_live'])) Yii::app()->session['subject_view_live'] = array('1'=>1); //just in case start it with something
 				if(! in_array($this->model->id, Yii::app()->session['subject_view_live'])){
@@ -398,7 +397,7 @@ www.samesub.com");
 			->select('*')
 			->from('live_subject')
 			->queryRow();
-		$this->model->id = "<>".$live_subject['subject_id_2'];//Do not display the cached subject(the next subject that its gonna be showed)
+		
 
 		$this->render('index',array(
 			'model'=>$this->model,
@@ -425,6 +424,61 @@ www.samesub.com");
 			if(! isset($this->model->disabled)) $this->model->disabled = 0;//Set to view only NOT disabled subjects by default(notice isset insted of a simple if)
 			
 			$this->render('manage',array(
+				'model'=>$this->model,'live_subject'=>$live_subject,
+			));
+		}else
+		{
+			throw new CHttpException(403,Yii::t('subject','You are not allowed to manage subjects.'));
+		}
+	}
+	
+	/**
+	 * Time Board.
+	 */
+	public function actionTimeboard($id=null,$day=null,$hour=null,$minute=null)
+	{
+		if(Yii::app()->user->checkAccess('subject_manage'))
+		{
+			$utc_time  = SiteLibrary::utc_time();
+			//If there are any position changes update the timeboard first
+			if($id and $day and isset($hour) and isset($minute)){ //hour and minute can be 0 thats why we use isset instead of simple if
+								
+				
+				//if day is less than today then set month as next future month, 
+				if($day < (int)date("j",$utc_time)){
+					$month = (date("m",$utc_time) == '12') ? 1 : (((int)date("m",$utc_time)) + 1);
+					$year = ((int)date("Y",$utc_time)) + 1;
+				}else{
+					$month = date("m",$utc_time);
+					$year = date("Y",$utc_time);
+				}
+				
+				$position = strtotime($year."-".$month."-".$day." ".$hour.":".$minute.":00",$utc_time);
+				//$position = strtotime("2012-06-10 14:28");
+				//echo $position. $year."-".$month."-".$day." ".$hour.":".$minute.":00";
+				//die($position);
+				Subject::set_position($id,$position);
+			}
+			
+
+			
+			$this->model=new Subject('manage');
+			$this->model->unsetAttributes();  // clear any default values
+			$this->model->authorized = 1;
+			$this->model->approved = 1;
+			$this->model->disabled = 0;
+			$this->model->deleted = 0;
+			$this->model->position = ">=".SiteLibrary::utc_time_interval();
+			if(isset($_GET['Subject']))
+				$this->model->attributes=$_GET['Subject'];
+			
+			$live_subject = Yii::app()->db->createCommand()
+			->select('*')
+			->from('live_subject')
+			->queryRow();
+			//if(! isset($this->model->disabled)) $this->model->disabled = 0;//Set to view only NOT disabled subjects by default(notice isset insted of a simple if)
+			
+			$this->render('timeboard',array(
 				'model'=>$this->model,'live_subject'=>$live_subject,
 			));
 		}else

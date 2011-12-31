@@ -129,6 +129,19 @@ Yii::app()->clientScript->registerScript('tagscodeid',$code);
 		<?php echo $form->DropDownList($model, 'priority_id',array('1'=>'Low', '2'=>'Medium','3'=>'High')); ?>
 		<?php echo $form->error($model,'priority_id'); ?>
 	</div>
+	<div class="row">
+		<?php echo $form->labelEx($model,'datetime'); ?>
+		<?php echo $form->error($model,'user_position'); ?>
+		<?php echo $form->DropDownList($model, 'user_position_ymd',SiteLibrary::get_time_intervals('ymd')); ?>
+		<?php echo $form->DropDownList($model, 'user_position_hour',SiteLibrary::get_time_intervals('hour')); ?>
+		:<?php echo $form->DropDownList($model, 'user_position_minute',SiteLibrary::get_time_intervals('minute')); ?>
+		<span><?php echo $form->CheckBox($model, 'user_position_anydatetime'); ?><?php echo Yii::t('subject','Any date and time.');?></span>
+		<br><?php echo Yii::t('subject','Current UTC time and date is');?>
+		<br><?php echo '<h3 style="padding:1px;">'.date('h:i A',SiteLibrary::utc_time()).'</h3>'; ?>
+		<?php echo date('Y/m/d ',SiteLibrary::utc_time()); ?>
+		
+		
+	</div>
 	<?php if(extension_loaded('gd')): ?>
 	<div class="row">
 		<?php echo $form->labelEx($model,'verifyCode'); ?>
@@ -194,6 +207,20 @@ function show_content_input(){
 show_content_input();
 $("#Subject_content_type_id").change(function (){ show_content_input();});
 $("#Subject_image_source").change(function (){ show_content_input();});
+
+function any_datetime(){
+	if($("#Subject_user_position_anydatetime").is(':checked')){
+		$("#Subject_user_position_ymd").attr("disabled",true);
+		$("#Subject_user_position_hour").attr("disabled",true);
+		$("#Subject_user_position_minute").attr("disabled",true);
+	}else{
+		$("#Subject_user_position_ymd").attr("disabled",false);
+		$("#Subject_user_position_hour").attr("disabled",false);
+		$("#Subject_user_position_minute").attr("disabled",false);
+	}
+}
+any_datetime();
+$("#Subject_user_position_anydatetime").change( function () { any_datetime() });
 
 </script>
 </div><!-- form -->

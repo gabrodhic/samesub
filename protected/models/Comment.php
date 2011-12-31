@@ -73,11 +73,11 @@ class Comment extends CActiveRecord
 		$this->user_id = Yii::app()->user->id;
 		
 		if($this->update_live){
-			$live_subject = Yii::app()->db->createCommand()->select('subject_id_1, (comment_sequence+1)as next_sequence')->from('live_subject')->queryRow();
+			$live_subject = Yii::app()->db->createCommand()->select('subject_id, (comment_sequence+1)as next_sequence')->from('live_subject')->queryRow();
 			//print_r($live_subject);return;
 			Yii::app()->db->createCommand()->insert('live_comment', array(
 			'comment_sequence'=>$live_subject['next_sequence'],
-			'subject_id'=>$live_subject['subject_id_1'],
+			'subject_id'=>$live_subject['subject_id'],
 			'comment_text'=>$this->comment,
 			'comment_time'=>$this->time,
 			'comment_country'=>$country_code,
@@ -89,7 +89,7 @@ class Comment extends CActiveRecord
 			));
 		
 			$this->sequence = $live_subject['next_sequence'];
-			$this->subject_id = $live_subject['subject_id_1'];
+			$this->subject_id = $live_subject['subject_id'];
 		}
 	
 		return true;

@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Nov 20, 2011 at 08:31 AM
+-- Generation Time: Dec 18, 2011 at 05:16 PM
 -- Server version: 5.1.33
 -- PHP Version: 5.2.9
 
@@ -209,10 +209,11 @@ CREATE TABLE live_comment (
 
 CREATE TABLE live_subject (
   id int(11) NOT NULL AUTO_INCREMENT,
-  subject_id_1 int(11) NOT NULL DEFAULT '0',
+  subject_id int(11) NOT NULL DEFAULT '0',
   subject_id_2 int(11) NOT NULL DEFAULT '0',
   last_comment_number int(11) NOT NULL DEFAULT '0',
   comment_sequence int(11) NOT NULL DEFAULT '0',
+  scheduled_time int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (id)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -399,6 +400,9 @@ CREATE TABLE `subject` (
   views int(11) NOT NULL DEFAULT '0',
   live_views int(11) NOT NULL DEFAULT '0',
   `hash` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  position int(11) NOT NULL DEFAULT '0',
+  user_position int(11) NOT NULL DEFAULT '0',
+  manager_position int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (id),
   UNIQUE KEY urn (urn),
   KEY user_id (user_id),
@@ -414,6 +418,9 @@ CREATE TABLE `subject` (
   KEY priority_id (priority_id),
   KEY subject_status (approved),
   KEY user_country_id (user_country_id),
+  KEY position (position),
+  KEY user_position (user_position),
+  KEY manager_position (manager_position),
   FULLTEXT KEY tag (tag),
   FULLTEXT KEY category (category)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;

@@ -17,6 +17,22 @@ class SiteLibrary extends CComponent
 		return $utc_time;
 	}
 	
+	/**
+	 * Generates the unix timestamp for the actual UTC/GMT time rounded down to the nearest lower subject time interval
+	 * @return integer the unix timestamp
+	 */
+	public function utc_time_interval()
+	{
+		$utc_time  = SiteLibrary::utc_time();
+		//Round minute to a Yii::app()->params['subject_interval'] multiple (usually 5 minutes)
+		//NOTE:use floor instead of round, as we want the nearset LOWER multimple number, and not just the nearest multiple number
+		$minute = date("i",$utc_time);
+		$round_minute = floor($minute/Yii::app()->params['subject_interval']) * Yii::app()->params['subject_interval'];
+		$round_utc_time = strtotime(date("H",$utc_time).":".$round_minute.":00",$utc_time);
+		return $round_utc_time;
+	
+	}
+	
 	public function parse_url_query($query){
 		$var  = explode('&', $query); 
 		$arr  = array(); 
@@ -143,5 +159,39 @@ class SiteLibrary extends CComponent
 		else 
 			return false;
 		
+	}
+	
+	/*
+	* Get the time intervals for a type of time(day,hour,minuete)
+	* @param string $type the type of time interval(day,hour,minute)
+	* @return array the time interval items. Otherwise return false
+	*/
+	public function get_time_intervals($type = 'day'){
+	
+		if($type == 'ymd'){
+		
+			$utc_time  = SiteLibrary::utc_time();
+			//A 30 days iteration from NOW
+			for($i = 0; $i < 30; $i++){
+				$next_date = strtotime("+".$i." days",$utc_time);
+				$next_date_formatted = date("Y",$next_date)."/".date("m",$next_date)."/".date("d",$next_date); 
+				$next_date_formatted_txt = date("Y",$next_date)." / ".date("m",$next_date)." / ".date("d",$next_date); 
+				if($i == 0) $next_date_formatted_txt = Yii::t('site','Today');
+				if($i == 1) $next_date_formatted_txt = Yii::t('site','Tomorrow');
+				$dates[$next_date_formatted] = $next_date_formatted_txt;
+			}
+			return $dates;	
+		}
+		elseif($type == 'day'){
+			return array('1'=>1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31);//set first element to one so that array does not initializes it value on 0
+		}elseif($type == 'hour'){
+			return array(0=>'12 AM',1=>'01 AM',2=>'02 AM',3=>'03 AM',4=>'04 AM',5=>'05 AM',6=>'06 AM',7=>'07 AM',8=>'08 AM',9=>'09 AM',10=>'10 AM',11=>'11 AM',12=>'12 PM',13=>'01 PM',14=>'02 PM',15=>'03 PM',16=>'04 PM',17=>'05 PM',18=>'06 PM',19=>'07 PM',20=>'08 PM',21=>'09 PM',22=>'10 PM',23=>'11 PM');
+		}elseif($type == 'minute'){
+			return array('00'=>'00','05'=>'05','10'=>10,'15'=>15,'20'=>20,'25'=>25,'30'=>30,'35'=>35,'40'=>40,'45'=>45,'50'=>50,'55'=>55);
+		}else{
+			return false;
+		}
+	
+	
 	}
 }

@@ -33,6 +33,10 @@ class Subject extends CActiveRecord
 	public $username;
 	public $verifyCode;
 	public $image_source;
+	public $user_position_ymd;
+	public $user_position_hour;
+	public $user_position_minute;
+	public $user_position_anydatetime;
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @return Subject the static model class
@@ -71,6 +75,8 @@ class Subject extends CActiveRecord
 			array('text', 'safe', 'on'=>'add,update'),//So that it can be massively assigned, either way its gonna be validated by validateContentType
 			array('video', 'safe', 'on'=>'add,update'),//So that it can be massively assigned, either way its gonna be validated by validateContentType
 			array('content_type_id', 'validateContentType', 'on'=>'add'),
+			array('user_position_ymd,user_position_hour,user_position_minute', 'safe', 'on'=>'add,update'),//So that it can be massively assigned, either way its gonna be validated by validateDateTime
+			array('user_position_anydatetime', 'validateDateTime', 'on'=>'add,update'),
 
 			array('disabled,deleted', 'numerical', 'integerOnly'=>true, 'on'=>'moderate,authorize'),
 			array('tag, category', 'length', 'max'=>240),
@@ -85,7 +91,7 @@ class Subject extends CActiveRecord
 			array('verifyCode', 'captcha', 'allowEmpty'=>!CCaptcha::checkRequirements(), 'on'=>'add'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, user_id, user_ip, user_comment, title, urn, content_type_id, approved, authorized, disabled, deleted, content_id, country_id, moderator_id, moderator_ip, moderator_comment, time_submitted, time_moderated, priority_id, show_time', 'safe', 'on'=>'manage'),
+			array('id, user_id, user_ip, user_comment, title, urn, content_type_id, approved, authorized, disabled, deleted, content_id, country_id, moderator_id, moderator_ip, moderator_comment, time_submitted, time_moderated, priority_id, show_time,position', 'safe', 'on'=>'manage'),
 			array('username, title, urn, tag, content_type_id, country_id, time_submitted, priority_id, show_time', 'safe', 'on'=>'history'),
 		);
 	}
@@ -117,7 +123,7 @@ class Subject extends CActiveRecord
 		//If its being modified
 		if(! $this->getIsNewRecord()){
 			//Invalidate any change if the subject has been showed while it was being modified
-			if( Yii::app()->db->createCommand("SELECT * FROM live_subject WHERE subject_id_1 = {$this->id} OR subject_id_2 = {$this->id}")->queryRow())
+			if( Yii::app()->db->createCommand("SELECT * FROM live_subject WHERE subject_id = {$this->id}")->queryRow())
 			{
 				if(Yii::app()->controller->action->id != 'fetch' and Yii::app()->controller->action->id != 'view'){
 					$this->addError('title',Yii::t('subject', 'Right now this subject is either in the comming up queue or in the live-now stream. You can not modify it.'));
@@ -230,6 +236,20 @@ class Subject extends CActiveRecord
 					Yii::app()->db->createCommand()->insert('subject_tag',array('name'=>$new_tag));
 			}
 		}
+		//Set position for the time board if not set and if it is authorized only
+		if( $this->authorized and (!$this->position) and ($this->user_position or $this->manager_position) ) {
+				$position = ($this->manager_position) ? $this->manager_position : $this->user_position;
+				$type = ($this->manager_position) ? 'manager' : 'user';
+				Subject::set_position($this->id,$position,$type); 
+		}
+		if( $this->authorized and (!$this->position) and (! $this->user_position and ! $this->manager_position) ) {
+			Subject::model()->reschedule_positions();
+		}
+		//Unset position if it has been unauthorized, disabled, or deleted
+		if( ( !$this->authorized or  $this->disabled or  $this->deleted ) and $this->position ) {
+			Subject::model()->updateByPk($this->id, array('position'=>'0'));
+			Subject::model()->reschedule_positions();
+		}
 
 	
 	}
@@ -283,6 +303,26 @@ class Subject extends CActiveRecord
 		if(! $this->approved ) $this->addError('authorized',Yii::t('subject', 'Sorry, but the subject needs to be approved first in order to be authorized.'));
 	}
 	
+	
+	/**
+	 * Validate the date and time set by the user
+	 * 
+	 */
+	public function validateDateTime($attribute,$params)
+    {
+		if(! $this->user_position_anydatetime) {
+			$utc_time  = SiteLibrary::utc_time();
+
+			$this->user_position = strtotime($this->user_position_ymd ." ".$this->user_position_hour.":".$this->user_position_minute.":00",$utc_time);
+
+			if($this->user_position){
+				if( $this->user_position < SiteLibrary::utc_time_interval()  )
+					$this->addError('user_position',Yii::t('subject', 'Time must be greater than current time.'));
+			}else{
+				$this->addError('user_position',Yii::t('subject', 'Invalid date and times.'));
+			}
+		}
+	}
 	/**
 	 * Validate the content depending on the type
 	 * 
@@ -328,11 +368,10 @@ class Subject extends CActiveRecord
 	 * 
 	 * 
 	 */
-	public function getLiveData($subject_id_2=0, $comment_number,$sleep=false)
+	public function getLiveData($subject_id=0, $comment_number,$sleep=false)
     {
 		$arr_data = array();
 		$arr_comments = array();
-		$arr_comments_2 = array();
 		$arr_data['new_comment']=0;
 		$arr_data['new_sub']=0;
 		//TODO: Store the whole subject record and its content as an array on the live_subject table
@@ -341,11 +380,12 @@ class Subject extends CActiveRecord
 		->from('live_subject')
 		->queryRow();//returns an array, not an object
 
+		if($subject_id != $live_subject['subject_id']) $comment_number = 0;
 		
 		$live_comments = Yii::app()->db->createCommand()
 		->select('*')
 		->from('live_comment')
-		->where('comment_sequence > :comment_number AND subject_id = :subject_id', array(':comment_number'=>$comment_number, ':subject_id'=>$live_subject['subject_id_1']))
+		->where('comment_sequence > :comment_number AND subject_id = :subject_id', array(':comment_number'=>$comment_number, ':subject_id'=>$live_subject['subject_id']))
 		->order('comment_number ASC')
 		->queryAll();
 		
@@ -360,112 +400,50 @@ class Subject extends CActiveRecord
 		$arr_data['comments']= $arr_comments;
 		
 		//If the subject cached on client's device its the same that the live_subject table indicates to be cached...
-		if($subject_id_2 == $live_subject['subject_id_2']){
+		if($subject_id <> $live_subject['subject_id']){
+		
 			
-			//Then verify if there is a change in comments number, its enough to respond with the comment, dont have to wait for a change in subject
-			if($comment_number <> $live_subject['last_comment_number']){
-				$arr_data['comment_update'] = 'yes';
-				$arr_data['id_1'] = 'somevalue';
-				$arr_data['id_2'] = 'somevalue';
-				$arr_data['ttt'] = $comment_number."...". $live_subject['last_comment_number'];
-				
-				//die();
-			}
-			
-			if($sleep) {sleep(1);}
-			//return false;
-		}else{
-			if($subject_id_2 != $live_subject['subject_id_1']){
-				$subject_data = Subject::model()->findByPk($live_subject['subject_id_1']);
-				$arr_data['id_1'] = $subject_data->id;
-				$arr_data['urn_1'] = $subject_data->urn;
-				$arr_data['title_1'] = $subject_data->title;
-				$arr_data['content_type_id_1'] = $subject_data->content_type_id;
-				$arr_data['time_submitted_1'] = $subject_data->time_submitted;
+				$subject_data = Subject::model()->findByPk($live_subject['subject_id']);
+				$arr_data['id'] = $subject_data->id;
+				$arr_data['urn'] = $subject_data->urn;
+				$arr_data['title'] = $subject_data->title;
+				$arr_data['content_type_id'] = $subject_data->content_type_id;
+				$arr_data['time_submitted'] = $subject_data->time_submitted;
 				$country = Country::model()->findByPk($subject_data->country_id);
-				$arr_data['country_code_1'] = ($country->code) ? $country->code : 'WW';
-				$arr_data['country_name_1'] = ($country->name) ? $country->name : 'WORLD';
+				$arr_data['country_code'] = ($country->code) ? $country->code : 'WW';
+				$arr_data['country_name'] = ($country->name) ? $country->name : 'WORLD';
 				$user = User::model()->findByPk($subject_data->user_id);
-				$arr_data['username_1'] = $user->username;
+				$arr_data['username'] = $user->username;
 
-				$arr_data['content_html_1'] = SiteHelper::subject_content($subject_data);
-				$arr_data['content_data_1'] = (array) Subject::subject_content($subject_data)->getAttributes();
-				$arr_data['user_comment_1'] = SiteHelper::formatted($subject_data->user_comment);
-				$arr_data['display_time_1'] = $subject_data->show_time;
-				$arr_data['new_sub']++;
-			}
+				$arr_data['content_html'] = SiteHelper::subject_content($subject_data);
+				$arr_data['content_data'] = (array) Subject::subject_content($subject_data)->getAttributes();
+				$arr_data['user_comment'] = SiteHelper::formatted($subject_data->user_comment);
+				$arr_data['display_time'] = $subject_data->show_time;
+				$arr_data['scheduled_time'] = $subject_data->position;
+				if($subject_id != $live_subject['subject_id']){
+					$arr_data['new_sub']++;
+				}
 			
 			$arr_data['comment_update'] = 'no';
 			$arr_data['comment_sequence'] = $live_subject['comment_sequence'];
-			$arr_data['new_sub']++;
 			
 			
 			
-			$subject_data = Subject::model()->findByPk($live_subject['subject_id_2']);
-			
-			//Add it to the cached data Array also, client needs it
-			$arr_data['id_2']= $subject_data->id;
-			$arr_data['urn_2']= $subject_data->urn;
-			$arr_data['title_2']= $subject_data->title;			
-			$arr_data['content_type_id_2']= $subject_data->content_type_id;
-			$arr_data['time_submitted_2'] = $subject_data->time_submitted;
-			$country = Country::model()->findByPk($subject_data->country_id);
-			$arr_data['country_code_2'] = ($country->code) ? $country->code : 'WW';
-			$arr_data['country_name_2'] = ($country->name) ? $country->name : 'WORLD';
-			$user = User::model()->findByPk($subject_data->user_id);
-			$arr_data['username_2'] = $user->username;
-			
-			$arr_data['content_html_2'] = SiteHelper::subject_content($subject_data);
-			$arr_data['content_data_2'] = (array) Subject::subject_content($subject_data)->getAttributes();
-			$arr_data['user_comment_2'] = SiteHelper::formatted($subject_data->user_comment);
-			
-			$arr_data['display_time_2'] = ($subject_data->show_time + (Yii::app()->params['subject_interval']*60));
 			
 			
-			//TEMPORAL TODO:lets add the old comments(if any) for the cached subeject
-			$comments_2 = Yii::app()->db->createCommand()->select('code,time,comment,sequence,username')
-			->from('comment t1')->where('subject_id ='.$live_subject['subject_id_2'])
-			->leftJoin('country t2', 'country_id=t2.id')
-			->leftJoin('user t3', 'user_id=t3.id')->order('time ASC')->queryAll();
-			$i = 0;
-			foreach($comments_2 as $comment_2){
-				$i++;//we need to use a counter for the sequence as one same sequence mith be repeated if the sub was repeated(TEMPORAL)
-				$country_code = ($comment_2['code']) ? $comment_2['code'] : "WW";
-				
-				$arr_comments_2[] = array('username'=>$comment_2['username'],'display_time'=>($comment_2['time']+Yii::app()->params['request_interval']),
-				'comment_text'=> CHtml::encode($comment_2['comment']), 'comment_sequence'=>$i,
-				'comment_time'=>date("H:i:s",$comment_2['time']),'comment_country'=>$country_code);
-			}
-			
-			/*
-			$comments_2 = Yii::app()->db->createCommand()
-			->select('*')
-			->from('comment')
-			->where('subject_id = :subject_id', array(':subject_id'=>$live_subject['subject_id_2']))
-			->order('sequence ASC')
-			->queryAll();
-			Yii::app()->db->createCommand()->select('code,time,comment,sequence')->from('comment t1')->where('subject_id ='.$live_subject['subject_id_2'])
-			->leftJoin('country t2', 'country_id=t2.id')->order('time ASC')->queryAll();
-			
-			foreach ($comments_2 as $comment_2){
-				//$arr_data['new_comment']++;
-				$arr_comments_2[] = array('display_time'=>($comment_2['time']+Yii::app()->params['request_interval']),'comment_text'=> CHtml::encode($comment_2['comment']), 'comment_sequence'=>$live_comment['sequence'],'comment_time'=>$live_comment['time'],'comment_country'=>$live_comment['comment_country']);
-			}
-			*/
-			$arr_data['comments_2']= $arr_comments_2;
 			
 			//Send the last two previous subjects
 			$last_subs = Yii::app()->db->createCommand()
 			->select('*')
 			->from('subject')
-			->where('show_time>:show_time AND id <>:id1 AND id <>:id2',
-			array(':show_time'=>0,':id1'=>$live_subject['subject_id_1'], ':id2'=>$live_subject['subject_id_2']))
+			->where('show_time>:show_time AND id <>:id1',
+			array(':show_time'=>0,':id1'=>$live_subject['subject_id']))
 			->order('show_time DESC')->limit(5)
 			->queryAll();
 			
-			$arr_data['last_sub_1_title'] = $last_subs[0]['title'];
+			$arr_data['last_sub_title'] = $last_subs[0]['title'];
 			$arr_data['last_sub_2_title'] = $last_subs[1]['title'];
-			$arr_data['last_sub_1_urn'] = $last_subs[0]['urn'];
+			$arr_data['last_sub_urn'] = $last_subs[0]['urn'];
 			$arr_data['last_sub_2_urn'] = $last_subs[1]['urn'];
 			
 			
@@ -475,6 +453,7 @@ class Subject extends CActiveRecord
 		$arr_data['current_time_h'] = date("H",$utc_time);
 		$arr_data['current_time_m'] = date("i",$utc_time);
 		$arr_data['current_time_s'] = date("s",$utc_time);
+		$arr_data['time_remaining'] = (($live_subject['scheduled_time'] + (Yii::app()->params['subject_interval']*60)) - $utc_time) + 2;//lets give some seconds rage in case cron gets delayed
 		
 		return $arr_data;
 	
@@ -548,7 +527,106 @@ class Subject extends CActiveRecord
 		}
 		return $content;
 
+	}
+	/**
+	 * Sets the position of a subject in the timeboard schedule
+	 * This function automatically reschedules all subs to properly fit in the timeboard after setting the new position
+	 * @param integer $id The id of the subject to set position to
+	 * @param integer $position The position(in timestamp format) to set to the subject
+	 * @param integer $type The position type set by who(user or manager)
+	 * @return boolean true on success false on failure 
+	 */
+	public function set_position($id,$position,$type='manager')
+	{
+		if($position < SiteLibrary::utc_time()) return false;//Position to be set can't be smaller than the current available timeboard positions
+		//if(Subject::model()->find('id=:id AND position=:position',array(':id'=>$id,':position'=>$position))) return false; //Nothing to do, already set
+		
+		//If there is a fixed sub occupying the requested position, then move it forward
+		if( $occupied_pos = Subject::model()->find('(user_position > 0 OR manager_position > 0) AND position = '.$position.' AND id<>'.$id)){
+			Subject::move_position_forward($occupied_pos->id,false);
+		}
+		if ($type == 'manager')
+			Subject::model()->updateByPk($id, array('position'=>$position, 'manager_position'=>$position));
+		else
+			Subject::model()->updateByPk($id, array('position'=>$position, 'user_position'=>$position));
+			
+		Subject::reschedule_positions();
+		return true;
+
 	}	
+	/**
+	 * Move forward the position of a subject in the timeboard schedule
+	 * This function automatically moves forward all subjects ahead of the subject in question if its needed or if they must be moved
+	 * @param integer $id The id of the subject to move
+	 * @param boolean $reschedule wether to reschedule positions or not(this is to add a little overload protection, ie:if calling this function subsequently we just need to reschedule once)
+	 * @return boolean true on success false on failure 
+	 */
+	public function move_position_forward($id,$reschedule=true)
+	{
+
+	
+		if(! $move_sub = Subject::model()->findByPk($id)) return false;
+			
+		//If next position is occupied by a fixed sub(user_position OR manager_position) then move that one, iterate again until a no fixed position is found then loop is finished.
+		//Then update the position of the received sub id
+		//Then do a positions reschedule
+
+		$timed_subs = Subject::model()->findAll(array('condition'=>'position > '.$move_sub->position, 'order'=>'position ASC'));
+		
+		$next_pos = $move_sub->position + (Yii::app()->params['subject_interval'] * 60);
+		
+		foreach($timed_subs as $timed_sub){
+			if( ($timed_sub->user_position or $timed_sub->manager_position) and ($timed_sub->position == $next_pos) ){
+				
+				Subject::model()->updateByPk($timed_sub->id, array('position'=>$next_pos + (Yii::app()->params['subject_interval'] * 60)));
+				$next_pos = $next_pos + (Yii::app()->params['subject_interval'] * 60);
+				continue;
+			
+			}else{
+				Subject::model()->updateByPk($move_sub->id, array('position'=>( $move_sub->position + (Yii::app()->params['subject_interval'] * 60) )));
+				break;//We found a hole ,end the loop
+			}
+		}
+		if($reschedule) Subject::reschedule_positions();
+		return true;
+		/*
+		//Move all subs with user/manager position UNset
+		//Note: user/manager UNset are always together and always in the most beginin possible of the current clock time
+		Subject::model()->updateAll(array('position'=>new CDbExpression('position + '.(Yii::app()->params['subject_interval'] * 60) )), 'position >= '.$move_sub->position.' AND user_position = 0 AND manager_position = 0');
+		*/
+		
+	
+	}
+	/**
+	 * Reschedule positions in the timeboard schedule
+	 * This function does NOT touch fixed positions(user_position OR manager_position) as those positions are untouchable(Only another fixed position can touch them)
+	 * @return boolean true on success false on failure 
+	 */
+	public function reschedule_positions()
+	{
+	
+		//Put position in cero all subs that dont have a fixed position then position them again by priority and arrival order
+		//and respect that this new assgnation never overrites Fixed postions(user_position OR manager_position)
+		Subject::model()->updateAll(array('position'=>'0'), 'position > '.SiteLibrary::utc_time_interval().' AND user_position = 0 AND manager_position = 0');//We CAN NOT touch current sub(live), thats why position must be greater than current time
+		
+		$timed_subs = Subject::model()->findAll(array('condition'=>'position = 0 AND user_position = 0 AND manager_position = 0 AND approved=1 AND authorized=1 AND disabled=0 AND deleted=0', 'order'=>'show_time ASC, priority_id DESC , time_submitted ASC','limit'=>24));
+		$position = SiteLibrary::utc_time_interval();// + (Yii::app()->params['subject_interval'] * 60);
+		foreach($timed_subs as $timed_sub){
+
+			do{
+				
+				if($occupied_pos = Subject::model()->find('position = '.$position)) {
+					$position = $position + (Yii::app()->params['subject_interval'] * 60);
+					continue;
+				}
+				break;
+			} while (true);
+			Subject::model()->updateByPk($timed_sub->id, array('position'=>( $position )));
+		}
+		
+		
+	
+	}
 	/**
 	 * @return array relational rules.
 	 */
@@ -600,6 +678,7 @@ class Subject extends CActiveRecord
 			'tag'=>Yii::t('site','Tags'),
 			'category'=>Yii::t('site','Category'),
 			'image_url'=>Yii::t('subject','Image link or URL'),
+			'datetime'=>Yii::t('subject','Date and time (UTC)'),
 		);
 	}
 
@@ -642,6 +721,7 @@ class Subject extends CActiveRecord
 		$criteria->compare('show_time',$this->show_time);
 		$criteria->compare('tag',$this->title,true,'OR');//notice $this->title: we can just have just one field in the griddview. Notice OR, thats to not force this condition
 		$criteria->compare('category',$this->category, true);
+		$criteria->compare('position',$this->position);
 		
 		//$criteria->with=array('country','priority_type','content_type');//Disabled, Not needed anynmore, as we better use filter in view files
 

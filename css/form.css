@@ -56,13 +56,13 @@ div.form fieldset
 div.form label
 {
 	font-weight: bold;
-	font-size: 0.9em;
+	font-size: 14px;
 	display: block;
 }
 
 div.form .row
 {
-	margin: 10px 0;
+	margin: 20px 0;
 }
 
 div.form .hint

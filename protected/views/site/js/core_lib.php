@@ -18,6 +18,23 @@
 //Freamework code ends here.
 
 var baseUrl = "<?php echo Yii::app()->getRequest()->getBaseUrl(true);?>";
+
+
+//Initialize all variables
+var request_count =0;
+var	comment_number = 0;
+var	last_comment_number = 0;
+var	last_displayed_comment = -1;//position in the iteration of comments
+var	epoch_time = 0;
+var	reset_comment = true;
+var pending_comment = false;
+var time_submitted;
+var	current_id = 0;
+var	current_title = '';
+var	current_info = '';
+var	time_remaining = 0;
+
+
 	   
 //window.onbeforeunload = confirmExit;
 function confirmExit()
@@ -108,88 +125,34 @@ function ajax_request(url,data,bsend,suc,err,method,dt){
 }
 		
 
-var request_count =0;
+function reset_comments(){
 
-var comment_number;
-var last_comment_number;
-var last_displayed_comment;
-var epoch_time;
-var cached;
-var reset_page;
-var reset_comment;
-var pending_sub;
-var pending_comment;
-var cache_div_id;
-var cache_div_title;
-var cache_div_info;
-var cache_display_time;
-var time_submitted;
-var current_id;
-var current_title;
-var current_info;
-
-var countdown;
-
-function reset_fetching(){
-
+	reset_comment=true;
+	$("#comments_board").html("<?php echo Yii::t('site','Waiting for comments');?>");
 	comment_number = 0;
-	last_comment_number = 0;
-	last_displayed_comment = -1;//position in the iteration of comments
-	epoch_time = 0;
-	cached = false;
-	reset_page = false;
-	reset_comment =true;
-	pending_sub = true;
-	pending_comment = false;
-	cache_div_id = 0;
-	cache_div_title = "";
-	cache_div_info = "";
-	cache_display_time = 0;
-	//time_submitted;
-	current_id = '';
-	current_title = '';
-	current_info = '';
-	
-	$("#content_div_1").attr("style", "");
-	$("#content_div_2").attr("style", "display:none; visibility:hidden;");
-
-	load_comments();//this is just to reset
+	last_comment_number = 0;	
 
 }
 
 function load_comments(comments){
-	//alert('entro comm');
-	
-	if(reset_comment == true) {
-		$("#comments_board").html("<?php echo Yii::t('site','Waiting for comments');?>");
-		comment_number = 0;
-		last_comment_number = 0;
-	}
+
 	if(pending_comment == true){
 		var new_line = "";
 		var style = "";
-
 
 		if(comments.length > 0){
 			last_comment_number = comments[(comments.length-1)]['comment_sequence'];//the last sequence
 			if(reset_comment == true) {
 				$("#comments_board").html("");//Clear the waiting for comments message
-				last_displayed_comment = -1;
 			}
 		}
 		for(var i=0; i<comments.length; i++) {			
-			//var value = comments[i]['comment_sequence'];
+
 			
 			comment_number = comments[i]['comment_sequence'].toString();//cast it as string
-			//alert('for comment'+i+'/'+last_displayed_comment);
-			//Display all elements which have a display_time equal or smaller than the current time
-			if( ( comments[i]['display_time'] <= epoch_time) && ((i > last_displayed_comment)) ){
-				last_displayed_comment = i;
-				//alert('for comment if');
-				//alert(comment_number+' /'+comment_number.length);
-				if((comments.length-1) == last_displayed_comment) {pending_comment = false;}//zero based array
+
+				
 				// If its set to reset we load all comments at a time, else one comment at a time
-				//if(reset_page == true )
 				pad_w_zero = '';
 				
 				if(comment_number.length < 2)pad_w_zero = '0'; ///pad_w_zero
@@ -216,42 +179,32 @@ function load_comments(comments){
 				}
 				//$("#comments_board").scrollTop = $("#comments_board").scrollHeight;
 				$("#comments_board").attr({ scrollTop: $("#comments_board").attr("scrollHeight") });
-			}
+			
 		}
 		if(comments.length > 0 && reset_comment == true)  reset_comment = false;
 	}
-	if(pending_comment == true) setTimeout(function (){load_comments(comments);},1000);
+	
 }
 
 
 function epoch_timer(){
 
 	epoch_time = epoch_time+1;
-	
 	//Now lets check if we are reaching the time to change to the next subject
 	//If so, then set a timer and disable the comments textarea
-
 	tick_timer=window.setTimeout("epoch_timer()",1000);
 }
 
 
-
 function get_Contents(callback){
-	//alert('etro');
-	if(request_count == 0) {
-		reset_fetching();
-		
-	}
-	
+
+
 	var d = new Date();
 	ajax_request(
 		baseUrl+"/subject/fetch",
-		"comment_number="+last_comment_number+"&subject_id_2="+cache_div_id+"&time="+d.getTime(),
+		"comment_number="+last_comment_number+"&subject_id="+current_id+"&time="+d.getTime(),
 		function(){},
 		function(json){
-			//If there are 2 new subs it means this is the first request or the client lost connection
-			//So, lets reset everything
-			if(json.new_sub == 2) reset_fetching();
 			
 			if(epoch_time < json.current_time){
 				epoch_time = json.current_time;//Update the epoch_time whenever the client time has get delayed
@@ -264,12 +217,15 @@ function get_Contents(callback){
 				}
 			}
 			
-			if(request_count == 0) { epoch_timer(); }
+			if(time_remaining != json.time_remaining){
+				time_remaining = json.time_remaining;
+			}
+			
+			if(request_count == 0) { epoch_timer(); countdown(); }
 			if(json.new_sub != 0 || json.new_comment != 0 ){
-				//alert('si');
 				
 				if(json.new_sub != 0) {
-					pending_sub=true;
+					reset_comments();//every time sub changes, comments must be cleared
 					display_elements(json);
 				}
 				if(json.new_comment != 0){
@@ -279,7 +235,6 @@ function get_Contents(callback){
 				}
 				
 			}
-			
 			
 			if(callback != undefined) callback();
 			request_count++;//we need to place it inside the ajax callback, as placing it somewhere might indicate be reay the request

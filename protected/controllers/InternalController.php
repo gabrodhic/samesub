@@ -91,7 +91,7 @@ class InternalController extends Controller
 	
 	/**
 	 * This is a cron that sets the next subject to be showed 
-	 * and the next subject to be cached(subject_id_1 and subject_id_2)
+	 * and the next subject to be cached(subject_id and subject_id_2)
 	 * 
 	 */
 	public function actionSetNextSubject()
@@ -101,48 +101,58 @@ class InternalController extends Controller
 		$command =Yii::app()->db->createCommand();
 		//If the table its empty by any reason(initial import), insert something to make the UPDATE work
 		if(! $command->select('count(*) as num')->from('live_subject')->queryScalar()){
-			 $command->insert('live_subject', array('subject_id_1'=>0,'subject_id_2'=>0));
+			 $command->insert('live_subject', array('subject_id'=>0,'subject_id_2'=>0));
 		}
-
- 		//Find authorized subjects that hasn't been shown
-		$un_shown_subject =  Yii::app()->db->createCommand()
-		->select('*')
-		->from('subject')
-		->where('approved=:approved AND authorized=:authorized AND show_time=:show_time AND disabled=0 AND deleted=0',
-		array(':approved'=>1,':authorized'=>1,':show_time'=>0))
-		->order('priority_id DESC , time_submitted ASC')
-		->queryRow(); //print_r($un_shown_subjects);
-		//Subject::model()->findAll(
-		//array( 	'condition'=>'approved=:approved AND authorized=:authorized AND show_time=:show_time',
-			//	'params'=>array(':approved'=>1,':authorized'=>1,':show_time'=>0),
-				//'order'=>'id,priority_id DESC'
-			//));
 		
+		//Position all subs on its time
+		Subject::reschedule_positions();
+		$round_utc_time = SiteLibrary::utc_time_interval();
+		/*
+		$timed_subs = Subject::model()->findAll(array('condition'=>'position=0 AND approved=1 AND authorized=1 AND disabled=0 AND deleted=0', 'order'=>'priority_id DESC , time_submitted ASC'));
+		
+		$position = $round_utc_time;// + (Yii::app()->params['subject_interval'] * 60);
+		foreach($timed_subs as $timed_sub){
+			if(! $timed_sub->user_position){
+				//User did not set its position, so we set it
+				do{
+					
+					if($occupied_pos = Subject::model()->find('position = '.$position)) {
+						$position = $position + (Yii::app()->params['subject_interval'] * 60);
+						continue;
+					}
+					break;
+				} while (true);
+				Subject::model()->updateByPk($timed_sub->id, array('position'=>( $position )));
+			}else{
+				//User did set its position, so set his position if possible
+				$user_position = $timed_sub->user_position;
+				do{
+					if($occupied_pos = Subject::model()->find('position = '.$user_position)){
+						//If its occupied by a sub with a position explicitly set then find another position
+						if($occupied_pos->user_position or $occupied_pos->manager_position){
+							$user_position = $user_position + (Yii::app()->params['subject_interval'] * 60);
+							continue;
+						}else{
+							//otherwise override the position(bellow outside this loop, notice no CONTINUE here)
+							//But first move forward occupied position
+							Subject::model()->move_position_forward($occupied_pos->id);
 
-		if(! $un_shown_subject){
-			echo 'No un shown subjects.<br>';
+						}
+					}
+					break;
+				} while (true);
+				Subject::model()->updateByPk($timed_sub->id, array('position'=>( $user_position )));
 			
-			$live_subject = Yii::app()->db->createCommand()->select('*')->from('live_subject')->queryRow();
-			$shown_subject =  Yii::app()->db->createCommand()->select('*')->from('subject')
-			->where('id<>:id1 AND id<>:id2 AND show_time>:show_time AND authorized=:authorized AND disabled=0  AND deleted=0', 
-			array(':id1'=>$live_subject['subject_id_1'], ':id2'=>$live_subject['subject_id_2'],':show_time'=>0, 'authorized'=>1))
-			->order('show_time ASC')
-			->queryRow();//we take the first, thats the oldest one that has been shown
-//			Subject::model()->findAll(
-//				array( 	'condition'=>array('AND','id<>:id1','id<>:id2','show_time>:show_time'),
-//				'params'=>array(':id1'=>$live_subject->subject_id_1,':id2'=>$live_subject->subject_id_2,':show_time'=>0),
-//				'order'=>'id ASC'
-//			));			
-			print_r($shown_subject);
-
-			$next_subject_id_2 = $shown_subject['id'];
-
-		}else{
-			echo 'Yes unshown subjects.<br>';
-			$next_subject_id_2 = $un_shown_subject['id'];
+			}
 		}
-
-
+		*/
+		
+		//Remote case: This update is just in case cron didn't run in x times of interva(s)
+		//This frees up subs that never were used because they were fixed position but cron failed to run and time passed by
+		Subject::model()->updateAll(array('position'=>'0','user_position'=>'0','manager_position'=>'0'), 'position < '.$round_utc_time .' AND user_position < '.$round_utc_time.' AND manager_position < '.$round_utc_time);
+		
+		$next_subject_id_2 = Subject::model()->find(array('condition'=>'position >= '.$round_utc_time.' AND approved=1 AND authorized=1 AND disabled=0 AND deleted=0', 'order'=>'position ASC'))->id;
+		
 		
 		
 		$live_subject = Yii::app()->db->createCommand()->select('*')->from('live_subject')->queryRow();
@@ -154,12 +164,9 @@ class InternalController extends Controller
 			'comment_sequence'=>0,
 			));
 		
-			$command->update('live_subject', array(
-			'subject_id_1'=>$live_subject['subject_id_2'],
-			'subject_id_2'=>$next_subject_id_2,
-			));
+
 			//TEMPORAL:Refill the live_comments table with old comments about this subject if this subject is repeated
-			$past_comments = Yii::app()->db->createCommand()->select('code,time,comment,sequence,username')->from('comment t1')->where('subject_id ='.$live_subject['subject_id_2'])
+			$past_comments = Yii::app()->db->createCommand()->select('code,time,comment,sequence,username')->from('comment t1')->where('subject_id ='.$next_subject_id_2)
 			->leftJoin('country t2', 'country_id=t2.id')
 			->leftJoin('user t3', 'user_id=t3.id')->order('time ASC')->queryAll();
 			echo "<br>gggg";print_r($past_comments);
@@ -167,14 +174,18 @@ class InternalController extends Controller
 			foreach($past_comments as $past_comment){
 				$i++;
 				$country_code = ($past_comment['code']) ? $past_comment['code'] : "WW";
-				$command->insert('live_comment',array('username'=>$past_comment['username'],'subject_id'=>$live_subject['subject_id_2'], 'comment_country'=>$country_code,'comment_time'=>$past_comment['time'],'comment_text'=>$past_comment['comment'],'comment_sequence'=>$i));//we neet to use our own sequence because there might be repeated numbers
+				$command->insert('live_comment',array('username'=>$past_comment['username'],'subject_id'=>$next_subject_id_2, 'comment_country'=>$country_code,'comment_time'=>$past_comment['time'],'comment_text'=>$past_comment['comment'],'comment_sequence'=>$i));//we neet to use our own sequence because there might be repeated numbers
 			}
 			if($i > 0)$command->update('live_subject', array('last_comment_number'=>Yii::app()->db->getLastInsertID(),'comment_sequence'=>$i,));
+			$command->update('live_subject', array(
+			'subject_id'=>$next_subject_id_2,
+			'scheduled_time'=>SiteLibrary::utc_time_interval(),
+			));
 			
 			
 		
 		
-		Subject::model()->updateByPk($next_subject_id_2, array('show_time'=>SiteLibrary::utc_time()));
+		Subject::model()->updateByPk($next_subject_id_2, array('show_time'=>SiteLibrary::utc_time(),'user_position'=>0,'manager_position'=>0));
 		
 		//Notify subject owner via email that his subject its gonna get LIVE
 		$subject = Subject::model()->findByPk($next_subject_id_2);

@@ -61,7 +61,7 @@ class Notification extends CActiveRecord
 			$live_subject = Yii::app()->db->createCommand()->select('*')->from('live_subject')->queryRow();
 			$subject_data =  Yii::app()->db->createCommand()->select('*')->from('subject')
 				->where('id=:id', 
-				array(':id'=>$live_subject['subject_id_1']))
+				array(':id'=>$live_subject['subject_id']))
 				->queryRow();
 			if($subject_data) $information->live = $subject_data['title'];
 		}

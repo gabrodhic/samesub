@@ -1,4 +1,5 @@
 epoch_time = 0;
+next_fetch = 0;
 function epoch_timer(){
 
 	epoch_time = epoch_time+1;
@@ -32,7 +33,7 @@ function get_Contents(callback){
 
 			}
 			
-			$('#header_top_frame').contents().find('body').html('<?php echo Yii::t('site','LIVE NOW: {1}',array('{1}'=>'<a target="_top" style="color: #046381;" href="'.Yii::app()->createUrl('site/index').'">\' + json.title_1 + \'</a>'));?>');
+			$('#header_top_frame').contents().find('body').html('<?php echo Yii::t('site','LIVE NOW: {1}',array('{1}'=>'<a target="_top" style="color: #046381;" href="'.Yii::app()->createUrl('site/index').'">\' + json.title + \'</a>'));?>');
 			if(callback === undefined) {
 				setTimeout(function (){$("#header_top_frame").contents().find('body, body a').css("color", "white");},500);
 				setTimeout(function (){$("#header_top_frame").contents().find('body, body a').css("color", "");},1000);
@@ -43,11 +44,16 @@ function get_Contents(callback){
 				$('#header_top_frame').contents().find('body').attr('style','margin:3px 1px 1px 1px; border:0px;padding:0px;text-align:right; font: bold 13px Trebuchet MS, Arial, Helvetica, sans-serif; color: #686868;');
 			}
 			
-			next_fetch = (json.display_time_2 - epoch_time);
+			next_fetch = json.time_remaining + 5;//let's give an extra 5 seconds in case of robot delay to prevent 2 requests
 			if(next_fetch < 0) next_fetch = 10;//If by any reason cron was not executed before time, then do next fetch in 10 seconds
 			next_fetch = next_fetch + '000';
 			var aa = setTimeout("get_Contents()", next_fetch);//(add the javascript milliseconds) Everythig loaded ok, lets make a new request to watch for new changes
 			
+			//Update all contents in different pages on the site that need this notification change
+			//ie:
+			if(typeof window.refresh_timeboard == 'function') {
+				refresh_timeboard();
+			}
 		},
 		function(){
 
