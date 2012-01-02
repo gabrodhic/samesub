@@ -38,20 +38,26 @@ class SiteHelper extends CHtml
 				if(SiteLibrary::valid_url($subject->content_video->embed_code)){//if its an url
 					$parsed_url = parse_url($subject->content_video->embed_code);
 					$query_arr = SiteLibrary::parse_url_query($parsed_url['query']);
-					if(stripos($parsed_url['host'], 'youtube.com')){//and its from youtube
+					if(stristr($parsed_url['host'], 'youtube.com')){//and its from youtube
+					
 						//get the V value $parsed_url['query'];						
 						if (array_key_exists('v', $query_arr)) {
 							//set ?wmode=opaque because so that the the #header_top div does not get bellow the movie
 							//http://stackoverflow.com/questions/3820325/overlay-opaque-div-over-youtube-iframe
-							$html = '<iframe width="425" height="349" src="http://www.youtube.com/embed/'.$query_arr['v'].'?wmode=opaque" frameborder="0" allowfullscreen></iframe>';
+							$time = ($query_arr['t']) ? '#at='.$query_arr['t'] : '';//#at=** is the correct syntax for embed url, ie clic on the youtube logo while wathching a video on X seconds: it will open a new window with that param
+							$html = '<iframe width="425" height="349" src="http://www.youtube.com/embed/'.$query_arr['v'].'?wmode=opaque'.$time.'" frameborder="0" allowfullscreen></iframe>';
 						}
-					}elseif(stripos($parsed_url['host'], 'dailymotion.com')){
+					}elseif(stristr($parsed_url['host'],'youtu.be')){//and its from youtube shortly
+						$time = ($query_arr['t']) ? '#at='.$query_arr['t'] : ''; //#at=** is the correct syntax for embed url, ie clic on the youtube logo while wathching a video on X seconds: it will open a new window with that param
+						
+						$html = '<iframe width="425" height="349" src="http://www.youtube.com/embed/'.$parsed_url['path'].'?wmode=opaque'.$time.'" frameborder="0" allowfullscreen></iframe>';
+					}elseif(stristr($parsed_url['host'],'dailymotion.com')){
 						//the code is before the first undersore for the video source(pending verify if thats the syntax for all cases)
 						if($last_code_pos = stripos($parsed_url['path'], '_')){
 							$video_code = substr($parsed_url['path'],1, $last_code_pos-1);
 							if($video_code)	$html = '<iframe frameborder="0" width="480" height="360" src="http://www.dailymotion.com/embed/'.$video_code.'"></iframe>'; //$video_code already contains: /videdo/
 						}
-					}elseif(stripos($parsed_url['host'], 'vimeo.com')){
+					}elseif(stristr($parsed_url['host'],'vimeo.com')){
 						if($parsed_url['path'])
 						//nice, we can play with params here, title, portrait, etc
 						$html = '<iframe src="http://player.vimeo.com/video'.$parsed_url['path'].'?title=0&byline=0&portrait=0" width="400" height="225" frameborder="0"></iframe>';
@@ -59,7 +65,8 @@ class SiteHelper extends CHtml
 				}else{
 					$html = SiteHelper::formatted($subject->content_video->embed_code);
 				}
-				//Get the iframe source url and set the image url for ogtags				
+				//Get the iframe source url and set the image url for ogtags
+				//Also set opaque property for youtube videos
 				//src="...."    second match (((?!").)*) searches for any string NOT containing " as that is our delimitter used in third match
 				$pattern = '/(src=")(((?!").)*)(")/i'; 
 				preg_match($pattern, $html, $matches);//position 0 is the full match
@@ -69,14 +76,21 @@ class SiteHelper extends CHtml
 					$parsed_url = parse_url($arr_content['url']);
 					$query_arr = SiteLibrary::parse_url_query($parsed_url['query']);
 					if(stripos($parsed_url['host'], 'youtube.com')){
-						$pattern =  strpos($arr_content['url'], '?') ? '/(embed\/)(.+)(\?)/i' : '/(embed\/)(.+)$/i'; //the url can have extra params (a ? mark to pass extra params to the video)
-						preg_match($pattern, $arr_content['url'], $matches);//position 0 is the full match
+						$pattern2 =  strpos($arr_content['url'], '?') ? '/(embed\/)(.+)(\?)/i' : '/(embed\/)(.+)$/i'; //the url can have extra params (a ? mark to pass extra params to the video)
+						preg_match($pattern2, $arr_content['url'], $matches);//position 0 is the full match
 						$arr_content['code'] = $matches[2];
 						$arr_content['image'] = 'http://img.youtube.com/vi/'.$arr_content['code'].'/default.jpg';
+						
+						//Intercept the content html iframe url of youtube videos and set opaque property if not set
+						if(! strpos($arr_content['url'], 'wmode=opaque')){
+							$opaque_mode = strpos($arr_content['url'], '?') ? '&wmode=opaque' : '?wmode=opaque'; 
+							$html = preg_replace('/(.*)(src=")(((?!").)*)(")(.*)/i', '${1}$2'.$arr_content['url'].$opaque_mode.'$5$6', $html);
+						}
 					}
 						//TODO: get schema for images in other providers
 					
 				}
+				
 				
 				
 				//intercept the content html and resize any width or height depending on current theme
