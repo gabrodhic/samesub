@@ -46,7 +46,7 @@ $('.search-form form').submit(function(){
 		array(
             'name'=>'user_id',
 			'type'=>'html',
-            'value'=>'CHtml::link(User::model()->findByPk($data->user_id)->username,Yii::app()->getRequest()->getBaseUrl(true)."/mysub/".User::model()->findByPk($data->user_id)->username)',
+            'value'=>'CHtml::link($data->user->username,Yii::app()->getRequest()->getBaseUrl(true)."/mysub/".$data->user->username)',
 			'filter'=>CHtml::textField('Subject[username]',$model->username),
 			'headerHtmlOptions'=>array('width'=>'90px'),
 			'sortable'=>true,

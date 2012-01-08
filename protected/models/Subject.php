@@ -92,7 +92,7 @@ class Subject extends CActiveRecord
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
 			array('id, user_id, user_ip, user_comment, title, urn, content_type_id, approved, authorized, disabled, deleted, content_id, country_id, moderator_id, moderator_ip, moderator_comment, time_submitted, time_moderated, priority_id, show_time,position', 'safe', 'on'=>'manage'),
-			array('username, title, urn, tag, content_type_id, country_id, time_submitted, priority_id, show_time', 'safe', 'on'=>'history'),
+			array('username, title, deleted, urn, tag, content_type_id, country_id, time_submitted, priority_id, show_time', 'safe', 'on'=>'history'),
 		);
 	}
 	
@@ -639,6 +639,7 @@ class Subject extends CActiveRecord
 		return array(
 			'comments' => array(self::HAS_MANY, 'Comment', 'subject_id', 'order'=>'comments.id DESC'),
 			'country'=>array(self::BELONGS_TO, 'Country', 'country_id'),
+			'user'=>array(self::BELONGS_TO, 'User', 'user_id'),
 			'user_country'=>array(self::BELONGS_TO, 'Country', 'user_country_id'),
 			'priority_type'=>array(self::BELONGS_TO, 'Priority', 'priority_id'),
 			'content_type'=>array(self::BELONGS_TO, 'ContentType', 'content_type_id'),
@@ -702,6 +703,11 @@ class Subject extends CActiveRecord
 		$criteria->compare('user_ip',$this->user_ip,true);
 		$criteria->compare('user_comment',$this->user_comment,true);
 		$criteria->compare('title',$this->title,true);
+		//3 Things to take note in the following line here:
+		//Notice $this->title: we can just have just one field in the griddview. 
+		//Notice also OR, thats to not force this condition. 
+		//Notice  that 'tag' compare condition its immediately after the former 'title' compare condition. So that the OR its between them and not other fields
+		$criteria->compare('tag',$this->title,true,'OR');
 		$criteria->compare('urn',$this->urn,true);
 		$criteria->compare('content_type_id',$this->content_type_id);
 		$criteria->compare('priority_id',$this->priority_id);
@@ -719,11 +725,11 @@ class Subject extends CActiveRecord
 		//Disabled, Not needed anynmore, as we better use filter in view files
 		//$criteria->compare('priority_type.name',$this->priority_id, true);//Notice the relational name and not the table name, also notice that this has the user input value
 		$criteria->compare('show_time',$this->show_time);
-		$criteria->compare('tag',$this->title,true,'OR');//notice $this->title: we can just have just one field in the griddview. Notice OR, thats to not force this condition
+		
 		$criteria->compare('category',$this->category, true);
 		$criteria->compare('position',$this->position);
-		
-		//$criteria->with=array('country','priority_type','content_type');//Disabled, Not needed anynmore, as we better use filter in view files
+
+		$criteria->with=array('user','country','priority_type','content_type');//Disabled, Not needed anynmore, as we better use filter in view files
 
 		return new CActiveDataProvider(get_class($this), array(
 			'criteria'=>$criteria,

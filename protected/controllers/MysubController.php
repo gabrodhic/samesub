@@ -95,11 +95,6 @@ class MysubController extends Controller
 		$this->model->unsetAttributes();  // clear any default values
 		$this->model->user_id = $model2->id;
 		$this->model->deleted = "=:0";
-		$live_subject = Yii::app()->db->createCommand()
-			->select('*')
-			->from('live_subject')
-			->queryRow();
-		$this->model->id = "<>".$live_subject['subject_id_2'];//Do not display the cached subject(the next subject that its gonna be showed)
 		$this->render('index',array('username'=>$username,'model'=>$this->model));
 		
 	}

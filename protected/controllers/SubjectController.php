@@ -59,14 +59,16 @@ class SubjectController extends Controller
 	 */
 	public function actionGettags($tag='')
 	{
-	$text = $tag;
-	$tags = Subject::getTags($tag);
-		 foreach ($tags as $tag) {
-	        if (stripos($tag, $text) === 0) {
-	            $match[] = $tag;
-	        }
+		$text = $tag;
+		$tags = Subject::getTags($tag);
+		if ($tags){
+			 foreach ($tags as $tag) {
+				if (stripos($tag, $text) === 0) {
+					$match[] = $tag;
+				}
+			}
+			echo json_encode($match);
 		}
-		echo json_encode($match);
 	}
 	/**
 	 * Displays a particular model.
@@ -79,8 +81,9 @@ class SubjectController extends Controller
 			$this->model = Subject::model()->find('urn=:urn AND deleted=0', array(':urn'=>$id));
 			if($this->model) $id = $this->model->id;
 			
+		}else{
+			$this->model=$this->loadModel($id);
 		}
-		$this->model=$this->loadModel($id);
 		if(!(Yii::app()->session['subject_view'])) Yii::app()->session['subject_view'] = array('1'=>1); //just in case start it with something
 		if(! in_array($this->model->id, Yii::app()->session['subject_view'])){
 			//buggy we need to reasign a new array as we can not modify an array on the fly in a session var
@@ -392,7 +395,7 @@ www.samesub.com");
 				$this->model->attributes=$_GET['Subject'];
 		
 		$this->model->show_time = ">:0";
-		$this->model->deleted = "=:0";
+		$this->model->deleted = 0;
 		$live_subject = Yii::app()->db->createCommand()
 			->select('*')
 			->from('live_subject')

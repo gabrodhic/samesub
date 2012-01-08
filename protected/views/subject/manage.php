@@ -58,7 +58,7 @@ or <b>=</b>) at the beginning of each of your search values to specify how the c
 		array(
             'name'=>'user_id',
    			'type'=>'html',
-            'value'=>'CHtml::link(User::model()->findByPk($data->user_id)->username,Yii::app()->getRequest()->getBaseUrl(true)."/mysub/".User::model()->findByPk($data->user_id)->username)',
+            'value'=>'CHtml::link($data->user->username,Yii::app()->getRequest()->getBaseUrl(true)."/mysub/".$data->user->username)',
 			'filter'=>'',
 			'headerHtmlOptions'=>array('width'=>'25px'),
 			'sortable'=>true,
