@@ -59,15 +59,9 @@ class SubjectController extends Controller
 	 */
 	public function actionGettags($tag='')
 	{
-		$text = $tag;
 		$tags = Subject::getTags($tag);
 		if ($tags){
-			 foreach ($tags as $tag) {
-				if (stripos($tag, $text) === 0) {
-					$match[] = $tag;
-				}
-			}
-			echo json_encode($match);
+			echo json_encode($tags);
 		}
 	}
 	/**
@@ -124,11 +118,7 @@ class SubjectController extends Controller
 		if(isset($_POST['Subject']))
 		{
 			$this->model->attributes=$_POST['Subject'];
-			// Assign the user_id 1 if is a guest
-			$this->model->user_id=(Yii::app()->user->id) ? Yii::app()->user->id : 1;
-			$this->model->deleted = (Yii::app()->user->isGuest) ? 1 : 0;//Hide the subject by default if its a guest
-			$this->model->time_submitted = SiteLibrary::utc_time();
-			$this->model->user_ip = $_SERVER['REMOTE_ADDR'];
+
 			$this->model->user_country_id = $country_id;
 			
 			if($this->model->save()){
@@ -347,16 +337,16 @@ www.samesub.com");
 	 * This action returns data about a subject in an encoded format for data interchange(JSON,XML,etc.)
 	 * It can be used for API implementation.
 	 */
-	public function actionFetch($subject_id=0,$comment_number=0)
+	public function actionFetch($subject_id=0,$comment_id=0)
 	{
 		//in case params are sent via POST
 		if(isset($_POST['subject_id'])) $subject_id = $_POST['subject_id'];
-		if(isset($_POST['comment_number'])) $comment_number = $_POST['comment_number'];
+		if(isset($_POST['comment_id'])) $comment_id = $_POST['comment_id'];
 		//PHP casts any string to 0. so its ok. We need to cast in case we receive a string.
 		$subject_id =  (int)$subject_id;
-		$comment_number = (int)$comment_number;
+		$comment_id = (int)$comment_id;
 		$data = NULL;
-		$data = Subject::getLiveData($subject_id,$comment_number,false);
+		$data = Subject::getLiveData($subject_id,$comment_id,false);
 		if($data['new_sub'] == 0) $this->no_log = true;//This is just to control the logging functionality(client dont receive this info)
 		
 		

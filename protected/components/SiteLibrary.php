@@ -194,4 +194,99 @@ class SiteLibrary extends CComponent
 	
 	
 	}
+	
+	/*
+	 * Converts an array to xml. Useful for API responses ie instead of JSON encoded responses(natively supported in PHP).
+	 */
+	function array2xml($array, $xml = false){
+			if($xml === false){
+				$xml = new SimpleXMLElement('<root/>');
+			}
+			foreach($array as $key => $value){
+				if(is_array($value)){
+					if(is_numeric($key)) $key = "item";//xml syntax does not allow a tag name to be a number, so rename it for the word "item"
+					self::array2xml($value, $xml->addChild($key));
+				}else{
+					$value = str_replace("&amp;", "&", $value);//In case by some reason the string its already escaped
+					$value = str_replace("&", "&amp;", $value);//XML does not allow an ampersand symbol naked, must be escaped
+					if(is_numeric($key)) $key = "item";//xml syntax does not allow a tag name to be a number, so rename it for the word "item"
+					$xml->addChild($key, $value);
+				}
+			}
+			return $xml->asXML();
+	}
+	
+	/*
+	 * Converts an existing image to the desired dimension. If the image has already been created it returns that image.
+	 * @param string $filename the file name
+	 * @param string $path the path of the file
+	 * @param int $width the width
+	 * @param int $height the height
+	 * @param bool $keepratio if keeping the ratio is desireable
+	 * @param bool $keepmaxresolution if image should be resized without ever exceeding the maximum available original image resolution(width x height)
+	 * @return mixed file name of the new image on success, false on error.
+	 */
+	function get_image_resized($filename, $path, $width, $height, $keepratio=true, $keepmaxresolution=true ){
+		
+		//First check that the file exists( created by a previous invocation), if so return it
+		if(! $image_size = getimagesize($path.DIRECTORY_SEPARATOR.$filename)) return false;
+		if(!$width) $width = $height;//if width isn't set, then set it as height
+		if(!$height) $height = $width;//if height isn't set, then set it as width
+		$new_width = $width;
+		$new_height = $height;
+		
+
+		//Try to find an original file with larger size if possible and desiareable for the ocation
+		if( ($width > 980 or $height > 750) and  (! strstr($filename, 'org')) ){//Don't use strpos() as first position is 0, so will evaluate as false
+			if( $image_size2 = getimagesize($path.DIRECTORY_SEPARATOR.'org_'.$filename)) { //if the file exists
+				$image_size = $image_size2;
+				$filename = 'org_'.$filename;
+			}
+		}
+
+			
+		//TODO:When keep max resolution is false we need to do some work on the naming,
+		//as EUploadedImage there is not available solution for grater than original size
+		$keepmaxresolution=true;
+		if($keepmaxresolution and $keepratio){
+			if($width > $image_size[0])	$new_width = $image_size[0];
+			if($height > $image_size[1]) $new_height = $image_size[1]; 
+		}
+		
+		
+		if($keepratio) {
+			if ($image_size[0] > $width) {
+				$new_width = $width;
+				$new_height =  floor (($width * $image_size[1] / $image_size[0]));
+				$image_size[1] = (($width * $image_size[1] / $image_size[0]));//notice whiout floor. Also this. EUploadedImage:resizeImage, does this too, so we need to do it also.
+				
+			}
+			if ($image_size[1] > $height) {
+				$new_width =  floor(($height * $new_width / $image_size[1]));
+				$new_height = $height;
+				
+			}
+		}
+
+		$split_name = explode(".", $filename);
+		$new_name = str_replace('org_','',$split_name[0])."_".$new_width."x".$new_height.".".$split_name[1];//in case org,Set the name back, we dont want 'org_' prefix in the new image names
+
+		if(file_exists($path.DIRECTORY_SEPARATOR.$new_name))
+			return $new_name;
+
+		
+		Yii::import('ext.EUploadedImage'); 
+		$newimage = new EUploadedImage("some.img",addslashes($path.DIRECTORY_SEPARATOR.$filename),$image_size['mime'],123,0);//_size doesnt matters just a number, _error = 0 for UPLOAD_ERR_OK pass ok
+		$newimage->keepratio = $keepratio;
+		$newimage->maxWidth = $width;
+		$newimage->maxHeight = $height;
+
+		if($newimage->saveAs(addslashes($path.DIRECTORY_SEPARATOR.$new_name),true))
+			return $new_name;
+		else
+			return false;
+			
+		
+	}
+	
 }

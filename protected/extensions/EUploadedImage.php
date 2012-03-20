@@ -37,11 +37,11 @@ class EUploadedImage extends CComponent
 	/**
 	 * @var int rappresent the image current width
 	 */
-	private $_width;
+	public $_width;
 	/**
 	 * @var int rappresent the image current height
 	 */
-	private $_height;
+	public $_height;
 	
 	/**
 	 * @var string default thumbnails prefix
@@ -179,7 +179,7 @@ class EUploadedImage extends CComponent
 	 * @param integer $size the actual size of the uploaded file in bytes
 	 * @param integer $error the error code
 	 */
-	protected function __construct($name,$tempName,$type,$size,$error)
+	public function __construct($name,$tempName,$type,$size,$error)
 	{
 		$this->_name=$name;
 		$this->_tempName=$tempName;
@@ -226,8 +226,16 @@ class EUploadedImage extends CComponent
 	 * @param string $file the file path used to save the uploaded image
 	 * @return boolean true whether the image is saved successfully
 	 */
-	public function saveAs($file)
+	public function saveAs($file,$saved_file=false)
 	{
+		if($saved_file == true){
+			$this->imagePrepare($this->maxWidth, $this->maxHeight,$this->keepratio);
+			if ($this->saveImage($file)) 
+				return true;
+			else
+				return false;
+				
+		}
 		if($this->_error==UPLOAD_ERR_OK)
 		{
 			

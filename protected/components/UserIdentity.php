@@ -17,7 +17,9 @@ class UserIdentity extends CUserIdentity
 	 */
 	public function authenticate()
 	{
-		$user=User::model()->find('email=?',array(strtolower($this->username)));
+		//First try to find by email, if not found by username
+		if(! $user=User::model()->find('email=?',array(strtolower($this->username))))
+			$user=User::model()->find('username=?',array(strtolower($this->username)));
 		if($user===null)
 			$this->errorCode=self::ERROR_USERNAME_INVALID;
 		else if(!$user->validatePassword($this->password))

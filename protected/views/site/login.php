@@ -18,8 +18,8 @@ $this->breadcrumbs=array(
 
 		<div class="row">
 			<?php echo $form->labelEx($model,'email'); ?>
-			<?php echo $form->textField($model,'email',array('style'=>'width: 170px;')); ?>
-			<?php echo $form->error($model,'email'); ?>
+			<?php echo $form->textField($model,'username',array('style'=>'width: 170px;')); ?>
+			<?php echo $form->error($model,'username'); ?>
 		</div>
 
 		<div class="row">

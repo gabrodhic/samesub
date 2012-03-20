@@ -135,6 +135,13 @@ class Subject extends CActiveRecord
 			//also validatecontenttype
 		}
 		else{
+		
+			// Assign the user_id 1 if is a guest
+			$this->user_id=(Yii::app()->user->id) ? Yii::app()->user->id : 1;
+			$this->deleted = (Yii::app()->user->isGuest) ? 1 : 0;//Hide the subject by default if its a guest
+			$this->time_submitted = SiteLibrary::utc_time();
+			$this->user_ip = $_SERVER['REMOTE_ADDR'];
+			
 			//Assign subject hash(for guest users that want to register and own an added subject)
 			$this->hash = md5(uniqid(""));
 			//Generate the urn for this subject
@@ -157,7 +164,7 @@ class Subject extends CActiveRecord
 					}
 					//If there was an image in the post submitted, then save it in the disk and on its proper content table
 					$img_extension = ($this->image->getExtensionName()) ? $this->image->getExtensionName() : '';
-					$img_type = CFileHelper::getMimeType($this->image->getName());
+					$img_type = CFileHelper::getMimeType($this->image->getTempName());
 					$img_size = $this->image->getSize();
 					//The path should be changed as time passes so that directory isn't very full(ie:img/1, img/2...) 
 					$img_path = Yii::app()->params['img_path'];
@@ -312,14 +319,16 @@ class Subject extends CActiveRecord
     {
 		if(! $this->user_position_anydatetime) {
 			$utc_time  = SiteLibrary::utc_time();
+			
+			if($this->user_position_ymd and $this->user_position_hour){//This is not a required field for the user
+				$this->user_position = strtotime($this->user_position_ymd ." ".$this->user_position_hour.":".(floor(((int)$this->user_position_minute)/Yii::app()->params['subject_interval']) * Yii::app()->params['subject_interval']).":00",$utc_time);
 
-			$this->user_position = strtotime($this->user_position_ymd ." ".$this->user_position_hour.":".$this->user_position_minute.":00",$utc_time);
-
-			if($this->user_position){
-				if( $this->user_position < SiteLibrary::utc_time_interval()  )
-					$this->addError('user_position',Yii::t('subject', 'Time must be greater than current time.'));
-			}else{
-				$this->addError('user_position',Yii::t('subject', 'Invalid date and times.'));
+				if($this->user_position){
+					if( $this->user_position < SiteLibrary::utc_time_interval()  )
+						$this->addError('user_position',Yii::t('subject', 'Time must be greater than current time.'));
+				}else{
+					$this->addError('user_position',Yii::t('subject', 'Invalid date and times.'));
+				}
 			}
 		}
 	}
@@ -343,7 +352,7 @@ class Subject extends CActiveRecord
 					if($this->image->getHasError()){ $this->addError('image',Yii::t('subject', 'Please select an image.'));break; }
 					if($this->image->getSize() > (1024 * 1024 * Yii::app()->params['max_image_size'])){  $this->addError('image',Yii::t('subject', 'Please select an image smaller than 7MB.'));break;}//MB
 					$types = array("image/jpg", "image/png", "image/gif", "image/jpeg");
-					if (! in_array(CFileHelper::getMimeType($this->image->getName()), $types)) $this->addError('image', Yii::t('subject', 'File type {filetype} not supported .Please select a valid image type.', array('{filetype}'=>CFileHelper::getMimeType($this->image->getName()))));
+					if (! in_array(CFileHelper::getMimeType($this->image->getTempName()), $types)) $this->addError('image', Yii::t('subject', 'File type {filetype} not supported .Please select a valid image type.', array('{filetype}'=>CFileHelper::getMimeType($this->image->getTempName()))));
 				}
 				break;
 			case 2:
@@ -368,7 +377,7 @@ class Subject extends CActiveRecord
 	 * 
 	 * 
 	 */
-	public function getLiveData($subject_id=0, $comment_number,$sleep=false)
+	public function getLiveData($subject_id=0, $comment_id, $width=0, $height=0, $keepratio=true)
     {
 		$arr_data = array();
 		$arr_comments = array();
@@ -379,59 +388,50 @@ class Subject extends CActiveRecord
 		->select('*')
 		->from('live_subject')
 		->queryRow();//returns an array, not an object
-
-		if($subject_id != $live_subject['subject_id']) $comment_number = 0;
 		
-		$live_comments = Yii::app()->db->createCommand()
-		->select('*')
-		->from('live_comment')
-		->where('comment_sequence > :comment_number AND subject_id = :subject_id', array(':comment_number'=>$comment_number, ':subject_id'=>$live_subject['subject_id']))
-		->order('comment_number ASC')
-		->queryAll();
-		
-		foreach ($live_comments as $live_comment){
-			$arr_data['new_comment']++;
-			$arr_comments[] = array('username'=>$live_comment['username'],
-			'display_time'=>($live_comment['comment_time']+Yii::app()->params['request_interval']),
-			'comment_text'=> CHtml::encode($live_comment['comment_text']), 'comment_sequence'=>$live_comment['comment_sequence'],
-			'comment_number'=>$live_comment['comment_number'],'comment_time'=>date("H:i:s",$live_comment['comment_time']),
-			'comment_country'=>$live_comment['comment_country']);
-		}
-		$arr_data['comments']= $arr_comments;
+		$arr_data['subject_id'] = $live_subject['subject_id'];
+		$arr_data['comment_id'] = $live_subject['comment_id'];
 		
 		//If the subject cached on client's device its the same that the live_subject table indicates to be cached...
 		if($subject_id <> $live_subject['subject_id']){
-		
-			
-				$subject_data = Subject::model()->findByPk($live_subject['subject_id']);
-				$arr_data['id'] = $subject_data->id;
-				$arr_data['urn'] = $subject_data->urn;
-				$arr_data['title'] = $subject_data->title;
-				$arr_data['content_type_id'] = $subject_data->content_type_id;
-				$arr_data['time_submitted'] = $subject_data->time_submitted;
-				$country = Country::model()->findByPk($subject_data->country_id);
-				$arr_data['country_code'] = ($country->code) ? $country->code : 'WW';
-				$arr_data['country_name'] = ($country->name) ? $country->name : 'WORLD';
-				$user = User::model()->findByPk($subject_data->user_id);
-				$arr_data['username'] = $user->username;
 
-				$arr_data['content_html'] = SiteHelper::subject_content($subject_data);
-				$arr_data['content_data'] = (array) Subject::subject_content($subject_data)->getAttributes();
-				$arr_data['user_comment'] = SiteHelper::formatted($subject_data->user_comment);
-				$arr_data['display_time'] = $subject_data->show_time;
-				$arr_data['scheduled_time'] = $subject_data->position;
-				if($subject_id != $live_subject['subject_id']){
-					$arr_data['new_sub']++;
-				}
+			$subject_data = Subject::model()->findByPk($live_subject['subject_id']);
+			$arr_data['title'] = $subject_data->title;
+			$arr_data['content_type_id'] = $subject_data->content_type_id;
+			$arr_data['content_type'] = strtolower($subject_data->content_type->name);
+			$arr_data['priority'] = strtolower($subject_data->priority_type->name);
+			$country = Country::model()->findByPk($subject_data->country_id);
+			$arr_data['country_code'] = ($country->code) ? $country->code : 'WW';
+			$arr_data['country_name'] = ($country->name) ? $country->name : 'WORLD';
+			$user = User::model()->findByPk($subject_data->user_id);
+			$arr_data['username'] = $user->username;
+
+			$arr_data['content_html'] = SiteHelper::subject_content($subject_data);
+			$arr_data['content_data'] = (array) Subject::subject_content($subject_data)->getAttributes();
+			if($arr_data['content_type'] == 'image'){
+				$img_name = $arr_data['content_data']['id'].".".$arr_data['content_data']['extension'];
+				$url_base = Yii::app()->getRequest()->getBaseUrl(true).'/'.$arr_data['content_data']['path'].'/';				
+				if($width or $height){
+					$new_img_name = SiteLibrary::get_image_resized($img_name
+					,Yii::app()->params['webdir'].DIRECTORY_SEPARATOR.$arr_data['content_data']['path'], $width,$height,$keepratio);
+					if($new_img_name)
+						$arr_data['content_data']['image_url'] = $url_base.$new_img_name;
+					else
+						$arr_data['content_data']['image_url'] =  $url_base.$img_name;
+				}else{
+					$arr_data['content_data']['image_url'] = $url_base.$img_name;
+				}				
+			}
+			$arr_data['user_comment'] = SiteHelper::formatted($subject_data->user_comment);
+			$arr_data['time_submitted'] = $subject_data->time_submitted;
+			$arr_data['display_time'] = $subject_data->show_time;
+			$arr_data['scheduled_time'] = $subject_data->position;
+			if($subject_id != $live_subject['subject_id']){
+				$arr_data['new_sub']++;
+			}
 			
-			$arr_data['comment_update'] = 'no';
-			$arr_data['comment_sequence'] = $live_subject['comment_sequence'];
-			
-			
-			
-			
-			
-			
+			$arr_data['urn'] = $subject_data->urn;
+			$arr_data['permalink'] = Yii::app()->getRequest()->getBaseUrl(true)."/sub/".$subject_data->urn;
 			//Send the last two previous subjects
 			$last_subs = Yii::app()->db->createCommand()
 			->select('*')
@@ -445,9 +445,29 @@ class Subject extends CActiveRecord
 			$arr_data['last_sub_2_title'] = $last_subs[1]['title'];
 			$arr_data['last_sub_urn'] = $last_subs[0]['urn'];
 			$arr_data['last_sub_2_urn'] = $last_subs[1]['urn'];
-			
-			
+
 		}
+		
+		//Search comments
+		if($subject_id != $live_subject['subject_id']) $comment_id = 0;
+		$live_comments = Yii::app()->db->createCommand()
+		->select('*')
+		->from('live_comment')
+		->where('comment_id > :comment_id AND subject_id = :subject_id', array(':comment_id'=>$comment_id, ':subject_id'=>$live_subject['subject_id']))
+		->order('comment_id ASC')
+		->queryAll();
+		foreach ($live_comments as $live_comment){
+			$arr_data['new_comment']++;
+			$arr_data['comment_id'] = $live_comment['comment_id'];
+			$arr_comments[] = array('comment_id'=>$live_comment['comment_id'],
+			'username'=>$live_comment['username'],
+			'comment_text'=> CHtml::encode($live_comment['comment_text']), 'comment_number'=>$live_comment['comment_number'],
+			'comment_time'=>date("H:i:s",$live_comment['comment_time']),
+			'comment_country'=>$live_comment['comment_country']);
+		}
+		$arr_data['comments']= $arr_comments;
+		
+		//Set times
 		$utc_time = SiteLibrary::utc_time();
 		$arr_data['current_time'] = $utc_time;
 		$arr_data['current_time_h'] = date("H",$utc_time);
@@ -460,7 +480,7 @@ class Subject extends CActiveRecord
 	}
 	/**
 	 * Gets tag list of a category or tag
-	 * @param strin $text to search for in the table
+	 * @param string $text to search for in the table
 	 * @return Array with the tags
 	 */
 	public function getTags($text=''){
@@ -470,10 +490,32 @@ class Subject extends CActiveRecord
 		->where(array('like', 'name', '%'.$text.'%'))
 		->order('name DESC')
 		->queryAll();
-		foreach($tags as $tag)$arr_tags[] = $tag['name'];
+		foreach($tags as $tag){
+			if($text){
+				if (stripos($tag['name'], $text) === 0) {
+					$arr_tags[] = $tag['name'];
+				}
+			}else{
+				$arr_tags[] = $tag['name'];
+			}
+		}
 		return $arr_tags;
-		//echo json_encode(array('availableTags'=>$arr_tags));
+		
 	
+	}
+	
+	/**
+	 * Get the list of subject categories
+	 * @return Array with the tags
+	 */
+	public function getCategories(){
+		$categories = Yii::app()->db->createCommand()
+		->select('name')
+		->from('subject_category')
+		->order('name DESC')
+		->queryAll();
+		foreach($categories as $category) $arr_categories[] = $category['name'];
+		return $arr_categories;	
 	}
 
 	/**

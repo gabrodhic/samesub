@@ -355,7 +355,7 @@ www.samesub.com");
 					if($image->getSize() > (1024 * 1024 * Yii::app()->params['max_image_size'])){  $this->model->addError('image',Yii::t('user','Please select an image smaller than 7MB.'));
 					$error = true;}//MB
 					$types = array("image/jpg", "image/png", "image/gif", "image/jpeg");
-					if (! in_array(CFileHelper::getMimeType($image->getName()), $types)){ $this->model->addError('image',Yii::t('user','File type {filetype} not supported. Please select a valid image type.',array('{filetype}'=>CFileHelper::getMimeType($image->getName())))); $error = true;} 
+					if (! in_array(CFileHelper::getMimeType($image->getTempName()), $types)){ $this->model->addError('image',Yii::t('user','File type {filetype} not supported. Please select a valid image type.',array('{filetype}'=>CFileHelper::getMimeType($image->getTempName())))); $error = true;} 
 				}
 				if(! $error){
 					Yii::import('ext.EUploadedImage');

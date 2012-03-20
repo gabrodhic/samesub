@@ -107,45 +107,7 @@ class InternalController extends Controller
 		//Position all subs on its time
 		Subject::reschedule_positions();
 		$round_utc_time = SiteLibrary::utc_time_interval();
-		/*
-		$timed_subs = Subject::model()->findAll(array('condition'=>'position=0 AND approved=1 AND authorized=1 AND disabled=0 AND deleted=0', 'order'=>'priority_id DESC , time_submitted ASC'));
 		
-		$position = $round_utc_time;// + (Yii::app()->params['subject_interval'] * 60);
-		foreach($timed_subs as $timed_sub){
-			if(! $timed_sub->user_position){
-				//User did not set its position, so we set it
-				do{
-					
-					if($occupied_pos = Subject::model()->find('position = '.$position)) {
-						$position = $position + (Yii::app()->params['subject_interval'] * 60);
-						continue;
-					}
-					break;
-				} while (true);
-				Subject::model()->updateByPk($timed_sub->id, array('position'=>( $position )));
-			}else{
-				//User did set its position, so set his position if possible
-				$user_position = $timed_sub->user_position;
-				do{
-					if($occupied_pos = Subject::model()->find('position = '.$user_position)){
-						//If its occupied by a sub with a position explicitly set then find another position
-						if($occupied_pos->user_position or $occupied_pos->manager_position){
-							$user_position = $user_position + (Yii::app()->params['subject_interval'] * 60);
-							continue;
-						}else{
-							//otherwise override the position(bellow outside this loop, notice no CONTINUE here)
-							//But first move forward occupied position
-							Subject::model()->move_position_forward($occupied_pos->id);
-
-						}
-					}
-					break;
-				} while (true);
-				Subject::model()->updateByPk($timed_sub->id, array('position'=>( $user_position )));
-			
-			}
-		}
-		*/
 		
 		//Remote case: This update is just in case cron didn't run in x times of interva(s)
 		//This frees up subs that never were used because they were fixed position but cron failed to run and time passed by
@@ -153,20 +115,19 @@ class InternalController extends Controller
 		
 		$next_subject_id_2 = Subject::model()->find(array('condition'=>'position >= '.$round_utc_time.' AND approved=1 AND authorized=1 AND disabled=0 AND deleted=0', 'order'=>'position ASC'))->id;
 		
-		
-		
+
 		$live_subject = Yii::app()->db->createCommand()->select('*')->from('live_subject')->queryRow();
 		
 		
 			$command->delete('live_comment');
 			$command->update('live_subject', array(
-			'last_comment_number'=>0,
-			'comment_sequence'=>0,
+			'comment_id'=>0,
+			'comment_number'=>0,
 			));
 		
 
 			//TEMPORAL:Refill the live_comments table with old comments about this subject if this subject is repeated
-			$past_comments = Yii::app()->db->createCommand()->select('code,time,comment,sequence,username')->from('comment t1')->where('subject_id ='.$next_subject_id_2)
+			$past_comments = Yii::app()->db->createCommand()->select('t1.id,code,time,comment,comment_number,username')->from('comment t1')->where('subject_id ='.$next_subject_id_2)
 			->leftJoin('country t2', 'country_id=t2.id')
 			->leftJoin('user t3', 'user_id=t3.id')->order('time ASC')->queryAll();
 			echo "<br>gggg";print_r($past_comments);
@@ -174,9 +135,10 @@ class InternalController extends Controller
 			foreach($past_comments as $past_comment){
 				$i++;
 				$country_code = ($past_comment['code']) ? $past_comment['code'] : "WW";
-				$command->insert('live_comment',array('username'=>$past_comment['username'],'subject_id'=>$next_subject_id_2, 'comment_country'=>$country_code,'comment_time'=>$past_comment['time'],'comment_text'=>$past_comment['comment'],'comment_sequence'=>$i));//we neet to use our own sequence because there might be repeated numbers
+				$command->insert('live_comment',array('comment_id'=>$past_comment['id'],'username'=>$past_comment['username'],'subject_id'=>$next_subject_id_2, 'comment_country'=>$country_code,'comment_time'=>$past_comment['time'],'comment_text'=>$past_comment['comment'],'comment_number'=>$i));//we neet to use our own sequence because there might be repeated numbers
+				$comment_id = $past_comment['id'];
 			}
-			if($i > 0)$command->update('live_subject', array('last_comment_number'=>Yii::app()->db->getLastInsertID(),'comment_sequence'=>$i,));
+			if($i > 0)$command->update('live_subject', array('comment_id'=>$comment_id,'comment_number'=>$i,));
 			$command->update('live_subject', array(
 			'subject_id'=>$next_subject_id_2,
 			'scheduled_time'=>SiteLibrary::utc_time_interval(),

@@ -228,7 +228,6 @@ function display_elements(obj_json){
 
 
 	time_submitted = fromUnixTime(obj_json.time_submitted);
-	current_id = obj_json.id;//id
 	current_title = obj_json.title;//title
 	submit_info = '<?php echo Yii::t('site','by {username} at {time} UTC',array('{username}'=>'<a href="'.Yii::app()->getRequest()->getBaseUrl(true).'/mysub/\'+obj_json.username+\'">\' + obj_json.username + \'</a>','{time}'=>"'+time_submitted.getHours()+':'+time_submitted.getMinutes()+'"));?>';
 	share_html = '<?php echo SiteHelper::share_links("'+obj_json.urn+'","'+obj_json.title+'"); ?>';

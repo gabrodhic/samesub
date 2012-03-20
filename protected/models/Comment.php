@@ -72,27 +72,58 @@ class Comment extends CActiveRecord
 		$this->time = SiteLibrary::utc_time();
 		$this->user_id = Yii::app()->user->id;
 		
-		if($this->update_live){
-			$live_subject = Yii::app()->db->createCommand()->select('subject_id, (comment_sequence+1)as next_sequence')->from('live_subject')->queryRow();
-			//print_r($live_subject);return;
-			Yii::app()->db->createCommand()->insert('live_comment', array(
-			'comment_sequence'=>$live_subject['next_sequence'],
-			'subject_id'=>$live_subject['subject_id'],
-			'comment_text'=>$this->comment,
-			'comment_time'=>$this->time,
-			'comment_country'=>$country_code,
-			'username'=>(Yii::app()->user->isGuest)?'guest':Yii::app()->user->name,
-			));
-			Yii::app()->db->createCommand()->update('live_subject', array(
-			'last_comment_number'=>Yii::app()->db->getLastInsertID(),
-			'comment_sequence'=>$live_subject['next_sequence'],
-			));
 		
-			$this->sequence = $live_subject['next_sequence'];
-			$this->subject_id = $live_subject['subject_id'];
-		}
 	
 		return true;
+	}
+	
+	/**
+	 * Saves a comments in database and do subsequent related operations.
+	 */
+	public function save_comment($model)
+	{
+		$live_subject = Yii::app()->db->createCommand()->select('subject_id, (comment_number+1)as next_sequence')->from('live_subject')->queryRow();
+		$model->comment_number = $live_subject['next_sequence'];
+		$model->subject_id = $live_subject['subject_id'];
+		
+		if($model->save()){
+			if($model->update_live){
+				
+				Yii::app()->db->createCommand()->insert('live_comment', array(
+				'comment_id'=>$model->id,
+				'comment_number'=>$model->comment_number,
+				'subject_id'=>$model->subject_id,
+				'comment_text'=>$model->comment,
+				'comment_time'=>$model->time,
+				'comment_country'=>$model->country->code,
+				'username'=>(Yii::app()->user->isGuest)?'guest':Yii::app()->user->name,
+				));
+				Yii::app()->db->createCommand()->update('live_subject', array(
+				'comment_id'=>$model->id,
+				'comment_number'=>$model->comment_number,
+				));
+			}
+
+			$send_mail = true;
+			if(! Yii::app()->user->isGuest){
+				$user = User::model()->findByPk(Yii::app()->user->id); 
+				if($user->user_type_id > 2) $send_mail=false;//Dont notify managers themself
+				
+			}
+			$last_one = Comment::model()->find(array('limit'=>2, 'offset'=>1, 'order'=>'t.id DESC'));//offset is 0 based
+			if( SiteLibrary::utc_time() < ($last_one->time + 1500)) $send_mail = false;
+			if($send_mail){
+				$headers="From: Samesub Contact <".Yii::app()->params['contactEmail'].">\r\nReply-To: ".Yii::app()->params['contactEmail'];
+				$mail_message .= "User: ".Yii::app()->user->name."\n";
+				$mail_message .= "Comment: {$model->comment}\n";
+				$mail_message .= "Current time: ".date("Y/m/d H:i", SiteLibrary::utc_time())." UTC (time of this message)\n\n";
+				$mail_message .= "www.samesub.com";				
+				@mail("contact@samesub.com","Comment ".$model->id,$mail_message,$headers);
+			}
+			return true;
+		}else{
+			return false;
+		}
 	}
 	/**
 	 * @return array relational rules.

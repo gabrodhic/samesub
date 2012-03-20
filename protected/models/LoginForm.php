@@ -7,7 +7,7 @@
  */
 class LoginForm extends CFormModel
 {
-	public $email;
+	public $username;
 	public $password;
 	public $rememberMe;
 
@@ -15,15 +15,15 @@ class LoginForm extends CFormModel
 
 	/**
 	 * Declares the validation rules.
-	 * The rules state that email and password are required,
+	 * The rules state that username and password are required,
 	 * and password needs to be authenticated.
 	 */
 	public function rules()
 	{
 		return array(
-			// email and password are required
-			array('email, password', 'required'),
-			array('email', 'email'),
+			// username and password are required
+			array('username, password', 'required'),
+			//array('username', 'username'),
 			// rememberMe needs to be a boolean
 			array('rememberMe', 'boolean'),
 			// password needs to be authenticated
@@ -49,15 +49,15 @@ class LoginForm extends CFormModel
 	{
 		if(!$this->hasErrors())
 		{
-			$this->_identity=new UserIdentity($this->email,$this->password);
+			$this->_identity=new UserIdentity($this->username,$this->password);
 			if(!$this->_identity->authenticate())
-				$this->addError('password',Yii::t('site', 'Incorrect email or password.'));
+				$this->addError('password',Yii::t('site', 'Incorrect username or password.'));
 		}
 	}
 
 	/**
 	 * Logs in the user using the given username and password in the model.
-	 * Notice username instead of email: http://www.larryullman.com/2010/01/07/custom-authentication-using-the-yii-framework/
+	 * Notice username instead of username: http://www.larryullman.com/2010/01/07/custom-authentication-using-the-yii-framework/
 	 * @return boolean whether login is successful
 	 */
 	public function login()

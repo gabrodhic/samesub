@@ -37,7 +37,7 @@ if($total_comments == 0) echo "<h4>".Yii::t('subject','NO COMMENTS')."</h4>";
 foreach($comments as $comment): ?>
 <div class="comment" id="c<?php echo $comment->id; ?>">
 	<div class="time">
-		<?php echo '<span class="comment_number">'.str_pad($comment->sequence, 2, '0',STR_PAD_LEFT).'</span><span class="comment_country">'. $comment->country->code. '</span> '. date("Y/m/d H:i",$comment->time).' UTC '.
+		<?php echo '<span class="comment_number">'.str_pad($comment->comment_number, 2, '0',STR_PAD_LEFT).'</span><span class="comment_country">'. $comment->country->code. '</span> '. date("Y/m/d H:i",$comment->time).' UTC '.
 		CHtml::link($comment->user->username,array('mysub/'.$comment->user->username)); ?>
 	</div>
 

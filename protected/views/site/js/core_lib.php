@@ -23,13 +23,13 @@ var baseUrl = "<?php echo Yii::app()->getRequest()->getBaseUrl(true);?>";
 //Initialize all variables
 var request_count =0;
 var	comment_number = 0;
-var	last_comment_number = 0;
+var	comment_id = 0;
 var	last_displayed_comment = -1;//position in the iteration of comments
 var	epoch_time = 0;
 var	reset_comment = true;
 var pending_comment = false;
 var time_submitted;
-var	current_id = 0;
+var	subject_id = 0;
 var	current_title = '';
 var	current_info = '';
 var	time_remaining = 0;
@@ -130,7 +130,7 @@ function reset_comments(){
 	reset_comment=true;
 	$("#comments_board").html("<?php echo Yii::t('site','Waiting for comments');?>");
 	comment_number = 0;
-	last_comment_number = 0;	
+	comment_id = 0;	
 
 }
 
@@ -140,16 +140,15 @@ function load_comments(comments){
 		var new_line = "";
 		var style = "";
 
-		if(comments.length > 0){
-			last_comment_number = comments[(comments.length-1)]['comment_sequence'];//the last sequence
+		if(comments.length > 0){			
 			if(reset_comment == true) {
 				$("#comments_board").html("");//Clear the waiting for comments message
 			}
 		}
-		for(var i=0; i<comments.length; i++) {			
+		for(var i in comments) {			
 
 			
-			comment_number = comments[i]['comment_sequence'].toString();//cast it as string
+			comment_number = comments[i]['comment_number'].toString();//cast it as string
 
 				
 				// If its set to reset we load all comments at a time, else one comment at a time
@@ -202,7 +201,7 @@ function get_Contents(callback){
 	var d = new Date();
 	ajax_request(
 		baseUrl+"/subject/fetch",
-		"comment_number="+last_comment_number+"&subject_id="+current_id+"&time="+d.getTime(),
+		"comment_id="+comment_id+"&subject_id="+subject_id+"&time="+d.getTime(),
 		function(){},
 		function(json){
 			
@@ -224,11 +223,15 @@ function get_Contents(callback){
 			if(request_count == 0) { epoch_timer(); countdown(); }
 			if(json.new_sub != 0 || json.new_comment != 0 ){
 				
+				
+				
 				if(json.new_sub != 0) {
+					subject_id = json.subject_id;
 					reset_comments();//every time sub changes, comments must be cleared
 					display_elements(json);
 				}
 				if(json.new_comment != 0){
+					comment_id = json.comment_id;
 					pending_comment=true;
 					last_displayed_comment = -1;//reset displaying
 					load_comments(json.comments);
