@@ -6,6 +6,12 @@
 <p>This page describes the process to get your application authenticated on the Samesub 
 platform by using the OAuth protocol.</p>
 <br>
+You will need to authenticate your application(and a user) whenever you want to perform an action as some user in specific.
+<br><br>
+NOTE: You can always authenticate and perform an action as an anonymous(guest) user if you want. In that case, there is no need to go trough the whole process of authentication, you can simply use the <?php echo CHtml::link('anonymously','api#global'); ?> parameter in all of your app requests that require authentication. The system will allow you to perform the action but the request will be seen as from anonymous user(obviously).
+<br>
+<br>
+<br>
 <h3>If you are new to OAuth&nbsp; please read these steps first</h3>
 <p>&nbsp;</p>
 <p>The first step to OAuth is to read what is all about. This article

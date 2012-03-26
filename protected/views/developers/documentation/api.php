@@ -4,7 +4,7 @@
 
 </p>
 <p>In this documentation you'll find the description of all the API resources 
-available that make interface to the Samesub platform.</p>
+in the Samesub platform.</p>
 <p>&nbsp;</p>
 <style>
 table tr td{ border-bottom:1px solid #E0E0E0;}
@@ -32,7 +32,7 @@ table tr td{ border-bottom:1px solid #E0E0E0;}
 		<h3>Live</h3>
 		<p>Live gives access to all resources (subject, comment, user, etc) 
 		related to the current sub in the homepage. Its kind of a shortcut when 
-		you want to send or receive information related to live.</td>
+		you want to send or receive information related to live(homepage).</td>
 	</tr>
 	<tr>
 		<td><a href="#live/getall">live/getall</a></td>
@@ -49,7 +49,7 @@ table tr td{ border-bottom:1px solid #E0E0E0;}
 		<h3>OAuth</h3>
 		<p>We implement OAuth 1.0a as our authentication protocol. For API 
 		resources that need authentication, you'll need to sign your API 
-		requests with OAuth. Please read the <a href="authentication">
+		requests with OAuth or with the anonymous parameter. Please read the <a href="authentication">
 		Application Authentication</a> process also. </td>
 	</tr>
 	<tr>
@@ -121,7 +121,7 @@ table tr td{ border-bottom:1px solid #E0E0E0;}
 		<p>Get the list of countries in the <a href="http://en.wikipedia.org/wiki/ISO_3166-1">
 		ISO 3166-1</a> standard.<h3>&nbsp;</h3>
 		<h3>Resource URL</h3>
-		<p>http://api.samesub.com/v1/common/getcountries</p>
+		<p>http://samesub.com/api/v1/common/getcountries</p>
 		<h3>&nbsp;</h3>
 		<h3>Resource Information</h3>
 		<p>Authentication Required: <a href="authentication">No</a><br>
@@ -190,7 +190,7 @@ table tr td{ border-bottom:1px solid #E0E0E0;}
 		<p>Get the the current UTC time and the time remaining in Live(homepage) 
 		for the next subject to come.<h3>&nbsp;</h3>
 		<h3>Resource URL</h3>
-		<p>http://api.samesub.com/v1/common/gettime</p>
+		<p>http://samesub.com/api/v1/common/gettime</p>
 		<h3>Resource Information</h3>
 		<p>Authentication Required: <a href="authentication">No</a><br>
 		Supports Anonymity: <a href="#global">Yes</a><h3>&nbsp;</h3>
@@ -269,7 +269,7 @@ table tr td{ border-bottom:1px solid #E0E0E0;}
 		<p>Get all the information available in Live (homepage). This includes 
 		the subject content, comments, user, etc.<h3>&nbsp;</h3>
 		<h3>Resource URL</h3>
-		<p>http://api.samesub.com/v1/live/getall</p>
+		<p>http://samesub.com/api/v1/live/getall</p>
 		<h3>&nbsp;</h3>
 		<h3>Resource Information</h3>
 		<p>Authentication Required: <a href="authentication">No</a><br>
@@ -299,7 +299,7 @@ table tr td{ border-bottom:1px solid #E0E0E0;}
 				<td>This is the id of last comment you have received. You make all 
 	subsequent requests after the first one, with a <b>comment_id</b> parameter with the value you 
 	received in the last response so that the server knows if you are updated or 
-	not and don't have to send you all the comments you already have. i.e. :&nbsp; http://api.samesub.com/v1/live/getall?subject_id=356&amp;comment_id=568</td>
+	not and don't have to send you all the comments you already have. i.e. :&nbsp; http://samesub.com/api/v1/live/getall?subject_id=356&amp;comment_id=568</td>
 			</tr>
 			<tr>
 				<td>
@@ -311,7 +311,7 @@ table tr td{ border-bottom:1px solid #E0E0E0;}
 				requests after the first one, with the <b>subject_id</b> 
 				parameter with the value you received in the last response so 
 				that the server knows if you are updated or not and don't have 
-				to send you all the comments you already have.</td>
+				to send you all the information you already have.</td>
 			</tr>
 			<tr>
 				<td>&nbsp;</td>
@@ -393,7 +393,7 @@ table tr td{ border-bottom:1px solid #E0E0E0;}
 	array. You make all 
 	subsequent requests after the first one, with a <b>comment_id</b> param with the value you 
 	received in the last response so that the server knows if you are updated or 
-	not and don't have to send you all the comments you already have. i.e. :&nbsp; http://api.samesub.com/v1/live/getall?subject_id=356&amp;comment_id=568</td>
+	not and don't have to send you all the comments you already have. i.e. :&nbsp; http://samesub.com/api/v1/live/getall?subject_id=356&amp;comment_id=568</td>
 			</tr>
 			<tr>
 				<td>
@@ -431,7 +431,7 @@ table tr td{ border-bottom:1px solid #E0E0E0;}
 				<td>Indicates(0 or 1) if there is a new subject different than 
 				the one you already have. You tell the server which subject you 
 				have by sending the subject_id parameter with the last value you received. i.e.: 
-	http://api.samesub.com/v1/live/getall?subject_id=463</td>
+	http://samesub.com/api/v1/live/getall?subject_id=463</td>
 			</tr>
 			<tr>
 				<td>
@@ -498,9 +498,9 @@ table tr td{ border-bottom:1px solid #E0E0E0;}
 		<h2>&nbsp;</h2>
 		<h2>live/sendcomment</h2>
 		<p>Send a comment to the Live subject.<h3>&nbsp;</h3>
-		<h3>Resource URL</h3>http://api.samesub.com/v1/live/sendcomment<h3>&nbsp;</h3>
+		<h3>Resource URL</h3>http://samesub.com/api/v1/live/sendcomment<h3>&nbsp;</h3>
 		<h3>Resource Information</h3>
-		<p>Authentication Required: <a href="authentication">No</a><br>
+		<p>Authentication Required: <a href="authentication">Yes</a><br>
 		Supports Anonymity: <a href="#global">Yes</a><h3>&nbsp;</h3>
 		<h3>Parameters</h3>
 		</td>
@@ -555,7 +555,7 @@ table tr td{ border-bottom:1px solid #E0E0E0;}
 		We support XAuth also, you should make your XAuth requests to this API 
 		resource.<h3>&nbsp;</h3>
 		<h3>Resource URL</h3>
-		<p>http://api.samesub.com/oauth/access_token</p>
+		<p>http://samesub.com/api/oauth/access_token</p>
 		<h3>&nbsp;</h3>
 		<h3>Description</h3>
 		</td>
@@ -588,7 +588,7 @@ table tr td{ border-bottom:1px solid #E0E0E0;}
 		<h2><a name="oauth/request_token"></a></h2>
 		<h2>&nbsp;</h2>
 		<h2>oauth/request_token</h2>
-		<p>This API resource implements the oauth/request_token service.<h3>Resource URL</h3>http://api.samesub.com/oauth/request_token<h3>&nbsp;</h3>
+		<p>This API resource implements the oauth/request_token service.<h3>Resource URL</h3>http://samesub.com/api/oauth/request_token<h3>&nbsp;</h3>
 		<h3>Description</h3>
 		</td>
 	</tr>
@@ -612,7 +612,7 @@ table tr td{ border-bottom:1px solid #E0E0E0;}
 		<h2><a name="oauth/authorize"></a></h2>
 		<h2>&nbsp;</h2>
 		<h2>oauth/authorize</h2>This API resource implements the oauth/authorize service.<h3>Resource URL</h3>
-		<p>http://api.samesub.com/oauth/authorize</p>
+		<p>http://samesub.com/api/oauth/authorize</p>
 		<h3>&nbsp;</h3>
 		<h3>Description</h3>
 		</td>
@@ -640,9 +640,9 @@ table tr td{ border-bottom:1px solid #E0E0E0;}
 		<h2>subject/add</h2>Add a subject. This resource gives the equivalent functionality of 
 		the <a href="http://samesub.com/subject/add">http://samesub.com/subject/add</a>&nbsp; 
 		page.<h3>&nbsp;</h3>
-		<h3>Resource URL</h3>http://api.samesub.com/v1/subject/add<h3>&nbsp;</h3>
+		<h3>Resource URL</h3>http://samesub.com/api/v1/subject/add<h3>&nbsp;</h3>
 		<h3>Resource Information</h3>
-		<p>Authentication Required: <a href="authentication">No</a><br>
+		<p>Authentication Required: <a href="authentication">Yes</a><br>
 		Supports Anonymity: <a href="#global">Yes</a><p>&nbsp;</td>
 	</tr>
 	<tr>
@@ -683,13 +683,13 @@ table tr td{ border-bottom:1px solid #E0E0E0;}
 			<tr>
 				<td style="width:20%"><b>verifyCode</b></td>
 				<td style="width:10%">string</td>
-				<td>A CAPTCHA verification code submitted by the user. <p>To obtain a CAPTCHA image you should call http://api.samesub.com/v1/subject/captcha</p><p>Note that you should check for the Set-Cookie RESPONSE HEADER named SSID ("Set-Cookie:SSID=*****"), and use that as a HEADER in the http://api.samesub.com/v1/subject/add REQUEST</p>
-				<p>Example:<br> You show to the user a subject/add form with all the required fields(ie:title,content_type,etc). In that same form you show a captcha image by invoking http://api.samesub.com/v1/subject/captcha.
+				<td>A CAPTCHA verification code submitted by the user. <p>To obtain a CAPTCHA image you should call http://samesub.com/api/v1/subject/captcha</p><p>Note that you should check for the Set-Cookie RESPONSE HEADER named SSID ("Set-Cookie:SSID=*****"), and use that as a HEADER in the http://samesub.com/api/v1/subject/add REQUEST</p>
+				<p>Example:<br> You show to the user a subject/add form with all the required fields(ie:title,content_type,etc). In that same form you show a captcha image by invoking http://samesub.com/api/v1/subject/captcha.
 				<br>In the response of the image request you get the image that shows these letters "aryhoma". Behind the scene, in that same request you get a "Set-Cookie:SSID=98d725fe19fb56b6e1777316931b76df;"  RESPONSE HEADER. Then, the user completes the form and enters the verifyCode(aryhoma) as he sees on the image you are showing him/her, and he/she submits the form.<br>
 				<br>In the submission of the form you have to add to the request the HEADER Cookie:SSID=98d725fe19fb56b6e1777316931b76df and besides that a parameter named "verifyCode" with the value the user entered in the form(in this case the correct value would be 'aryhoma')
 				<br><br>This would be the final result of this example:
 				<br><b>POST/GET</b>
-				<br>http://api.samesub.com/v1/subject/add
+				<br>http://samesub.com/api/v1/subject/add
 				<br><b>POST/GET Data</b>
 				<br>title=Hello+World&content_type=text&text=this+is+just+an+api+test&verifyCode=aryhoma
 				<br><b>POST/GET Request Required Headers</b>
@@ -701,7 +701,7 @@ table tr td{ border-bottom:1px solid #E0E0E0;}
 	</b>(optional)</td>
 				<td>string</td>
 				<td>The category in which to categorize the subject.<p>NOTE: You 
-				can get the list of categories available by making a call to http://api.samesub.com/v1/subject/getcategories</td>
+				can get the list of categories available by making a call to http://samesub.com/api/v1/subject/getcategories</td>
 			</tr>
 			<tr>
 				<td>
@@ -710,7 +710,7 @@ table tr td{ border-bottom:1px solid #E0E0E0;}
 				<td>string</td>
 				<td>The <a href="http://en.wikipedia.org/wiki/ISO_3166-1">ISO 
 				3166-1</a> two letters country code. i.e.: US, GB, JP, FR, ES, 
-				RU<p>NOTE: You can use http://api.samesub.com/v1/common/getcountries 
+				RU<p>NOTE: You can use http://samesub.com/api/v1/common/getcountries 
 				to get a list of all countries. Code WW means worldwide.</td>
 			</tr>
 			<tr>
@@ -752,7 +752,7 @@ table tr td{ border-bottom:1px solid #E0E0E0;}
 				<td>The list of tag words for the subject.<p>NOTE: You can get a 
 				tag suggestions service on the subject/gettags resource. You 
 				should send a parameter named &quot;tag&quot; with the value typed by the 
-				user. i.e.:A REQUEST to http://api.samesub.com/v1/subject/gettags?tag=ca 
+				user. i.e.:A REQUEST to http://samesub.com/api/v1/subject/gettags?tag=ca 
 				can have a RESPONSE like this list: &quot;car&quot;,&quot;castle&quot;,&quot;california&quot;,&quot;camera&quot;</td>
 			</tr>
 			<tr>

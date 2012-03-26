@@ -49,11 +49,7 @@ class MyappsController extends Controller
 	public function accessRules()
 	{
 		return array(
-			array('allow',  // allow all users to perform 'index' and 'view' actions
-				'actions'=>array(),
-				'users'=>array('*'),
-			),
-			array('allow', // allow authenticated user to perform 'create' and 'update' actions
+			array('allow', // allow authenticated user to perform 'create', 'update','index' and 'view' actions
 				'actions'=>array('create','update','index','view'),
 				'users'=>array('@'),
 			),

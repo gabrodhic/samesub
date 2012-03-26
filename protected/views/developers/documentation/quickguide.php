@@ -10,7 +10,7 @@ and add a subject.
 <p>
 To get more details about these and other api resources please click on the <?php echo CHtml::link('API documentation','api'); ?> link.
 </p>
-<p>Following the steps described here you will be able to interface to our 
+<p>By following the steps described here you will be able to interface to our 
 platform quickly without having to enter into the details of every API 
 resource. Dominating these three basic operations of the API will help you conquer 
 all of the others, as these are the core and most important API operations.</p>
@@ -21,11 +21,11 @@ all of the others, as these are the core and most important API operations.</p>
 &nbsp;<p>We will use the live/getall API resource to get information in live.<br>
 </p>
 <ol style="margin-top: 20px;">
-	<li>Make a request to the following URL: http://api.samesub.com/v1/live/getall</li>
+	<li>Make a request to the following URL: http://samesub.com/api/v1/live/getall</li>
 	<li>The response will return all the current data related to live (homepage) 
 	in a JSON encoded format. <br>
 	NOTE: you can get the response xml encoded by adding the <b>response_format=xml</b> 
-	parameter to the request URL. (ie: http://api.samesub.com/v1/live/getall?response_format=xml)</li>
+	parameter to the request URL. (ie: http://samesub.com/api/v1/live/getall?response_format=xml)</li>
 	<li>Decode the returned JSON/XML response string and look for 
 	the following items as appropriate:<br>
 	<b><br>
@@ -54,7 +54,7 @@ all of the others, as these are the core and most important API operations.</p>
 	array. You make all 
 	subsequent requests after the first one, with a <b>comment_id</b> param with the value you 
 	received in the last response so that the server knows if you are updated or 
-	not and don't have to send you all the comments you already have. i.e. :&nbsp; http://api.samesub.com/v1/live/getall?subject_id=356&amp;comment_id=568<br>
+	not and don't have to send you all the comments you already have. i.e. :&nbsp; http://samesub.com/api/v1/live/getall?subject_id=356&amp;comment_id=568<br>
 	<b><br>
 	new_comment</b>: Indicates how many new comments are from the 
 	<b>comment_id</b> you sent in the request parameter.<br>
@@ -62,7 +62,7 @@ all of the others, as these are the core and most important API operations.</p>
 	new_sub</b>: Indicates(0 or 1) if there is a new subject different than 
 	the one you already have. You tell the server which subject you have by 
 	sending the subject_id parameter with the last value you received. i.e.: 
-	http://api.samesub.com/v1/live/getall?subject_id=463<br>
+	http://samesub.com/api/v1/live/getall?subject_id=463<br>
 	<b><br>
 	comments</b>: These are the comments as an array that the subject has received from 
 	other users. Each comment has the following properties: username, comment_text, comment_id, comment_time, comment_country<b>.<br>
@@ -95,11 +95,11 @@ all of the others, as these are the core and most important API operations.</p>
 	permalink</b>: The permanent link to access the subject when it goes away 
 	from live.<br>
 &nbsp;</li>
-	<li>All subsequent request to the live/getall api resource should include 
+	<li>As you may know, if you go to the <?php echo CHtml::link('homepage','../../'); ?>(LIVE) you can see that subjects changes every 5 minutes. But comments in the other hand can come in at any time. If you are displaying both(comments and subject) in your app, you should make a request every 5 seconds on average(you don't know if in the next few seconds there will be a new comment). But if you are just showing the subject, then you should make a request every 5 minutes (see <b>time_remaining</b> above). Remember that, all subsequent request(after the first one) to the live/getall api resource should include 
 	the
 	<b>comment_id</b> and
 	<b>subject_id</b> parameters with the last values you received respectively in 
-	your last response. i.e: http://api.samesub.com/v1/live/getall?subject_id=356&amp;comment_id=568</li>
+	your last response. i.e: http://samesub.com/api/v1/live/getall?subject_id=356&amp;comment_id=568</li>
 	<li>You know when a subject has changed if: the
 	<b>subject_id</b> value in the response is different than the one you sent 
 	parameter or if <b>new_sub</b> is not 0.</li>
@@ -107,34 +107,42 @@ all of the others, as these are the core and most important API operations.</p>
 	<b>new_comment</b> in the response is greater than 0.</li>
 	<li>When the subject has changed(<b>new_sub</b>) or there is a new comment(<b>new_comment</b>) 
 	you should update your application screen with the new values received.</li>
+	<li>The whole thing is to be in this loop waiting either for subs or comments, or both, and update your application screen as new information comes in.</li>
+	<li>That's it.</li>
 </ol>
 <p>&nbsp;</p>
 <p>&nbsp;</p>
 
 <p>
-<h3>Send comment to Live</h3>
+<h3>Send comment to Live(Homepage)</h3>
+<br>
+To send a comment we use the live/sendcomment api resource.
+<br>
 <br>
 <ol>
 	<li>Make a request (either post or get) to
-	http://api.samesub.com/v1/live/sendcomment.</li>
+	http://samesub.com/api/v1/live/sendcomment.</li>
 	<li>In the request simply add a parameter named <b>text</b> with the value 
 	you want to send as comment.</li>
 	<li>That's it. </li>
 </ol>
 <p>Example:<br>
-http://api.samesub.com/v1/live/sendcomment?text=Hello+world&anonymously=1</p>
-<h3>&nbsp;</h3>
+http://samesub.com/api/v1/live/sendcomment?text=Hello+world&anonymously=1</p>
+<p>NOTE: See that we added a parameter called <b>anonymously</b> with value <b>1</b> to the request. That is because this api resource requires <a href="authentication">authentication</a> as you can see in the documentation <a href="api#live/sendcomment">here</a>, and we are authenticating as anonymous(guest) user in this case.
 <p>&nbsp;</p>
 <h3>Add a subject</h3>
 <br>
+To add a subject we use the subject/add api resource.
+<br>
+<br>
 <ol>
 	<li>Make a request (either post or get) to
-	http://api.samesub.com/v1/subject/add with the values for the parameters of a 
+	http://samesub.com/api/v1/subject/add with the values for the parameters of a 
 	subject (i.e.: title, user_comment, content_type, etc). To see the list of 
 	available parameters read the resource <a href="api#subject/add">subject/add</a> 
 	documentation.</li>
 	<li>You have to obtain a captcha image 
-	http://api.samesub.com/v1/subject/captcha and show it to the user and add 
+	http://samesub.com/api/v1/subject/captcha and show it to the user and add 
 	the value entered by the user as a parameter called &quot;verifyCode&quot; to your request. Please read the <a href="api#subject/add">verifyCode</a> 
 	parameter in the subject/add resource.</li>
 	<li>Remember that you need to be <a href="authentication">authenticated</a> 
@@ -147,7 +155,7 @@ http://api.samesub.com/v1/live/sendcomment?text=Hello+world&anonymously=1</p>
 titled &quot;Hello World&quot; with a text value of&nbsp; &quot;my first api test&quot;,&nbsp; as an 
 &quot;anonymous&quot; user and with a captcha image with letters &quot;fachione&quot;, 
 and a cookie value received for the captcha image equal to &quot;SSID=98d725fe19fb56b6e1777316931b76df&quot;<p>				<br><b>POST/GET</b>
-				<br>http://api.samesub.com/v1/subject/add
+				<br>http://samesub.com/api/v1/subject/add
 				<br><b>POST/GET Data</b>
 				<br>title=Hello+World&content_type=text&text=my+first+api+test&verifyCode=fachione&amp;anonymously=1<br><b>POST/GET Required Headers</b>
 				<br>Cookie:SSID=98d725fe19fb56b6e1777316931b76df

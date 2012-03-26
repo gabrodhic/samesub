@@ -11,3 +11,19 @@ RewriteCond %{REQUEST_FILENAME} !-d
 
 # otherwise forward it to index.php
 RewriteRule . index.php
+
+#  Rewrite subdomains (TODO: Disabled for now, lots of issues. apache not stable, or bad site design for domain rewrite with yii pages)
+#RewriteCond %{HTTP_HOST} !^www.* [NC]
+#RewriteCond %{HTTP_HOST} ^([^\.]+)\.samesub\.com
+#RewriteRule ^(.*) /%1/$1 [L]
+
+#RewriteBase /
+#RewriteCond %{HTTP_HOST} !^samesub\.com [NC]
+#RewriteCond %{REQUEST_URI}!^something
+#RewriteCond %{HTTP_HOST} ^([^.]+)\.samesub\.com
+#RewriteRule (.*) http://samesub.com/%1/$1 [P,L]
+
+#RewriteCond %{HTTP_HOST} !^www.* [NC]
+#RewriteCond %{HTTP_HOST} ^api\.samesub\.com
+#RewriteCond %{REQUEST_URI} !^webmail/ [NC]
+#RewriteRule ^(.*) /api/$1 [P,L]

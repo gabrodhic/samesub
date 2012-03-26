@@ -140,6 +140,7 @@ preload_time_passed = 5;
 			<span><a href="<? echo Yii::app()->getRequest()->getBaseUrl(true);?>/site/contact"><?php echo Yii::t('site','Contact us');?></a></span>
 			<span><b> | </b><a href="<? echo Yii::app()->getRequest()->getBaseUrl(true);?>/site/page/view/about"><?php echo Yii::t('site','About');?></a></span>
 			<span><b> | </b><a href="<? echo Yii::app()->getRequest()->getBaseUrl(true);?>/site/page/view/faq"><?php echo Yii::t('site','FAQ');?></a></span>
+			<span><b> | </b><a href="<? echo Yii::app()->getRequest()->getBaseUrl(true);?>/developers"><?php echo Yii::t('site','Developers/API');?></a></span>
 			<span><b> | </b><a href="<? echo Yii::app()->getRequest()->getBaseUrl(true);?>/site/page/view/terms"><?php echo Yii::t('site','Terms of Use');?></a></span>
 			<span><b> | </b><a href="<? echo Yii::app()->getRequest()->getBaseUrl(true);?>/site/page/view/privacy"><?php echo Yii::t('site','Privacy Statement');?></a></span>
 		<br/>
