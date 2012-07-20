@@ -36,7 +36,7 @@ class SubjectController extends Controller
 	{
 		return array(
 			array('allow',  // allow all users to perform 'index' 'add' 'view' actions
-				'actions'=>array('index','view','add','fetch','gettags','captcha'),
+				'actions'=>array('index','view','add','fetch','gettags','captcha','countdown'),
 				'users'=>array('*'),
 			),
 			array('allow', // allow authenticated user to perform 'update' actions
@@ -72,12 +72,11 @@ class SubjectController extends Controller
 	{
 		if(! $id) $this->redirect(array('index'));
 		if(! is_int($id)){
-			$this->model = Subject::model()->find('urn=:urn AND deleted=0', array(':urn'=>$id));
-			if($this->model) $id = $this->model->id;
-			
+			$this->model = Subject::model()->find('urn=:urn AND deleted=0', array(':urn'=>$id));			
 		}else{
 			$this->model=$this->loadModel($id);
 		}
+		if(! $this->model) throw new CHttpException(404,Yii::t('site','The requested page does not exist.'));
 		if(!(Yii::app()->session['subject_view'])) Yii::app()->session['subject_view'] = array('1'=>1); //just in case start it with something
 		if(! in_array($this->model->id, Yii::app()->session['subject_view'])){
 			//buggy we need to reasign a new array as we can not modify an array on the fly in a session var
@@ -94,6 +93,27 @@ class SubjectController extends Controller
 		));
 	}
 
+	/**
+	 * Displays the countdown for a subject to go to LIVE.
+	 * @param mixed $id or urn the ID of the model to be displayed
+	 */
+	public function actionCountdown($id='')
+	{
+		if(! $id) $this->redirect(array('index'));
+		if(! is_int($id)){
+			$this->model = Subject::model()->find('urn=:urn AND deleted=0', array(':urn'=>$id));						
+		}else{
+			$this->model=$this->loadModel($id);
+		}
+		if(! $this->model) throw new CHttpException(404,Yii::t('site','The requested page does not exist.'));
+		
+		
+		$this->render('countdown',array(
+			'model'=>$this->model,
+		));
+	}
+	
+	
 	/**
 	 * Creates a new model.
 	 * If creation is successful, the browser will be redirected to the 'view' page.

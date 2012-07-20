@@ -46,6 +46,11 @@ Yii::app()->clientScript->registerScript('tagscodeid',$code);
 	
 <?php } ?>
 
+<br /><br />
+<div style="font-size: 16px;">
+	<?php echo Yii::t('subject','You can check the countdown of your subject in this {link_begin}link{link_end}.',array('{link_begin}'=>'<a href="'.$this->createUrl('countdown/'.$model->urn).'">','{link_end}'=>'</a>'));?>		
+</div>
+
 <?php else: ?>
 
 <div class="form">
