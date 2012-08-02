@@ -1,17 +1,34 @@
 <?php
 $this->pageTitle=Yii::app()->name . ' - '. $model->title;
+Yii::app()->clientScript->registerCss('countdowncss',
+"
+	.countdown_column {
+		float: left;
+		width: 120px;
+		text-align:center;
+		margin-left:50px;
+	}
+	
+	.countdown_column div{
+		-moz-border-radius: 8px; 
+		border-radius: 6px;
+		text-align: center;
+		font-size: 90px;
+		font-family: Trebuchet MS, Impact, Lucida Sans, Arial Narrow;
+		background-color:#1D1D1D;
+		color: white;
+	}
+");
 
 ?>
 <br />
 <br />
 <br />
+<h4 style="text-align:center"><?php echo Yii::t('subject','Subject');?>: <?php echo CHtml::encode($model->title); ?></h4>
 <br />
 
 
 <div>
-	
-
-	
 
 <?php if($model->position ): ?>
 
@@ -90,23 +107,29 @@ $this->pageTitle=Yii::app()->name . ' - '. $model->title;
 
 <?php endif; ?>
 <br />
-<br />
 
-<table border="0" width="100%" id="table1" style="text-align: center;">
-	<tr>
-		<th width="25%" style="text-align: center"><?php echo Yii::t('subject','days');?></th>
-		<th width="25%" style="text-align: center"><?php echo Yii::t('subject','hours');?></th>
-		<th width="25%" style="text-align: center"><?php echo Yii::t('subject','minutes');?></th>
-		<th width="25%" style="text-align: center"><?php echo Yii::t('subject','seconds');?></th>
-	</tr>
-	<tr>
-		<td id="countdown_day" style="text-align: center;font-size: 90px; font-family: Impact">--</td>
-		<td id="countdown_hour" style="text-align: center;font-size: 90px; font-family: Impact">--</td>
-		<td id="countdown_min" style="text-align: center;font-size: 90px; font-family: Impact">--</td>
-		<td id="countdown_sec" style="text-align: center;font-size: 90px; font-family: Impact">--</td>
-	</tr>
-	</table>
+
+<div style="margin:auto;width:740px;">
+		<div class="countdown_column">
+			<p><?php echo Yii::t('subject','days');?></p>
+			<div id="countdown_day">--</div>
+		</div>
+		<div class="countdown_column">
+			<p><?php echo Yii::t('subject','hours');?></p>
+			<div id="countdown_hour">--</div>
+		</div>
+		<div class="countdown_column">
+			<p><?php echo Yii::t('subject','minutes');?></p>
+			<div id="countdown_min">--</div>
+		</div>
+		<div class="countdown_column">
+			<p><?php echo Yii::t('subject','seconds');?></p>
+			<div id="countdown_sec">--</div>
+		</div>
+</div>
+<div class="clear_both"></div>
+
 <br /><br /><br /><br /><br />
-<h4><?php echo Yii::t('subject','Subject');?>: <?php echo CHtml::encode($model->title); ?></h4>
+
 <br /><br /><br />
 </div>
