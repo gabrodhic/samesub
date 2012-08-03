@@ -370,9 +370,9 @@ www.samesub.com");
 		
 		if($data['new_sub'] <> 0) {
 			if(isset($_GET['subject_id'])){//Only if its not comming from site.php js(that script does not sends that param)
-				if($data['id'])	$this->model=$this->loadModel($data['id']);
+				if($data['subject_id'])	$this->model=$this->loadModel($data['subject_id']);
 
-						
+				//Track each unique view of the subject in homepage as subjects passes by
 				if(!(Yii::app()->session['subject_view_live'])) Yii::app()->session['subject_view_live'] = array('1'=>1); //just in case start it with something
 				if(! in_array($this->model->id, Yii::app()->session['subject_view_live'])){
 					//buggy we need to reasign a new array as we can not modify an array on the fly in a session var
