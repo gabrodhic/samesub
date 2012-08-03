@@ -154,8 +154,7 @@ class SubjectController extends Controller
 						$user = User::model()->findByPk(Yii::app()->user->id); 
 						if($user->user_type_id > 2) $send_mail=false;//Dont notify managers themself
 					}
-					if($send_mail){
-						$headers="From: Samesub Contact <".Yii::app()->params['contactEmail'].">\r\nReply-To: ".Yii::app()->params['contactEmail'];
+					if($send_mail){						
 						//$mail_message = "Hi {$user->username}, \n\n";
 						$mail_message = Yii::t('subject',"This is a automatic message to notify you that a subject has been added by a user an that it is
 pending for approval by a samesub moderator.
@@ -174,7 +173,7 @@ $mail_message .= Yii::t('site',"Thanks
 Sincerely
 Samesub Team
 www.samesub.com");							
-						@mail("contact@samesub.com",Yii::t('subject',"New subject added {id}",array('{id}'=>$this->model->id)),$mail_message,$headers);
+						SiteLibrary::send_email(Yii::app()->params['contactEmail'],Yii::t('subject',"New subject added {id}",array('{id}'=>$this->model->id)),$mail_message);
 					}
 				//}
 					
@@ -290,8 +289,7 @@ www.samesub.com");
 					if($this->model->save()){
 						
 						$user = User::model()->findByPk($this->model->user_id); 
-						if($user->notify_subject_authorized){
-							$headers="From: Samesub Contact <".Yii::app()->params['contactEmail'].">\r\nReply-To: ".Yii::app()->params['contactEmail'];
+						if($user->notify_subject_authorized){							
 							$mail_message = Yii::t('subject',"Hi {username} 
 This is a automatic message to notify that your subject has been authorized.
 That means it is going to get LIVE(homepage) very soon, so be alert.
@@ -308,7 +306,7 @@ $mail_message .= Yii::t('site',"Thanks
 Sincerely
 Samesub Team
 www.samesub.com");			
-							@mail($user->email,Yii::t('subject',"Subject Authorized"),$mail_message,$headers);
+							SiteLibrary::send_email($user->email,Yii::t('subject',"Subject Authorized"),$mail_message);
 						}
 						
 						

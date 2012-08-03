@@ -78,11 +78,10 @@ class SiteController extends Controller
 			if($this->model->validate())
 			{
 				if($this->model->email) 
-				{	
-					$headers="From: {$this->model->email}\r\nReply-To: {$this->model->email}";
-					mail(Yii::app()->params['contactEmail'],"SSCONTACT ".SiteLibrary::utc_time(),$this->model->text,$headers);
+				{						
+					SiteLibrary::send_email(Yii::app()->params['contactEmail'],"SSCONTACT ".SiteLibrary::utc_time(),$this->model->text,$this->model->email);
 				}else{
-					mail(Yii::app()->params['contactEmail'],"SSCONTACT ".SiteLibrary::utc_time(),$this->model->text);
+					SiteLibrary::send_email(Yii::app()->params['contactEmail'],"SSCONTACT ".SiteLibrary::utc_time(),$this->model->text);
 				}
 				Yii::app()->user->setFlash('contact',Yii::t('site','Thank you for contacting us. If you provided an email we will respond to you as soon as possible.'));
 				$this->refresh();

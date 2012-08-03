@@ -178,7 +178,6 @@ class UserController extends Controller
 					Subject::model()->updateAll(array('user_id'=>$this->model->id), 'time_submitted=:time_submitted AND hash=:hash', array(':time_submitted'=>$t, ':hash'=>$sh));
 				}
 				
-				$headers="From: Samesub Contact <".Yii::app()->params['contactEmail'].">\r\nReply-To: ".Yii::app()->params['contactEmail'];
 $mail_message = Yii::t('user',"Hi {username}, welcome to samesub!
 
 Username:  {username}
@@ -208,7 +207,7 @@ Sincerely
 Samesub Team
 www.samesub.com");				
 	
-				if(@mail($this->model->email,Yii::t('user',"Registration successful"),$mail_message,$headers)){
+				if(SiteLibrary::send_email($this->model->email,Yii::t('user',"Registration successful"),$mail_message)){
 					$mail_sent = Yii::t('user',"An email has been sent to you.");
 				}else{
 					$mail_sent = Yii::t('user',"Email could not be sent.");
@@ -257,8 +256,7 @@ www.samesub.com");
 					$this->model->reset_hash = md5(uniqid(rand(), true));
 					$this->model->reset_time = SiteLibrary::utc_time();
 					
-					//Set up the mail message
-					$headers="From: Samesub Contact <".Yii::app()->params['contactEmail'].">\r\nReply-To: ".Yii::app()->params['contactEmail'];
+					//Set up the mail message					
 					$mail_message = Yii::t('user',"Hi {username}!
 					We recently received a request to reset your password.
 					If you did not request this, please ignore this message and the steps described in it.
@@ -278,7 +276,7 @@ www.samesub.com");
 
 					if($this->model->save()){
 					//User::model()->updateByPk($model2->id, array('reset_hash'=>md5(rand(100,9000)),'reset_time'=>SiteLibrary::utc_time()));
-						if(@mail($this->model->email,"Password Reset",$mail_message,$headers)){
+						if(SiteLibrary::send_email($this->model->email,"Password Reset",$mail_message)){
 							Yii::app()->user->setFlash('resetpassword_success',Yii::t('user','An email has been sent to your address ***{email} with the link to reset your password. Please verify your email spam folder if you do not see the message.',array('{email}'=>substr($model2->email, 3))));
 						}else{
 							Yii::app()->user->setFlash('resetpassword_success',Yii::t('user','Ooops!. We could not sent an email to your address. We need to send an email to your address to reset your password automatically. Please contact us to request a password reset manually.'));

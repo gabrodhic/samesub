@@ -112,13 +112,12 @@ class Comment extends CActiveRecord
 			}
 			$last_one = Comment::model()->find(array('limit'=>2, 'offset'=>1, 'order'=>'t.id DESC'));//offset is 0 based
 			if( SiteLibrary::utc_time() < ($last_one->time + 1500)) $send_mail = false;
-			if($send_mail){
-				$headers="From: Samesub Contact <".Yii::app()->params['contactEmail'].">\r\nReply-To: ".Yii::app()->params['contactEmail'];
+			if($send_mail){				
 				$mail_message .= "User: ".Yii::app()->user->name."\n";
 				$mail_message .= "Comment: {$model->comment}\n";
 				$mail_message .= "Current time: ".date("Y/m/d H:i", SiteLibrary::utc_time())." UTC (time of this message)\n\n";
 				$mail_message .= "www.samesub.com";				
-				@mail("contact@samesub.com","Comment ".$model->id,$mail_message,$headers);
+				SiteLibrary::send_email(Yii::app()->params['contactEmail'],"Comment ".$model->id,$mail_message);
 			}
 			return true;
 		}else{

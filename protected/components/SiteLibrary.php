@@ -289,4 +289,26 @@ class SiteLibrary extends CComponent
 		
 	}
 	
+	/*
+	 * Sends an email.
+	 * @param string $to email
+	 * @param string $title the message title
+	 * @param string $body the message body
+	 * @param string $reply_to email
+	 * @param string $from email
+	 * @return bool true on success false on error.
+	 */
+	function send_email($to, $title, $body, $reply_to="", $from="" ){
+		//NOTE: In case of having problem sending email, this function can be optimized by using the smtp service with username and password
+		//Any email's FROM header must be from a domain that the mail server is working with		
+		if($from) 	
+			$headers="From: ".$from;//This might need authentication, there might be some setting on the mailserver only to accept Default site mail
+		else
+			$headers="From: ".Yii::app()->params['contactEmailName']." <".Yii::app()->params['contactEmail'].">";// Default site email
+			
+		if($reply_to) $headers .= "\r\nReply-To: ".$reply_to;
+		
+		return @mail($to,$title,$body,$headers);			
+	}
+	
 }

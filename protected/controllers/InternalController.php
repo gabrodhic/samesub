@@ -152,8 +152,7 @@ class InternalController extends Controller
 		//Notify subject owner via email that his subject its gonna get LIVE
 		$subject = Subject::model()->findByPk($next_subject_id_2);
 		$user = User::model()->findByPk($subject->user_id);
-		if($user->id <> 1 and $user->notify_subject_live == 1){
-			$headers="From: Samesub Contact <".Yii::app()->params['contactEmail'].">\r\nReply-To: ".Yii::app()->params['contactEmail'];
+		if($user->id <> 1 and $user->notify_subject_live == 1){			
 			$mail_message = Yii::t('subject',"Hi {username}, 
 We are writing to notify you that your subject got approved and that it is
 going to be placed in the live stream(Homepage) in the next 5 minutes.
@@ -173,7 +172,7 @@ Sincerely
 Samesub Team
 www.samesub.com");				
 
-			if(@mail($user->email,"Your subject is going LIVE",$mail_message,$headers)){
+			if(SiteLibrary::send_email($user->email,"Your subject is going LIVE",$mail_message)){
 				echo "An email has been sent.";
 			}else{
 				echo "Email could not be sent.";
