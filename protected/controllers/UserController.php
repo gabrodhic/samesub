@@ -213,7 +213,7 @@ www.samesub.com");
 					$mail_sent = Yii::t('user',"Email could not be sent.");
 				}
 				$model2=new LoginForm;
-				$model2->email=$this->model->email;
+				$model2->username=$this->model->email;
 				$model2->password=$_POST['User']['password'];
 				// validate user input and redirect to the previous page if valid
 				if($model2->validate() && $model2->login()){
