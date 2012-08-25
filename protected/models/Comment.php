@@ -40,6 +40,7 @@ class Comment extends CActiveRecord
 		return array(
 			array('comment', 'required'),
 			array('comment', 'length', 'min'=>2, 'max'=>65500),
+			array('likes,dislikes', 'numerical'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
 			array('id, user_id, subject_id, time, comment', 'safe', 'on'=>'search'),
@@ -51,28 +52,28 @@ class Comment extends CActiveRecord
 	 */
 	public function beforeSave()
 	{
-		// Assign the user_id 1 if is a guest
-///TODO:add userid. Issue, cant make use of user component while other request is open(subject/fetch)		$this->user_id=(Yii::app()->user->getId()) ? Yii::app()->user->getId() : 1;
-		$this->user_id = 0;
-		
-		//$this->time = SiteLibrary::utc_time();
-		$this->user_ip = $_SERVER['REMOTE_ADDR'];
-		$country_id = 1;
-		$country_code = 'WW';
-		if($_SERVER['REMOTE_ADDR'] != '127.0.0.1'){
-			Yii::import('ext.EGeoIP');
-			$geoIp = new EGeoIP();
-			$geoIp->locate($_SERVER['REMOTE_ADDR']);
-			//http://www.iso.org/iso/english_country_names_and_code_elements
-			$country=Country::model()->find('code=:code', array(':code'=>$geoIp->countryCode));
-			if($country) {$country_id = $country->id; $country_code = $country->code;}
-		}
-		$this->country_id = $country_id;
-		
-		$this->time = SiteLibrary::utc_time();
-		$this->user_id = Yii::app()->user->id;
-		
-		
+		if( $this->getIsNewRecord()){
+			// Assign the user_id 1 if is a guest
+			///TODO:add userid. Issue, cant make use of user component while other request is open(subject/fetch)		$this->user_id=(Yii::app()->user->getId()) ? Yii::app()->user->getId() : 1;
+			$this->user_id = 0;
+			
+			//$this->time = SiteLibrary::utc_time();
+			$this->user_ip = $_SERVER['REMOTE_ADDR'];
+			$country_id = 1;
+			$country_code = 'WW';
+			if($_SERVER['REMOTE_ADDR'] != '127.0.0.1'){
+				Yii::import('ext.EGeoIP');
+				$geoIp = new EGeoIP();
+				$geoIp->locate($_SERVER['REMOTE_ADDR']);
+				//http://www.iso.org/iso/english_country_names_and_code_elements
+				$country=Country::model()->find('code=:code', array(':code'=>$geoIp->countryCode));
+				if($country) {$country_id = $country->id; $country_code = $country->code;}
+			}
+			$this->country_id = $country_id;
+			
+			$this->time = SiteLibrary::utc_time();
+			$this->user_id = Yii::app()->user->id;
+		}	
 	
 		return true;
 	}
@@ -124,6 +125,47 @@ class Comment extends CActiveRecord
 			return false;
 		}
 	}
+	/**
+	 * Adds one point(either like or dislike) for the current model.
+	 * @param int $comment_id of the comment
+	 * @param int $vote wether like or dislike
+	 * @param int $user_id the user id
+	 * @return Array with the comment_id, likes and dislikes count
+	 */
+	public function add_vote($comment_id, $vote, $user_id)
+	{
+
+		$model=Comment::model()->findByPk((int)$comment_id);
+		if($model===null){			
+			return false;
+		}
+		$likes = $model->likes;
+		$dislikes = $model->dislikes;
+		
+		$model2=new CommentVote;
+		$model2->comment_id = $comment_id;
+		$model2->user_id = $user_id;
+		$model2->vote = ($vote == "like") ? 1 : 0;
+		$model2->time = SiteLibrary::utc_time();
+		if(! $model2->save()) return false;
+		
+		if ($vote == "like"){
+			$model->likes = $model->likes + 1;
+			$likes = $model->likes;
+		}else{
+			$model->dislikes = $model->dislikes + 1;
+			$dislikes = $model->dislikes;
+		}			
+		if(! $model->save()) return false;
+		
+		//Update Live comments table if needed(if record doesnt exists, it simply wont update anything)	
+		Yii::app()->db->createCommand()->update('live_comment', array('likes'=>$likes,'dislikes'=>$dislikes)
+		,'comment_id=:comment_id',array(':comment_id'=>$comment_id));
+		
+		return array('comment_id'=>$comment_id, 'likes'=>$likes, 'dislikes'=>$dislikes);
+	}
+	
+	
 	/**
 	 * @return array relational rules.
 	 */

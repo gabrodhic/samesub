@@ -276,3 +276,5 @@ $(document).ready(function() {
 		 },3000); 
 		 
 });
+
+<?php echo JsHelper::comments_voting(); ?>

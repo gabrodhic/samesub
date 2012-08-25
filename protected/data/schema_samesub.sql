@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Feb 19, 2012 at 08:07 PM
+-- Generation Time: Aug 25, 2012 at 02:54 PM
 -- Server version: 5.1.33
 -- PHP Version: 5.2.9
 
@@ -79,6 +79,20 @@ CREATE TABLE auth_codes (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table 'captcha'
+--
+
+CREATE TABLE captcha (
+  id int(11) NOT NULL AUTO_INCREMENT,
+  `type` varchar(10) COLLATE utf8_unicode_ci NOT NULL DEFAULT 'image',
+  question varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  answer varchar(50) COLLATE utf8_unicode_ci NOT NULL,
+  PRIMARY KEY (id)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table 'comment'
 --
 
@@ -91,12 +105,30 @@ CREATE TABLE `comment` (
   `time` int(11) NOT NULL,
   comment_number int(11) NOT NULL,
   `comment` text COLLATE utf8_unicode_ci NOT NULL,
+  likes int(11) NOT NULL DEFAULT '0',
+  dislikes int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (id),
   KEY `time` (`time`),
   KEY user_id (user_id),
   KEY subject_id (subject_id),
   KEY country_id (country_id),
   KEY comment_number (comment_number)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table 'comment_vote'
+--
+
+CREATE TABLE comment_vote (
+  id int(11) NOT NULL AUTO_INCREMENT,
+  comment_id int(11) NOT NULL,
+  user_id int(11) NOT NULL DEFAULT '0',
+  vote int(11) NOT NULL,
+  `time` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (id),
+  UNIQUE KEY comment_user_vote (comment_id,user_id,vote)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
@@ -213,6 +245,8 @@ CREATE TABLE live_comment (
   comment_time int(11) NOT NULL DEFAULT '0',
   comment_country varchar(200) COLLATE utf8_unicode_ci DEFAULT 'WW',
   username varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  likes int(11) NOT NULL DEFAULT '0',
+  dislikes int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (comment_number),
   KEY `time` (comment_time)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;

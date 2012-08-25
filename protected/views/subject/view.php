@@ -5,6 +5,10 @@ $this->ogtags = SiteHelper::get_ogtags($this->pageTitle,
 ($model->content_type_id == 2)?SiteHelper::subject_content($model) : $model->user_comment, $sub_data['image'],
  Yii::app()->params['weburl'].'/sub/'.$model->urn,
  $sub_data['url']);
+ 
+ 
+$code = JsHelper::comments_voting();
+Yii::app()->clientScript->registerScript('commentsvoting',$code);
 ?>
 
 <h1><?php echo CHtml::encode($model->title); ?></h1>
@@ -36,12 +40,19 @@ $total_comments = count($comments);
 if($total_comments == 0) echo "<h4>".Yii::t('subject','NO COMMENTS')."</h4>";
 foreach($comments as $comment): ?>
 <div class="comment" id="c<?php echo $comment->id; ?>">
-	<div class="time">
-		<?php echo '<span class="comment_number">'.str_pad($comment->comment_number, 2, '0',STR_PAD_LEFT).'</span><span class="comment_country">'. $comment->country->code. '</span> '. date("Y/m/d H:i",$comment->time).' UTC '.
-		CHtml::link($comment->user->username,array('mysub/'.$comment->user->username)); ?>
+	<div class="comment_info">
+		<?php 
+		$time_since_comment = SiteLibrary::time_since( (SiteLibrary::utc_time() - $comment->time) );
+		echo '<span class="comment_number">'.str_pad($comment->comment_number, 2, '0',STR_PAD_LEFT).'</span>'
+		.'<span class="comment_country">'. $comment->country->code. '</span>'
+		.' <span>'.CHtml::link($comment->user->username,array('mysub/'.$comment->user->username)) . '</span>'
+		.' <span title="'.date("Y/m/d H:i",$comment->time).' UTC '.'">'
+		. Yii::t('comment', '{time_number} {time_name} ago', array('{time_number}'=>$time_since_comment[0],'{time_name}'=>Yii::t('site',$time_since_comment[1]) )) . '</span>';
+		echo SiteHelper::comment_vote($comment->id, $comment->likes, $comment->dislikes);
+		?>
 	</div>
 
-	<div class="content">
+	<div class="comment_content">
 		<?php echo nl2br(CHtml::encode($comment->comment)); ?>
 	</div>
 

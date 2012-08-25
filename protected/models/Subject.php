@@ -463,7 +463,10 @@ class Subject extends CActiveRecord
 			'username'=>$live_comment['username'],
 			'comment_text'=> CHtml::encode($live_comment['comment_text']), 'comment_number'=>$live_comment['comment_number'],
 			'comment_time'=>date("H:i:s",$live_comment['comment_time']),
-			'comment_country'=>$live_comment['comment_country']);
+			'comment_country'=>$live_comment['comment_country'],
+			'likes'=>$live_comment['likes'],
+			'dislikes'=>$live_comment['dislikes']
+			);
 		}
 		$arr_data['comments']= $arr_comments;
 		

@@ -127,7 +127,7 @@ class InternalController extends Controller
 		
 
 			//TEMPORAL:Refill the live_comments table with old comments about this subject if this subject is repeated
-			$past_comments = Yii::app()->db->createCommand()->select('t1.id,code,time,comment,comment_number,username')->from('comment t1')->where('subject_id ='.$next_subject_id_2)
+			$past_comments = Yii::app()->db->createCommand()->select('t1.id,code,time,comment,comment_number,username,likes,dislikes')->from('comment t1')->where('subject_id ='.$next_subject_id_2)
 			->leftJoin('country t2', 'country_id=t2.id')
 			->leftJoin('user t3', 'user_id=t3.id')->order('time ASC')->queryAll();
 			echo "<br>gggg";print_r($past_comments);
@@ -135,7 +135,7 @@ class InternalController extends Controller
 			foreach($past_comments as $past_comment){
 				$i++;
 				$country_code = ($past_comment['code']) ? $past_comment['code'] : "WW";
-				$command->insert('live_comment',array('comment_id'=>$past_comment['id'],'username'=>$past_comment['username'],'subject_id'=>$next_subject_id_2, 'comment_country'=>$country_code,'comment_time'=>$past_comment['time'],'comment_text'=>$past_comment['comment'],'comment_number'=>$i));//we neet to use our own sequence because there might be repeated numbers
+				$command->insert('live_comment',array('comment_id'=>$past_comment['id'],'username'=>$past_comment['username'],'subject_id'=>$next_subject_id_2, 'comment_country'=>$country_code,'comment_time'=>$past_comment['time'],'comment_text'=>$past_comment['comment'],'comment_number'=>$i,'likes'=>$past_comment['likes'],'dislikes'=>$past_comment['dislikes']));//we neet to use our own sequence because there might be repeated numbers
 				$comment_id = $past_comment['id'];
 			}
 			if($i > 0)$command->update('live_subject', array('comment_id'=>$comment_id,'comment_number'=>$i,));

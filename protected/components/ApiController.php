@@ -42,6 +42,10 @@ class ApiController extends CController
 		global $arr_response;
 		
 		//Pre-filter
+		//Initialize API response default values. This values can be overriten in any of the different API Controller actions.
+		$arr_response['error'] = 0;
+		$arr_response['error_message'] = 'empty';
+		$arr_response['ok_message'] = 'empty';
 		$filterChain->run();
 		//Post-filter
 		if($arr_response){

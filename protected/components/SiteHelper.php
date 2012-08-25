@@ -276,4 +276,27 @@ class SiteHelper extends CHtml
 		
 	}
 	
+	
+	/**
+	 * Get the comment vote elements
+	 * @param int $id the id of the comment
+	 * @param int $likes the likes of the comment
+	 * @param int $dislikes the dislikes of the comment
+	 * @return string the html content
+	 */
+	public function comment_vote($id, $likes, $dislikes)
+	{
+		$html = '<span class="comment_vote">'		
+		.' <a class="comment_like_button" alt="'.$id.'"></a>'		
+		.' <em class="comment_votes_count total_likes';
+		$html .=  ($likes) ? ' comment_likes' : '';
+		$html .=  '">'.$likes.'</em>'
+		.' <a class="comment_dislike_button"  alt="'.$id.'"></a>'
+		.' <em class="comment_votes_count total_dislikes';
+		$html .= ($dislikes) ? ' comment_dislikes' : '';
+		$html .=  '">'.$dislikes.'</em>'
+		.'</span>';
+		return $html;
+	}
+	
 }

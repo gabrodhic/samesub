@@ -80,6 +80,18 @@ table tr td{ border-bottom:1px solid #E0E0E0;}
 	<tr>
 		<td>
 		<h3>&nbsp;</h3>
+		<h3>Comment</h3>
+		<p>Resources that allow you interact with comments. </td>
+	</tr>
+	<tr>
+		<td><a href="#comment/vote">comment/vote</a></td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+	</tr>
+	<tr>
+		<td>
+		<h3>&nbsp;</h3>
 		<h3>Global (parameters and return values)</h3>
 		<p>These are Parameters or Return Values available in all API resources. You can 
 		use these parameters or return values in any of the API resources you 
@@ -803,6 +815,67 @@ table tr td{ border-bottom:1px solid #E0E0E0;}
 <p>&nbsp;</p>
 <p>&nbsp;</p>
 <p>&nbsp;</p>
+<table border="0" width="100%" id="table8">
+	<tr>
+		<td>
+		<h2><a name="comment/vote"></a></h2>
+		<h2>&nbsp;</h2>
+		<h2>comment/vote</h2>
+		<p>Vote for a specific comment, like or dislike.<h3>&nbsp;</h3>
+		<h3>Resource URL</h3>http://samesub.com/api/v1/comment/vote<h3>&nbsp;</h3>
+		<h3>Resource Information</h3>
+		<p>Authentication Required: <a href="authentication">Yes</a><br>
+		Supports Anonymity: <a href="#global">No</a><h3>&nbsp;</h3>
+		<h3>Parameters</h3>
+		</td>
+	</tr>
+	<tr>
+		<td>
+		<table border="1" width="100%" id="table9">
+			<tr>
+				<th>
+				<h4>Name</h4>
+				</th>
+				<th>
+				<h4>Type</h4>
+				</th>
+				<th>
+				<h4>Description</h4>
+				</th>
+			</tr>
+			<tr>
+				<td style="width:20%"><b>comment_id</b></td>
+				<td style="width:10%">int</td>
+				<td>The id of the comment.</td>
+			</tr>
+			<tr>
+				<td style="width:20%"><b>vote</b></td>
+				<td style="width:10%">string</td>
+				<td>The vote value. Either like or dislike.</td>
+			</tr>
+			<tr>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+			</tr>
+		</table>
+		</td>
+	</tr>
+	<tr>
+		<td>
+		<h3>&nbsp;</h3>
+		<h3>Return Values</h3>
+		<pN/A</td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+	</tr>
+</table>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
 <p>&nbsp;</p><table border="0" width="100%" id="table24">
 	<tr>
 		<td>
@@ -874,22 +947,22 @@ table tr td{ border-bottom:1px solid #E0E0E0;}
 				</th>
 			</tr>
 			<tr>
-				<td style="width:20%"><b>error<br>
-				</b>(optional)</td>
+				<td style="width:20%"><b>error
+				</b></td>
 				<td style="width:10%">int</td>
-				<td>This is the error number when an error occurs.</td>
+				<td>This is the error number when an error occurs. Defaults to 0, meaning there is no error. You should always check if this value is different than 0, for each response you receive.</td>
 			</tr>
 			<tr>
 				<td><b>error_message<br>
 				</b>(optional)</td>
 				<td>string</td>
-				<td>Error message when a error occurs.</td>
+				<td>Error message when a error occurs. Defaults to 'empty' meaning there is no error message.</td>
 			</tr>
 			<tr>
 				<td><b>ok_message<br>
 				</b>(optional)</td>
 				<td>string</td>
-				<td>Message returned when there are no retuned values expected.</td>
+				<td>Message returned when there are no retuned values expected. Defaults to 'empty' meaning there is no ok message.</td>
 			</tr>
 			</table>
 		</td>

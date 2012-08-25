@@ -311,4 +311,32 @@ class SiteLibrary extends CComponent
 		return @mail($to,$title,$body,$headers);			
 	}
 	
+	/*
+	 * Gets the time in words since a time.
+	 * @param int $since the number of seconds since the time
+	 * @return array position 0 is the number, position 1 is the name of the time value(second, minute,day,etc).
+	 */
+	function time_since($since) {
+    $chunks = array(
+        array(60 * 60 * 24 * 365 , Yii::t('site', 'year')),
+        array(60 * 60 * 24 * 30 , Yii::t('site', 'month')),
+        array(60 * 60 * 24 * 7, Yii::t('site', 'week')),
+        array(60 * 60 * 24 , Yii::t('site', 'day')),
+        array(60 * 60 , Yii::t('site', 'hour')),
+        array(60 , Yii::t('site', 'minute')),
+        array(1 , Yii::t('site', 'second'))
+    );
+
+    for ($i = 0, $j = count($chunks); $i < $j; $i++) {
+        $seconds = $chunks[$i][0];
+        $name = $chunks[$i][1];
+        if (($count = floor($since / $seconds)) != 0) {
+            break;
+        }
+    }
+
+    $name = ($count == 1) ? $name : "{$name}s";
+    return array($count, $name);
+	}
+	
 }
