@@ -285,16 +285,15 @@ class SiteHelper extends CHtml
 	 * @return string the html content
 	 */
 	public function comment_vote($id, $likes, $dislikes)
-	{
+	{		
+		
 		$html = '<span class="comment_vote">'		
 		.' <a class="comment_like_button" alt="'.$id.'"></a>'		
-		.' <em class="comment_votes_count total_likes';
-		$html .=  ($likes) ? ' comment_likes' : '';
-		$html .=  '">'.$likes.'</em>'
+		.' <em class="comment_votes_count total_likes total_likes'.$likes;
+		$html .=  '">'.$likes.$likes_int.'</em>'
 		.' <a class="comment_dislike_button"  alt="'.$id.'"></a>'
-		.' <em class="comment_votes_count total_dislikes';
-		$html .= ($dislikes) ? ' comment_dislikes' : '';
-		$html .=  '">'.$dislikes.'</em>'
+		.' <em class="comment_votes_count total_dislikes total_dislikes'.$dislikes;
+		$html .=  '">'.$dislikes.$dislikes_int.'</em>'
 		.'</span>';
 		return $html;
 	}

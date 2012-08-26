@@ -251,21 +251,10 @@ font-style: normal;
 float:left;
 width:15px;
 }
-.total_likes{font-style: normal;}
-.total_dislikes{font-style: normal;}
-.comment_likes{
-color:#009933;
-/*text-decoration:underline;
-background-color:#E8EFFF;*/
-
-}
-.comment_dislikes{
-color:#CC0000;
-/*text-decoration:underline;
-background-color:#FFFFCE;*/
-font-style: normal;
-float:left;
-}
+.total_likes{font-style: normal; color:#009933;}
+.total_dislikes{font-style: normal; color:#CC0000;}
+.total_likes0{color:grey !important;}
+.total_dislikes0{color:grey !important;}
 .comment_like_button {
     background-image:url(../images/like.png);
     display:block;

@@ -37,7 +37,7 @@ class CommentController extends ApiController
 				$arr_response['ok_message'] = 'Vote sent.';
 			}else{
 				$arr_response['error'] = 77401;
-				$arr_response['error_message'] = "There is an error, we could not add this vote.";
+				$arr_response['error_message'] = "Can not add this vote. You can only vote once.";
 			}
 		}else{
 			$arr_response['error'] = 77402;

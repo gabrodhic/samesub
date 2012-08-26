@@ -156,14 +156,14 @@ function load_comments(comments){
 				
 				if(comment_number.length < 2)pad_w_zero = '0'; ///pad_w_zero
 				if(reset_comment == false ) { style = "background-color:#FFFF99";}
-				new_line = '<div class="comment_board_entry" id="'+comment_number+'" style="'+style+'">';
+				new_line = '<div class="comment_board_entry" id="c'+comments[i]['comment_id']+'" style="'+style+'">';
 				
 				new_line += '<div class="comment_header">';
 				new_line += '<span class="comment_number">'+pad_w_zero+comment_number+'</span>';
 				new_line += '<span class="comment_country">'+comments[i]['comment_country']+'</span>';
 				new_line += '<span class="comment_time">'+ comments[i]['comment_time'] +' </span>';
 				new_line += '<span class="comment_username"><a href="<?php echo Yii::app()->getRequest()->getBaseUrl(true);?>/mysub/'+ comments[i]['username'] +'">'+ comments[i]['username'] + '</a></span>';				
-				new_line += '<?php echo SiteHelper::comment_vote("'+comments[i]['comment_id']+'","'+ comments[i]['likes']+'", "'+comments[i]['likes']+'");?>';
+				new_line += '<?php echo SiteHelper::comment_vote("'+comments[i]['comment_id']+'","'+ comments[i]['likes']+'", "'+comments[i]['dislikes']+'");?>';
 				new_line += '</div>';
 				new_line += '<div class="comment_text">'+ comments[i]['comment_text']+'</div>';
 				
@@ -172,7 +172,7 @@ function load_comments(comments){
 				$("#comments_board").prepend(new_line);
 				
 				if(reset_comment == false ){
-					$("#"+comment_number).fadeTo("slow",0.5, function () {
+					$("#c"+comments[i]['comment_id']).fadeTo("slow",0.5, function () {
 						$(this).css("background-color", "white");
 						$(this).fadeTo("slow",1.0);
 					});
