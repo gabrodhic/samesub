@@ -147,6 +147,6 @@ preload_time_passed = 5;
 	</div>
 
 </div>
-
+<?php echo Yii::app()->params['webanalytics_html'];?>
 </body>
 </html>
