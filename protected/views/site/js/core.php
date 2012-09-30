@@ -142,22 +142,14 @@ function countdown(){
 
 	
 	if(time_remaining >=0){//when to start the time_remaining
-		if(time_remaining == 120){
-			var backup_title = $("#header_title h1").html();
-			$("#header_title h1").attr("style", "color:#1C75CE");
-			$("#header_title h1").html('<?php echo Yii::t('site','Subject changes in 2 minutes, comments close in 1 minute 50 seconds');?>');
-			$('#header_title h1').typewriter( 2000, function(){
-				setTimeout(function(){$("#header_title h1").html(backup_title); $("#header_title h1").attr("style", "");},4000);
-			}, new Date());						
-		}
 		
 		if(time_remaining > 60){
-			$("#comment_timer").css("color", "#686868");
+			$("#time_remaining_box").css("background-color", "#1C75CE");
 			hms = secondsToTime(time_remaining);
-			$("#comment_timer").html('<span><?php echo Yii::t('site','Time remaining:');?> </span><span>'+ hms.m + 'min ' +  hms.s + 's</span>');
+			$("#comment_timer").html( hms.m + 'min ' +  hms.s + 's');
 		}else{
 
-			$("#comment_timer").html('<span><?php echo Yii::t('site','Time remaining:');?> </span><span>'+time_remaining.toString()+ ' seconds</span>');
+			$("#comment_timer").html(time_remaining.toString()+ ' seconds');
 			
 			if(time_remaining < 30){
 				if(time_remaining > 25){
@@ -165,21 +157,21 @@ function countdown(){
 					$("#comments_title").css("color", "black");
 					$("#comments_title").html('<?php echo Yii::t('site','Comments closing...');?>');
 					$("#comments_title").fadeTo("medium", 0.0);
+					$("#time_remaining_box").css("background-color", "orange");
 				}else if(time_remaining > 15){
 					$("#comments_title").attr("style", "");
 					//$("#comments_title").html('People, make your conclusions:');
 					
 					$("#comment_timer  span:nth-child(2)").css("color", "black");//only the second span
 					setTimeout(function (){$("#comment_timer  span:nth-child(2)").css("color", "white");},500);
-					//$("#comment_timer").fadeTo("fast", 1.0);//notice, this is just to reset it to original opacity
-					//$("#comment_timer").css("color", "black");
+					//$("#comment_timer").fadeTo("fast", 1.0);//notice, this is just to reset it to original opacity					
 					//$("#comment_timer").html(time_remaining.toString() + 'seconds);
 					//$("#comment_timer").fadeTo("medium", 0.0);
 				}else if(time_remaining > 10){
 
 					$("#comment_timer  span:nth-child(2)").css("color", "red");//only the second span
 					setTimeout(function (){$("#comment_timer  span:nth-child(2)").css("color", "white");},500);
-					//$("#comment_timer").css("color", "black");
+					$("#time_remaining_box").css("background-color", "orangered");
 					
 				}else if(time_remaining > 6){
 					$("#comments_title").attr("style", "color:red");//notice, we are overriding the style property fully cleans all other previous styles by jquery(opacity, filter, etc)							
@@ -230,16 +222,21 @@ function display_elements(obj_json){
 	time_submitted = fromUnixTime(obj_json.time_submitted);
 	current_title = obj_json.title;//title
 	submit_info = '<?php echo Yii::t('site','by {username} at {time} UTC',array('{username}'=>'<a href="'.Yii::app()->getRequest()->getBaseUrl(true).'/mysub/\'+obj_json.username+\'">\' + obj_json.username + \'</a>','{time}'=>"'+time_submitted.getHours()+':'+time_submitted.getMinutes()+'"));?>';
-	share_html = '<?php echo SiteHelper::share_links("'+obj_json.urn+'","'+obj_json.title+'"); ?>';
+	share_links = '<?php echo SiteHelper::share_links("'+obj_json.urn+'","'+obj_json.title+'"); ?>';
+	
+	$('#share_links').html(share_links);
+	$('#submit_info').html(submit_info);
+	$('#perma_link').html('<a id="urn_link" title="' +obj_json.title +'" href="'+obj_json.permalink+'">[permalink]</a>');
+	
 	$('#content_div_1').empty();//some times iframes or object elements stay inside, so clean it just in those rare cases
-	$('#content_div_1').html('<?php echo SiteHelper::content_html("'+obj_json.content_html+'","'+obj_json.user_comment+'","'+submit_info+'","'+share_html+'"); ?> ');
+	$('#content_div_1').html('<?php echo SiteHelper::content_html("'+obj_json.content_html+'","'+obj_json.user_comment+'"); ?> ');
 	current_info = '<b>'+obj_json.country_name+'</b> | ';
 	//$("#comments_board").html("Waiting for comments");
 	
 	$("#comments_title").attr("style", "");
 	$("#comments_title").html('Latest user comments:');
 	$("#comment_timer").attr("style", "");
-	$("#comment_timer").html('');
+	$("#comment_timer").html('.. ..');
 	$('#frame_box').hide();
 			
 
@@ -250,14 +247,7 @@ function display_elements(obj_json){
 
 	blink_page_title(current_title);
 	$("#comment_textarea").attr('disabled',false);
-	
-	var title = (obj_json.last_sub_title.length >45) ? obj_json.last_sub_title.substring(0,45) + '...' : obj_json.last_sub_title;
-	var title_2 = (obj_json.last_sub_2_title.length >45) ? obj_json.last_sub_2_title.substring(0,45) + '...' : obj_json.last_sub_2_title;
-	
-	
-	$("#previous_right").html('<a title="'+obj_json.last_sub_title.replace(/"/g,'')+'" href="<?php echo Yii::app()->params['weburl'];?>/sub/'+obj_json.last_sub_urn+'">'+ title + '</a>');
-	$("#previous_right").append('<br>' + '<a title="'+obj_json.last_sub_2_title.replace(/"/g,'')+'" href="<?php echo Yii::app()->params['weburl'];?>/sub/'+obj_json.last_sub_2_urn+'">'+ title_2 + '</a>');
-		
+			
 }
 
 

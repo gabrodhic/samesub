@@ -106,9 +106,10 @@ function send_comment(){
 			function(){ 
 				$("#comment_textarea").val('');
 				//$("#comment_status").fadeTo("fast", 1.0);//notice, this is just to reset it to original opacity
+				$("#send_comment").hide();
 				$("#comment_status").show();
 				$("#comment_status").html('<?php echo Yii::t('site','Sent, wait few seconds');?>');
-				setTimeout(function(){$("#comment_status").hide();},1000); 
+				setTimeout(function(){ $("#send_comment").show(); $("#comment_status").hide();},1000); 
 				//$("#comment_status").fadeTo("slow", 0.0);
 			},
 			function(){ },

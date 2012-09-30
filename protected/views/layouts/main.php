@@ -79,7 +79,13 @@ preload_time_passed = 5;
 ?>
 <div id="page" class="container" <?php echo (Yii::app()->session->get('site_loaded') != "yes" and (strtolower($this->id) == 'site' and strtolower($this->action->Id) == 'index')) ? 'style="display:none;"' : '';?>>
 	<div id="header" class="bounded">
-		<div id="header_top"><iframe src="about:blank" width="980" height="30" id="header_top_frame" frameBorder="0" scrolling="no" style="background-color:white; z-index:9000; position:absolute;"></iframe></div>
+		<div id="header_top">
+		<?php if(strtolower(Yii::app()->controller->action->id) == 'index' and strtolower(Yii::app()->controller->id) == 'site'){
+				echo '<span><b>'.Yii::t('site','UTC NOW:').' </b></span><span id="utc_clock"></span><br />'; 
+		} else { ?>
+			<iframe src="about:blank" width="980" height="30" id="header_top_frame" frameBorder="0" scrolling="no" style="background-color:white; z-index:9000; position:absolute;"></iframe>
+		<?php } ?>
+		</div>
 		<div id="header_middle">
 			<div id="logo"><a href="<?php echo Yii::app()->createUrl('site/index');?>"><img src="<?php echo Yii::app()->request->baseUrl; ?>/images/logo.jpg"></a></div>
 			<div id="main_menu">
@@ -87,22 +93,19 @@ preload_time_passed = 5;
 					<div class="navigation">
 							<?php $this->widget('zii.widgets.CMenu',array(
 							'items'=>array(
-								array('label'=>Yii::t('site','Live'), 'url'=>array('site/index')),
-								array('label'=>Yii::t('site','Add Subject'), 'url'=>array('subject/add')),
-								array('label'=>Yii::t('site','Mysub'), 'url'=>array((Yii::app()->user->isGuest) ? '/mysub' : 'mysub/'.Yii::app()->user->name)),
+								array('label'=>Yii::t('site','Live')." | ", 'url'=>array('site/index')),
+								array('label'=>Yii::t('site','Add Subject')." | ", 'url'=>array('subject/add')),
+								array('label'=>Yii::t('site','Mysub')." | ", 'url'=>array((Yii::app()->user->isGuest) ? '/mysub' : 'mysub/'.Yii::app()->user->name)),
 								array('label'=>Yii::t('site','History'), 'url'=>array('subject/index')),
 
 							),
 						)); ?>					
 					</div>
 				</div>
-				<div id="menu_right">
-					
+				<div id="menu_right">					
 					<span><?php echo (Yii::app()->user->isGuest) ? '<a href="'. Yii::app()->createUrl('site/login').'">'.Yii::t('site','Login').'</a>' 
 					:  '<span>'.SiteHelper::get_user_picture((int)Yii::app()->user->id,'icon_','profile').'|<a href="'. Yii::app()->createUrl('profile/'.Yii::app()->user->name).'">'.Yii::app()->user->name.'</a></span>'
-					.'| <span><a href="'. Yii::app()->createUrl('site/logout').'">'.Yii::t('site','Logout').'</a></span>';?></span>
-					<?php if(strtolower(Yii::app()->controller->action->id) == 'index' and strtolower(Yii::app()->controller->id) == 'site')
-					echo '<span><b> | '.Yii::t('site','UTC NOW:').' </b></span><span id="utc_clock"></span>'; ?>
+					.'| <span><a href="'. Yii::app()->createUrl('site/logout').'">'.Yii::t('site','Logout').'</a></span>';?></span>					
 					<span> | <a href="<? echo Yii::app()->getRequest()->getBaseUrl(true);?>/site/contact"><?php echo Yii::t('site','Feedback');?></a></span>
 				</div>
 			</div>
