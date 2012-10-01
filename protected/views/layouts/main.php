@@ -93,9 +93,12 @@ preload_time_passed = 5;
 					<div class="navigation">
 							<?php $this->widget('zii.widgets.CMenu',array(
 							'items'=>array(
-								array('label'=>Yii::t('site','Live')." | ", 'url'=>array('site/index')),
-								array('label'=>Yii::t('site','Add Subject')." | ", 'url'=>array('subject/add')),
-								array('label'=>Yii::t('site','Mysub')." | ", 'url'=>array((Yii::app()->user->isGuest) ? '/mysub' : 'mysub/'.Yii::app()->user->name)),
+								array('label'=>Yii::t('site','Live'), 'url'=>array('site/index')),
+								array('label'=>" | "),
+								array('label'=>Yii::t('site','Add Subject'), 'url'=>array('subject/add')),
+								array('label'=>" | "),
+								array('label'=>Yii::t('site','Mysub'), 'url'=>array((Yii::app()->user->isGuest) ? '/mysub' : 'mysub/'.Yii::app()->user->name)),
+								array('label'=>" | "),
 								array('label'=>Yii::t('site','History'), 'url'=>array('subject/index')),
 
 							),

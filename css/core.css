@@ -6,7 +6,7 @@ body { background: white; }
 body { font: normal 13px Trebuchet MS, Arial, Helvetica, sans-serif; color: #686868; }
 p { margin: 0; padding: 0 0 1.2em 0; }
 /* Text font styles*/
-h1 { font-size: 25px; letter-spacing: -1px; padding: 0 0 0 0; color: #686868; font-weight: bold; font-family:Arial;}
+h1 { font-size: 27px; letter-spacing: -1px; padding: 0 0 0 0; color: #686868; font-weight: bold; font-family:Arial;}
 h2 { font-size: 24px; letter-spacing: -1px; padding: 0 0 14px 0;  color: #686868}
 h3 { font-size: 18px; letter-spacing: -1px; padding: 0 0 0 0; color: #404040; font-weight: bold;}
 h4 { font-size: 16px; letter-spacing: -1px; padding: 0 0 5px 0; color: #404040; }
@@ -19,7 +19,7 @@ h5 { font-size: 14px; letter-spacing: -1px; padding: 0 0 14px 0; color: #686868;
 a, a:link, a:visited { text-decoration: none; color: #046381; font-weight: bold;  font-size: 13px;}
 a:hover { text-decoration: underline; }
 
-ul { padding-top: 0; padding-bottom: 1.2em; }
+ul { padding-top: 0; padding-bottom: 1.2em; margin-top:0px;}
 ol { margin-top: 0; margin-bottom: 0; padding-top: 0; padding-bottom: 1.2em; }
 img { border: 0; }
 
@@ -80,7 +80,7 @@ display:none;
 
 #time_remaining_box{
 padding:5px;
-width: 115px;
+width: 118px;
 background-color: #1C75CE;
 float: right;
 color:white;
@@ -165,7 +165,7 @@ color:white;
 /*visibility:hidden;*/
 }
 #comment_timer{
-font-size: 23px;
+font-size: 22px;
 color:white;
 font-weight:bold;
 text-align: center;
@@ -197,7 +197,7 @@ text-align:right;
 float:right;
 }
 .navigation{
-list-style: nonce;
+list-style: none;
 margin-bottom: 1em;
 }
 .navigation li {
@@ -207,7 +207,7 @@ margin-right: 10px;
 }
 .navigation li a {
 display: block;
-font-size:13px;
+font-size:15px;
 }
 .navigation .active a {
 color:black !important;
