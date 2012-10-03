@@ -101,7 +101,7 @@ class SubjectController extends Controller
 	{
 		if(! $id) $this->redirect(array('index'));
 		if(! is_int($id)){
-			$this->model = Subject::model()->find('urn=:urn AND deleted=0', array(':urn'=>$id));						
+			$this->model = Subject::model()->find('urn=:urn', array(':urn'=>$id));						
 		}else{
 			$this->model=$this->loadModel($id);
 		}

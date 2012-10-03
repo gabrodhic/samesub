@@ -40,7 +40,7 @@ Yii::app()->clientScript->registerScript('tagscodeid',$code);
 <?php if(Yii::app()->user->isGuest){ ?>
 	<br><br>
 	<div style="font-size: 16px;">
-		<?php echo Yii::t('subject','{1}NOTE:{2} You have uploaded this subject as anonymous(guest) user. If you {link_begin1}Click Here{link_end} and register, the system will asign this subject to the new account you register. You may {link_begin2}Click Here{link_end} also to login if you are already registered.',array('{1}'=>'<b>','{2}'=>'</b>','{link_begin1}'=>'<a href="'.$this->createUrl('user/register?sh='.$model->hash.'&t='.$model->time_submitted).'">','{link_end}'=>'<a href="'.$this->createUrl('site/login?sh='.$model->hash.'&t='.$model->time_submitted).'">','{link_end}'=>'</a>'));?>		
+		<?php echo Yii::t('subject','{1}NOTE:{2} You have uploaded this subject as anonymous(guest) user. If you {link_begin1}Click Here{link_end} and register, the system will asign this subject to the new account you register. You may {link_begin2}Click Here{link_end} also to login if you are already registered.',array('{1}'=>'<b>','{2}'=>'</b>','{link_begin1}'=>'<a href="'.$this->createUrl('user/register?sh='.$model->hash.'&t='.$model->time_submitted).'">','{link_begin2}'=>'<a href="'.$this->createUrl('site/login?sh='.$model->hash.'&t='.$model->time_submitted).'">','{link_end}'=>'</a>'));?>		
 	</div>
 	<div class="clear_both"></div>
 	
