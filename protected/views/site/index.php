@@ -33,7 +33,7 @@ $this->pageTitle=$information->live;
 		<div id="share_links"></div>
 		<div id="header_info"></div>
 		<div id="submit_info"></div>
-		<div id="perma_link">PERMALINK</div>
+		<div id="perma_link"></div>
 		<div id="content_div_2" class="user_input" style="display:none; visibility:hidden;"></div>
 	</div>
 	<div id="right_container">

@@ -81,7 +81,7 @@ preload_time_passed = 5;
 	<div id="header" class="bounded">
 		<div id="header_top">
 		<?php if(strtolower(Yii::app()->controller->action->id) == 'index' and strtolower(Yii::app()->controller->id) == 'site'){
-				echo '<span><b>'.Yii::t('site','UTC NOW:').' </b></span><span id="utc_clock"></span><br />'; 
+				
 		} else { ?>
 			<iframe src="about:blank" width="980" height="30" id="header_top_frame" frameBorder="0" scrolling="no" style="background-color:white; z-index:9000; position:absolute;"></iframe>
 		<?php } ?>
@@ -138,7 +138,7 @@ preload_time_passed = 5;
 	
 	</div>
 	<br class="clear_both">
-	<hr class="page_hrline">
+	<hr class="page_hrline" style="margin-top:100px;">
 	<div id="footer" class="bounded">
 		
 			<span style="margin-right:20px">&copy; <?php echo date('Y'); ?> Samesub</span>
@@ -148,6 +148,7 @@ preload_time_passed = 5;
 			<span><b> | </b><a href="<? echo Yii::app()->getRequest()->getBaseUrl(true);?>/developers"><?php echo Yii::t('site','Developers/API');?></a></span>
 			<span><b> | </b><a href="<? echo Yii::app()->getRequest()->getBaseUrl(true);?>/site/page/view/terms"><?php echo Yii::t('site','Terms of Use');?></a></span>
 			<span><b> | </b><a href="<? echo Yii::app()->getRequest()->getBaseUrl(true);?>/site/page/view/privacy"><?php echo Yii::t('site','Privacy Statement');?></a></span>
+			<?php if(strtolower(Yii::app()->controller->action->id) == 'index' and strtolower(Yii::app()->controller->id) == 'site') echo '<span><b> | '.Yii::t('site','UTC NOW:').' </b></span><span id="utc_clock"></span><br />'; ?>
 		<br/>
 	</div>
 
