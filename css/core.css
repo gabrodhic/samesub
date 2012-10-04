@@ -195,6 +195,7 @@ float:left;
 #menu_right{
 text-align:right;
 float:right;
+margin-top:2px;
 }
 .navigation{
 list-style: none;
