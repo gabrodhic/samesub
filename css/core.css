@@ -190,12 +190,13 @@ font-size: 11px;
 
 #menu_left{
 float:left;
+margin-top:18px;
 }
 
 #menu_right{
 text-align:right;
 float:right;
-margin-top:2px;
+margin-top:18px;
 }
 .navigation{
 list-style: none;
