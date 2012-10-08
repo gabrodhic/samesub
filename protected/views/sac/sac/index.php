@@ -38,6 +38,10 @@ Links to the various system administration options.
 	</div>
 	<br>
 	<div class="row">
-		<?php echo CHtml::link('WebSite Stats Analyzer','http://samesub.com/cgi-bin/awstats/awstats.pl?config=samesub.com'); ?> 
+		<?php echo CHtml::link('Piwik WebStats Analyzer','http://samesub.com/piwik'); ?> 
+	</div>
+	<br>
+	<div class="row">
+		<?php echo CHtml::link('OWA WebStats Analyzer','http://samesub.com/owa'); ?> 
 	</div>
 	
