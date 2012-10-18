@@ -61,12 +61,9 @@
 if( Yii::app()->session->get('site_loaded') != "yes" and (strtolower($this->id) == 'site' and strtolower($this->action->Id) == 'index')){
 ?>
 <div id="preload" style="padding-top:100px; position:fixed; width: 680px; left: 50%; margin:20px 0px 0px -340px;font-family: Trebuchet MS, Arial, Helvetica, sans-serif;">
-	<div style="text-align:center; padding:50px;"><a href="<?php echo Yii::app()->createUrl('site/index');?>"><img src="<?php echo Yii::app()->request->baseUrl; ?>/images/logo.jpg"></a></div>
-	<div style="font-size: 12px;"><b><?php echo Yii::t('site','NOW: {live_title}', array('{live_title}'=>'</b><a href="'.Yii::app()->createUrl('subject/index').'">'.$this->pageTitle.'</a>'));?></div>
-	<hr style="border: 1px solid grey;" />
-	<div style="font-size: 20px; color:#303030;"><?php echo Notification::getNotification()->note;?></div>
-	<hr style="border: 1px solid grey;" />
-	<div style="margin:50px 0px 0px 0px; font-size: 16px;"><?php echo Yii::t('site','Page is loading, get ready ...');?></div>
+	<div style="text-align:center; padding:50px;"><a href="<?php echo Yii::app()->createUrl('site/index');?>"><img src="<?php echo Yii::app()->request->baseUrl; ?>/images/logo.jpg"></a></div>	
+	<div style="font-size: 20px; color:#303030;"><?php echo Notification::getNotification()->note;?></div>	
+	<div style="margin:80px 0px 0px 0px; font-size: 12px; color:grey;"><b><?php echo Yii::t('site','NOW: {live_title}', array('{live_title}'=>'</b><a href="'.Yii::app()->createUrl('subject/index').'" style="text-decoration: none; color: grey;">'.$this->pageTitle.'</a>'));?></div>
 </div>
 <?php 
 }else{
