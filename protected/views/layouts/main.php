@@ -63,7 +63,7 @@ if( Yii::app()->session->get('site_loaded') != "yes" and (strtolower($this->id) 
 <div id="preload" style="padding-top:100px; position:fixed; width: 680px; left: 50%; margin:20px 0px 0px -340px;font-family: Trebuchet MS, Arial, Helvetica, sans-serif;">
 	<div style="text-align:center; padding:50px;"><a href="<?php echo Yii::app()->createUrl('site/index');?>"><img src="<?php echo Yii::app()->request->baseUrl; ?>/images/logo.jpg"></a></div>	
 	<div style="font-size: 20px; color:#303030;"><?php echo Notification::getNotification()->note;?></div>	
-	<div style="margin:80px 0px 0px 0px; font-size: 12px; color:grey;"><b><?php echo Yii::t('site','NOW: {live_title}', array('{live_title}'=>'</b><a href="'.Yii::app()->createUrl('subject/index').'" style="text-decoration: none; color: grey;">'.$this->pageTitle.'</a>'));?></div>
+	<div style="margin:150px 0px 0px 0px; font-size: 12px; color:grey;"><b><?php echo Yii::t('site','NOW: {live_title}', array('{live_title}'=>'</b><a href="'.Yii::app()->createUrl('subject/index').'" style="text-decoration: none; color: grey;">'.$this->pageTitle.'</a>'));?></div>
 </div>
 <?php 
 }else{
