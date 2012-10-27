@@ -21,11 +21,16 @@ Yii::app()->clientScript->registerCss('countdowncss',
 ");
 
 ?>
-<br />
-<br />
-<br />
-<h4 style="text-align:center"><?php echo Yii::t('subject','Subject');?>: <?php echo CHtml::encode($model->title); ?></h4>
-<br />
+
+
+
+<div style="margin-top:40px; float:right;">
+	<?php echo Yii::t('site','submitted by {username}',array('{username}'=>'<a href="'.Yii::app()->getRequest()->getBaseUrl(true).'/mysub/'.$model->user->username.'">' .$model->user->username.'</a>')); ?>
+</div>
+<br class="clear_both">	
+<div style="margin-top:20px">
+	<h4 style="text-align:center"><?php echo Yii::t('subject','Subject');?>: <?php echo CHtml::encode($model->title); ?></h4>
+</div>
 
 
 <div>
@@ -83,7 +88,7 @@ Yii::app()->clientScript->registerCss('countdowncss',
 	$('#countdown_sec').html(secsLeft);	
 	//$('#countdown').html(daysLeft + " days " + hrsLeft +" hours and " + minsLeft + " minutes left and secs " + secsLeft);	
 	if(timeLeft < 1){	//if has come to cero, stop the countdown
-		alert('Subject is on the homepage now!');
+		top.location="<?php echo Yii::app()->getRequest()->getBaseUrl(true);?>";
 	}else{
 		tick=window.setTimeout("clock()",1000);
 	}
@@ -93,7 +98,7 @@ Yii::app()->clientScript->registerCss('countdowncss',
 	
 	
 	</script>
-	<p style="text-align: center;font-size: 30px; font-family: Impact"><?php echo Yii::t('subject','Time remaining');?></p>
+	<p id="time_remaining" style="text-align: center;font-size: 30px; font-family: Impact"><?php echo Yii::t('subject','Time remaining');?></p>
 	<?php 
 	}else{
 	?>
@@ -109,7 +114,7 @@ Yii::app()->clientScript->registerCss('countdowncss',
 <br />
 
 
-<div style="margin:auto;width:740px;">
+<div style="margin:auto;width:680px;">
 		<div class="countdown_column">
 			<p><?php echo Yii::t('subject','days');?></p>
 			<div id="countdown_day">--</div>
@@ -126,6 +131,19 @@ Yii::app()->clientScript->registerCss('countdowncss',
 			<p><?php echo Yii::t('subject','seconds');?></p>
 			<div id="countdown_sec">--</div>
 		</div>
+					
+		<br class="clear_both">
+		<div style="margin-top:15px;">
+			<div style="float:right;">
+				<?php echo Yii::t('subject','share with your firends'); ?>
+			</div>
+			<br class="clear_both">
+			<div style="float:right;">
+				<?php echo SiteHelper::share_links($model->urn,$model->title,'/countdown/'); ?>
+			</div>
+			
+		</div>
+
 </div>
 <div class="clear_both"></div>
 
