@@ -102,6 +102,9 @@ Yii::app()->clientScript->registerCss('countdowncss',
 	<?php 
 	}else{
 	?>
+	<script>
+		tick=window.setTimeout(function (){ top.location="<?php echo Yii::app()->getRequest()->getBaseUrl(true).'/sub/'.$model->urn;?>"; },5000);
+	</script>
 	<p style="color:red; text-align: center;font-size: 30px; font-family: Impact"><?php echo Yii::t('subject','Subject already shown on: {date} UTC', array('{date}'=>date("Y/m/d", $model->position). ' '.  date("H",$model->position).':'.date("i",$model->position)));?> </p>
 	<?php
 	}
