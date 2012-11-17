@@ -298,4 +298,55 @@ class SiteHelper extends CHtml
 		return $html;
 	}
 	
+	
+	/**
+	 * Get the subject vote elements
+	 * @param int $id the id of the subject
+	 * @param int $likes the likes of the subject
+	 * @param int $dislikes the dislikes of the subject
+	 * @param boolean $raw wether to return just the raw data about the vote,percent,etc, or the full html
+	 * @return mixed the html content or raw data to generate the html
+	 */
+	public function subject_vote($id, $likes, $dislikes, $raw=false)
+	{	
+		// Testing numbers. Replace with your own.
+		$value = $likes;
+		$max = ($likes + $dislikes);
+		$scale = 2.0;
+
+		// Get Percentage out of 100
+		if ( !empty($max) ) { $percent = ($value * 100) / $max; } 
+		else { $percent = 0; }
+
+		// Limit to 100 percent (if more than the max is allowed)
+		if ( $percent > 100 ) { $percent = 100; }
+		$round1 = round(100 * $scale);
+		$round2 = round($percent * $scale);
+		$round1_color = ($dislikes > 0) ? 'D10000' : '';
+		
+		if($raw == true) return array('subject_id'=>$id,'percent'=>round($percent),'likes'=>$likes,'dislikes'=>$dislikes,'width_dislikes'=>$round1,'width_likes'=>$round2, 'color_dislikes'=>$round1_color);
+		
+
+		
+		$html .= '<div style="float:left;width:'.$round1.'px;">';		
+				$html .= '<div style="float:right;">';//height and padding for the Vertical alignment
+		$html .= '<span class="">'		
+		.' <a class="sub_like_button" alt="'.$id.'"></a>'		
+		.' <em class="sub_vote_label" style="margin-right:10px;">'.Yii::t('site','Like').'</em>'
+		.' <a class="sub_dislike_button"  alt="'.$id.'"></a>'
+		.' <em class="sub_vote_label">'.Yii::t('site','Dislike').'</em>'.'</span>';		
+		$html .=  '</div>';
+		$html .=  '<div style="clear:both"></div>';
+		$html .= '<div class="sub_vote_percentbar_dislikes" style="width:'.$round1.'px;';
+		$html .= ($round1_color) ? 'background:#'.$round1_color.';' : '';
+		$html .= '">';
+		$html .= '<div class="sub_vote_percentbar_likes" style="width:'.$round2.'px;"></div>';
+		$html .= '</div>';
+		$html .= '<div id="sub_likes_dislikes" style="text-align:right;">'.Yii::t('subject', '{likes} likes, {dislikes} dislikes', array('{likes}'=>$likes, '{dislikes}'=>$dislikes)).'</div>';
+		$html .= '</div>';
+		$html .= '<div id="sub_likes_percent" style="float:left; text-align:center; margin:0 15px 0 15px; background:grey; color:white;padding:2px;font-weight:bold;">'.round($percent).'%</div>';
+
+		return $html;
+	}
+	
 }

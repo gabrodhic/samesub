@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Aug 25, 2012 at 02:54 PM
+-- Generation Time: Nov 17, 2012 at 05:13 PM
 -- Server version: 5.1.33
 -- PHP Version: 5.2.9
 
@@ -569,6 +569,8 @@ CREATE TABLE `subject` (
   position int(11) NOT NULL DEFAULT '0',
   user_position int(11) NOT NULL DEFAULT '0',
   manager_position int(11) NOT NULL DEFAULT '0',
+  likes int(11) NOT NULL DEFAULT '0',
+  dislikes int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (id),
   UNIQUE KEY urn (urn),
   KEY user_id (user_id),
@@ -615,6 +617,22 @@ CREATE TABLE subject_tag (
   `name` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (id),
   UNIQUE KEY `name` (`name`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table 'subject_vote'
+--
+
+CREATE TABLE subject_vote (
+  id int(11) NOT NULL AUTO_INCREMENT,
+  subject_id int(11) NOT NULL,
+  user_id int(11) NOT NULL DEFAULT '0',
+  vote int(11) NOT NULL,
+  `time` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (id),
+  UNIQUE KEY subject_user_vote (subject_id,user_id,vote)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------

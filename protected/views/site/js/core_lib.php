@@ -270,3 +270,4 @@ function check_preload(){
 	}
 }
 <?php echo JsHelper::comments_voting();?>
+<?php echo JsHelper::subject_voting();?>

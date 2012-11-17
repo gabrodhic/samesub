@@ -672,6 +672,47 @@ class Subject extends CActiveRecord
 		
 	
 	}
+	
+	/**
+	 * Adds one point(either like or dislike) for the current model.
+	 * @param int $subject_id of the subject
+	 * @param int $vote wether like or dislike
+	 * @param int $user_id the user id
+	 * @return Array with the subject_id, likes and dislikes count
+	 */
+	public function add_vote($subject_id, $vote, $user_id)
+	{
+
+		$model=Subject::model()->findByPk((int)$subject_id);
+		if($model===null){			
+			return false;
+		}
+		$likes = $model->likes;
+		$dislikes = $model->dislikes;
+		
+		$model2=new SubjectVote;
+		$model2->subject_id = $subject_id;
+		$model2->user_id = $user_id;
+		$model2->vote = ($vote == "like") ? 1 : 0;
+		$model2->time = SiteLibrary::utc_time();
+		if(! $model2->save()) return false;
+		
+		if ($vote == "like"){
+			$model->likes = $model->likes + 1;
+			$likes = $model->likes;
+		}else{
+			$model->dislikes = $model->dislikes + 1;
+			$dislikes = $model->dislikes;
+		}			
+		if(! $model->save()) return false;
+		
+		//Update Live subjects table if needed(if record doesnt exists, it simply wont update anything)	
+		//TODO
+		//Yii::app()->db->createCommand()->update('live_subject', array('likes'=>$likes,'dislikes'=>$dislikes)
+		//,'subject_id=:subject_id',array(':subject_id'=>$subject_id));
+		
+		return array('subject_id'=>$subject_id, 'likes'=>$likes, 'dislikes'=>$dislikes);
+	}
 	/**
 	 * @return array relational rules.
 	 */

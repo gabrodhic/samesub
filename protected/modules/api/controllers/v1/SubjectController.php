@@ -87,6 +87,28 @@ class SubjectController extends ApiController
 
 	}
 	
+	/**
+	 * Adds one vote to the subject votes count, a like or dislike.
+	 * @param integer $vote_id the ID of the subject
+	 * @param string $vote the vote: either like or dislike
+	 */
+	public function actionVote($subject_id, $vote="")
+	{
+		global $arr_response;
+		if(! Yii::app()->user->isGuest){
+			if($subject_count = Subject::add_vote($subject_id, $vote, Yii::app()->user->id)){				
+				$arr_response['subject_vote'] = SiteHelper::subject_vote($subject_count['subject_id'], $subject_count['likes'], $subject_count['dislikes'], true);
+				$arr_response['ok_message'] = 'Vote sent.';
+			}else{
+				$arr_response['error'] = 77301;
+				$arr_response['error_message'] = "Can not add this vote. You can only vote once.";
+			}
+		}else{
+			$arr_response['error'] = 77302;
+			$arr_response['error_message'] = "Sorry, you must log in to be able to vote.";
+		}	
+	}
+	
 
 
 }

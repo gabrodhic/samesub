@@ -8,9 +8,7 @@ class JsHelper extends CHtml
 	
 	/**
 	 * Generates the proper js to add comments voting functionality for the current page
-	 * @param object $subject the an instance of the Subject class
-	 * @param string $mode in wich to return information(html or array of data)
-	 * @return mixed string the js code
+	 * @return string the js code
 	 */
 	public function comments_voting()
 	{
@@ -34,6 +32,44 @@ class JsHelper extends CHtml
 							if (response.comment_vote['likes'] > 0) $('#c'+response.comment_vote['comment_id']).find('.total_likes').removeClass('total_likes0');
 							$('#c'+response.comment_vote['comment_id']).find('.total_dislikes').html(response.comment_vote['dislikes']);
 							if (response.comment_vote['dislikes'] > 0) $('#c'+response.comment_vote['comment_id']).find('.total_dislikes').removeClass('total_dislikes0');
+						}else{
+							alert(response.error_message);
+						}
+                    },
+					error: function(){
+						alert('Sorry, there was an error.');
+					}
+            });
+            return false;
+            });
+        });
+		";
+		return $js;
+	}
+	
+	/**
+	 * Generates the proper js to add subject voting functionality for the current page	 
+	 * @return string the js code
+	 */
+	public function subject_voting()
+	{
+		$js = "$(document).ready(function() {
+		//Use die() to remove any previous attached click event, and use live() to preserve the event if the DOM changes
+        $('.sub_like_button, .sub_dislike_button').die('click').live('click',function() {
+		
+			var link = '".Yii::app()->createUrl('/api/v1/subject/vote?subject_id=')."'+$(this).attr('alt')+'&vote=';			
+			if($(this).attr('class') == 'sub_like_button'){
+				link = link+'like';
+			}else{
+				link = link+'dislike';
+			}			
+            $.ajax({
+                    url:link,
+                    cache:false,
+					dataType:'json',
+                    success: function(response) {						
+						if(response.error == 0){								
+							alert(response.ok_message);
 						}else{
 							alert(response.error_message);
 						}

@@ -9,6 +9,8 @@ $this->ogtags = SiteHelper::get_ogtags($this->pageTitle,
  
 $code = JsHelper::comments_voting();
 Yii::app()->clientScript->registerScript('commentsvoting',$code);
+$code2 = JsHelper::subject_voting();
+Yii::app()->clientScript->registerScript('subjectvoting',$code2);
 ?>
 
 <h1><?php echo CHtml::encode($model->title); ?></h1>
@@ -30,8 +32,14 @@ Yii::app()->clientScript->registerScript('commentsvoting',$code);
 	</div>
 	
 
+<div style="float:left;">
+	<?php echo SiteHelper::share_links($model->urn,$model->title); ?>
+</div>
+<div style="float:right;margin-left:10px">
+	<?php echo SiteHelper::subject_vote($model->id,$model->likes,$model->dislikes); ?>
+</div>
+<div class="clear_both"></div>
 
-<?php echo SiteHelper::share_links($model->urn,$model->title); ?>
 <br>
 <h3 class="detail_header"><?php echo Yii::t('subject','Comments');?></h3>
 <?php 
