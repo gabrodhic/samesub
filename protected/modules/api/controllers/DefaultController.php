@@ -16,8 +16,10 @@ class DefaultController extends Controller
 	    if($error=Yii::app()->errorHandler->error)
 	    {
 			//$error['message'] = '你访问的页面不存在';
+			//TODO: Use the ApiController Component for all actions handling instead of the ApiModule
             $arr = array(
-                'message'=>$error['message'],
+                'response_code'=>$error['code'],
+				'response_message'=>$error['message'],				
                 'errorCode'=>$error['errorCode'],
                 'result'=>'false',
             );

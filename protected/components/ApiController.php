@@ -24,12 +24,13 @@ class ApiController extends CController
 	 */
 	public function missingAction(){
 		global $arr_response;
-		$arr_response['error'] = 77100;
-		$arr_response['error_message'] = 'No such method in this API section.';
+		$arr_response['response_code'] = 404;
+		$arr_response['response_message'] = Yii::t('api','No such method in this API section.');
 		if($_REQUEST['response_format'] == 'xml'){
 			header('Content-type: text/xml');
 			$response = SiteLibrary::array2xml($arr_response);
 		}else{
+			header('Content-type: text/plain');
 			$response = json_encode($arr_response);
 		}
 		echo $response;
@@ -43,9 +44,8 @@ class ApiController extends CController
 		
 		//Pre-filter
 		//Initialize API response default values. This values can be overriten in any of the different API Controller actions.
-		$arr_response['error'] = 0;
-		$arr_response['error_message'] = 'empty';
-		$arr_response['ok_message'] = 'empty';
+		$arr_response['response_code'] = 200;
+		$arr_response['response_message'] = 'OK';		
 		$filterChain->run();
 		//Post-filter
 		if($arr_response){
@@ -54,10 +54,15 @@ class ApiController extends CController
 				$response = SiteLibrary::array2xml($arr_response);
 			}else{
 				//Do a pretty print if available in the running php/json version compilation
-				if(defined(JSON_PRETTY_PRINT))
-					$response = json_encode($arr_response,JSON_PRETTY_PRINT);
-				else
+				if($_REQUEST['response_print'] == 'pretty'){
+					if (defined(JSON_PRETTY_PRINT))
+						$response = json_encode($arr_response,JSON_PRETTY_PRINT);
+					else
+						$response = json_encode($arr_response);
+				}else{
+					header('Content-type: text/plain');
 					$response = json_encode($arr_response);
+				}
 			}
 			echo $response;
 		}

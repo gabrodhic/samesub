@@ -47,7 +47,7 @@ class LiveController extends ApiController
 		$width = (int)$width;
 		$height = (int)$height;
 		$keepratio = ($keepratio) ? true : false;
-		$arr_response = Subject::getLiveData($subject_id,$comment_id,$width,$height,$keepratio);
+		$arr_response = array_merge($arr_response ,Subject::getLiveData($subject_id,$comment_id,$width,$height,$keepratio));
 		
 		//TODO: Add log/counter statistics for API requests
 	}
@@ -63,14 +63,14 @@ class LiveController extends ApiController
 			$model->update_live = true;
 
 			if(Comment::save_comment($model)){
-				$arr_response['ok_message'] = 'Comment sent.';
+				$arr_response['response_message'] = 'Comment sent.';
 			}else{
-				$arr_response['error'] = 77300;
-				$arr_response['error_message'] = 'Comment could not be saved.';
+				$arr_response['response_code'] = 409;
+				$arr_response['response_message'] = Yii::t('comment','Comment could not be saved.');;
 			}
 		}else{
-			$arr_response['error'] = 77301;
-			$arr_response['error_message'] = "No 'text' parameter received.";
+			$arr_response['response_code'] = 409;
+			$arr_response['response_message'] =  Yii::t('comment',"No 'text' parameter received.");
 		}
 
 	}

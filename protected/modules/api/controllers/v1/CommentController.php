@@ -32,16 +32,17 @@ class CommentController extends ApiController
 	{
 		global $arr_response;
 		if(! Yii::app()->user->isGuest){
-			if($comment_count = Comment::add_vote($comment_id, $vote, Yii::app()->user->id)){				
+			$comment_count = Comment::add_vote($comment_id, $vote, Yii::app()->user->id);
+			if($comment_count['success']==true){
 				$arr_response['comment_vote'] = $comment_count;
-				$arr_response['ok_message'] = 'Vote sent.';
+				$arr_response['response_message'] = Yii::t('comment','Vote sent.');
 			}else{
-				$arr_response['error'] = 77401;
-				$arr_response['error_message'] = "Can not add this vote. You can only vote once.";
+				$arr_response['response_code'] = 409;
+				$arr_response['response_message'] = $comment_count['message'];
 			}
 		}else{
-			$arr_response['error'] = 77402;
-			$arr_response['error_message'] = "Sorry, you must log in to be able to vote.";
+			$arr_response['response_code'] = 401;
+			$arr_response['response_message'] = Yii::t('comment','Sorry, you must log in to be able to vote.');
 		}	
 	}
 

@@ -23,7 +23,7 @@ class CommonController extends ApiController
 		}
 		
 		
-		$arr_response = $arr_countries;
+		$arr_response['countries'] = $arr_countries;
 		
 	}
 	
@@ -47,7 +47,7 @@ class CommonController extends ApiController
 		$arr_data['current_time_s'] = date("s",$utc_time);
 		$arr_data['time_remaining'] = (($live_subject['scheduled_time'] + (Yii::app()->params['subject_interval']*60)) - $utc_time) + 2;//lets give some seconds rage in case cron gets delayed
 		
-		$arr_response = $arr_data;
+		$arr_response = array_merge($arr_response,$arr_data) ;
 	
 	}
 

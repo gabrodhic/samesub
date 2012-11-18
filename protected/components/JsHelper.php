@@ -27,13 +27,13 @@ class JsHelper extends CHtml
                     cache:false,
 					dataType:'json',
                     success: function(response) {						
-						if(response.error == 0){								
+						if(response.response_code == 200){								
 							$('#c'+response.comment_vote['comment_id']).find('.total_likes').html(response.comment_vote['likes']);
 							if (response.comment_vote['likes'] > 0) $('#c'+response.comment_vote['comment_id']).find('.total_likes').removeClass('total_likes0');
 							$('#c'+response.comment_vote['comment_id']).find('.total_dislikes').html(response.comment_vote['dislikes']);
 							if (response.comment_vote['dislikes'] > 0) $('#c'+response.comment_vote['comment_id']).find('.total_dislikes').removeClass('total_dislikes0');
 						}else{
-							alert(response.error_message);
+							alert(response.response_message);
 						}
                     },
 					error: function(){
@@ -67,12 +67,8 @@ class JsHelper extends CHtml
                     url:link,
                     cache:false,
 					dataType:'json',
-                    success: function(response) {						
-						if(response.error == 0){								
-							alert(response.ok_message);
-						}else{
-							alert(response.error_message);
-						}
+                    success: function(response) {
+							alert(response.response_message);						
                     },
 					error: function(){
 						alert('Sorry, there was an error.');

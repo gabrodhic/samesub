@@ -101,13 +101,13 @@ table tr td{ border-bottom:1px solid #E0E0E0;}
 		<td><a href="#global">response_format</a></td>
 	</tr>
 	<tr>
-		<td><a href="#global">error</a></td>
+		<td><a href="#global">response_code</a></td>
 	</tr>
 	<tr>
-		<td><a href="#global">error_message</a></td>
+		<td><a href="#global">response_message</a></td>
 	</tr>
 	<tr>
-		<td><a href="#global">ok_message</a></td>
+		<td><a href="#global">response_details</a></td>
 	</tr>
 	<tr>
 		<td><a href="#global">anonymously</a></td>
@@ -947,22 +947,45 @@ table tr td{ border-bottom:1px solid #E0E0E0;}
 				</th>
 			</tr>
 			<tr>
-				<td style="width:20%"><b>error
+				<td style="width:20%"><b>response_code
 				</b></td>
 				<td style="width:10%">int</td>
-				<td>This is the error number when an error occurs. Defaults to 0, meaning there is no error. You should always check if this value is different than 0, for each response you receive.</td>
+				<td>This indicates the status code for the Response. Any Request you make will always have a Response that can be Success, Error, 
+				Not Found, etc. To make things easier, we use very similar codes as the ones used in 
+				the HTTP Response Status Codes standard.<br/><b>NOTE</b>: This 
+				code is completely separate from the actual Status Code sent in 
+				the response header itself. For example, a Response can have on 
+				its header a 200 Status Code, while in the body(the json/xml 
+				data) of the Response you could see a response_code = 404.<p>&nbsp;</p>
+				<p>Response Codes and meanings:</p>
+				<p><b>200</b> OK: The request was fulfilled.<br>
+				<b>401</b> UNAUTHORIZED: The request is not authorized. The 
+				client should retry the request with a suitable Authorization 
+				header.<br>
+				<b>403</b> FORBIDDEN: The request is forbidden; credentials 
+				provided in the request don't have the rights and/or privileges 
+				to fulfill the action.<br>
+				<b>404</b> NOT_FOUND: The server has not found anything matching 
+				the URI provided.<br>
+				<b>409</b> CONFLICT: A condition is preventing the server to 
+				complete the action. i.e.: missing parameter, wrong values sent, 
+				etc.<br>
+				<b>500</b> INTERNAL_ERROR: The server encountered an unexpected 
+				condition which prevented it from fulfilling the request.<br>
+				<b>503</b> SERVICE_UNAVAILABLE: The server is currently unable 
+				to handle the request due to a temporary overloading or 
+				maintenance of the server.</td>
 			</tr>
 			<tr>
-				<td><b>error_message<br>
-				</b>(optional)</td>
+				<td><b>response_message</b></td>
 				<td>string</td>
-				<td>Error message when a error occurs. Defaults to 'empty' meaning there is no error message.</td>
+				<td>The custom message related to the <b>response_code</b>.</td>
 			</tr>
 			<tr>
-				<td><b>ok_message<br>
+				<td><b>response_details<br>
 				</b>(optional)</td>
-				<td>string</td>
-				<td>Message returned when there are no retuned values expected. Defaults to 'empty' meaning there is no ok message.</td>
+				<td>mixed</td>
+				<td>Contains details about the <b>response_message</b>.</td>
 			</tr>
 			</table>
 		</td>

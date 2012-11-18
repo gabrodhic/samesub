@@ -130,14 +130,14 @@ class Comment extends CActiveRecord
 	 * @param int $comment_id of the comment
 	 * @param int $vote wether like or dislike
 	 * @param int $user_id the user id
-	 * @return Array with the comment_id, likes and dislikes count
+	 * @return Array with the success(boolean indicating success or not), comment_id, likes and dislikes count
 	 */
 	public function add_vote($comment_id, $vote, $user_id)
 	{
 
 		$model=Comment::model()->findByPk((int)$comment_id);
 		if($model===null){			
-			return false;
+			return array('success'=>false,'message'=> Yii::t('comment','The comment_id was not found.'));
 		}
 		$likes = $model->likes;
 		$dislikes = $model->dislikes;
@@ -147,7 +147,7 @@ class Comment extends CActiveRecord
 		$model2->user_id = $user_id;
 		$model2->vote = ($vote == "like") ? 1 : 0;
 		$model2->time = SiteLibrary::utc_time();
-		if(! $model2->save()) return false;
+		if(! $model2->save()) return array('success'=>false,'message'=> Yii::t('comment','Only one vote per user allowed.'));
 		
 		if ($vote == "like"){
 			$model->likes = $model->likes + 1;
@@ -156,13 +156,13 @@ class Comment extends CActiveRecord
 			$model->dislikes = $model->dislikes + 1;
 			$dislikes = $model->dislikes;
 		}			
-		if(! $model->save()) return false;
+		$model->save();
 		
 		//Update Live comments table if needed(if record doesnt exists, it simply wont update anything)	
 		Yii::app()->db->createCommand()->update('live_comment', array('likes'=>$likes,'dislikes'=>$dislikes)
 		,'comment_id=:comment_id',array(':comment_id'=>$comment_id));
 		
-		return array('comment_id'=>$comment_id, 'likes'=>$likes, 'dislikes'=>$dislikes);
+		return array('success'=>true,'comment_id'=>$comment_id, 'likes'=>$likes, 'dislikes'=>$dislikes);
 	}
 	
 	
