@@ -113,46 +113,44 @@ class InternalController extends Controller
 		//This frees up subs that never were used because they were fixed position but cron failed to run and time passed by
 		Subject::model()->updateAll(array('position'=>'0','user_position'=>'0','manager_position'=>'0'), 'position < '.$round_utc_time .' AND user_position < '.$round_utc_time.' AND manager_position < '.$round_utc_time);
 		
-		$next_subject_id_2 = Subject::model()->find(array('condition'=>'position >= '.$round_utc_time.' AND approved=1 AND authorized=1 AND disabled=0 AND deleted=0', 'order'=>'position ASC'))->id;
+		$subject = Subject::model()->find(array('condition'=>'position >= '.$round_utc_time.' AND approved=1 AND authorized=1 AND disabled=0 AND deleted=0', 'order'=>'position ASC'));
 		
 
 		$live_subject = Yii::app()->db->createCommand()->select('*')->from('live_subject')->queryRow();
 		
 		
-			$command->delete('live_comment');
-			$command->update('live_subject', array(
-			'comment_id'=>0,
-			'comment_number'=>0,
-			));
-		
+		$command->delete('live_comment');
+		$command->update('live_subject', array(
+		'comment_id'=>0,
+		'comment_number'=>0,
+		));
+	
 
-			//TEMPORAL:Refill the live_comments table with old comments about this subject if this subject is repeated
-			$past_comments = Yii::app()->db->createCommand()->select('t1.id,code,time,comment,comment_number,username,likes,dislikes')->from('comment t1')->where('subject_id ='.$next_subject_id_2)
-			->leftJoin('country t2', 'country_id=t2.id')
-			->leftJoin('user t3', 'user_id=t3.id')->order('time ASC')->queryAll();
-			echo "<br>gggg";print_r($past_comments);
-			$i = 0;
-			foreach($past_comments as $past_comment){
-				$i++;
-				$country_code = ($past_comment['code']) ? $past_comment['code'] : "WW";
-				$command->insert('live_comment',array('comment_id'=>$past_comment['id'],'username'=>$past_comment['username'],'subject_id'=>$next_subject_id_2, 'comment_country'=>$country_code,'comment_time'=>$past_comment['time'],'comment_text'=>$past_comment['comment'],'comment_number'=>$i,'likes'=>$past_comment['likes'],'dislikes'=>$past_comment['dislikes']));//we neet to use our own sequence because there might be repeated numbers
-				$comment_id = $past_comment['id'];
-			}
-			if($i > 0)$command->update('live_subject', array('comment_id'=>$comment_id,'comment_number'=>$i,));
-			$command->update('live_subject', array(
-			'subject_id'=>$next_subject_id_2,
-			'scheduled_time'=>SiteLibrary::utc_time_interval(),
-			));
-			
-			
-		
-		
-		Subject::model()->updateByPk($next_subject_id_2, array('show_time'=>SiteLibrary::utc_time(),'user_position'=>0,'manager_position'=>0));
+		//TEMPORAL:Refill the live_comments table with old comments about this subject if this subject is repeated
+		$past_comments = Yii::app()->db->createCommand()->select('t1.id,code,time,comment,comment_number,username,likes,dislikes')->from('comment t1')->where('subject_id ='.$subject->id)
+		->leftJoin('country t2', 'country_id=t2.id')
+		->leftJoin('user t3', 'user_id=t3.id')->order('time ASC')->queryAll();
+		echo "<br>gggg";print_r($past_comments);
+		$i = 0;
+		foreach($past_comments as $past_comment){
+			$i++;
+			$country_code = ($past_comment['code']) ? $past_comment['code'] : "WW";
+			$command->insert('live_comment',array('comment_id'=>$past_comment['id'],'username'=>$past_comment['username'],'subject_id'=>$subject->id, 'comment_country'=>$country_code,'comment_time'=>$past_comment['time'],'comment_text'=>$past_comment['comment'],'comment_number'=>$i,'likes'=>$past_comment['likes'],'dislikes'=>$past_comment['dislikes']));//we neet to use our own sequence because there might be repeated numbers
+			$comment_id = $past_comment['id'];
+		}
+		if($i > 0)$command->update('live_subject', array('comment_id'=>$comment_id,'comment_number'=>$i,));
+		$command->update('live_subject', array(
+		'subject_id'=>$subject->id,
+		'scheduled_time'=>SiteLibrary::utc_time_interval(),
+		'subject_data'=>serialize($subject),
+		));
+
+		//Reset position as subject is going to live now
+		Subject::model()->updateByPk($subject->id, array('show_time'=>SiteLibrary::utc_time(),'user_position'=>0,'manager_position'=>0));
 		
 		//Notify subject owner via email that his subject its gonna get LIVE
-		$subject = Subject::model()->findByPk($next_subject_id_2);
 		$user = User::model()->findByPk($subject->user_id);
-		if($user->id <> 1 and $user->notify_subject_live == 1){			
+		if($user->id <> 1 and $user->notify_subject_live == 1){		
 			$mail_message = Yii::t('subject',"Hi {username}, 
 We are writing to notify you that your subject got approved and that it is
 going to be placed in the live stream(Homepage) in the next 5 minutes.
@@ -178,7 +176,7 @@ www.samesub.com");
 				echo "Email could not be sent.";
 			}
 		}
-		echo 'Done setting next subject_id_2 : '.$next_subject_id_2;
+		echo 'Done setting next subject_id_2 : '.$subject->id;
 		
 	}
 

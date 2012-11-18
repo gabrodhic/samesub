@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Nov 17, 2012 at 05:13 PM
+-- Generation Time: Nov 17, 2012 at 08:37 PM
 -- Server version: 5.1.33
 -- PHP Version: 5.2.9
 
@@ -264,6 +264,7 @@ CREATE TABLE live_subject (
   comment_id int(11) NOT NULL DEFAULT '0',
   comment_number int(11) NOT NULL DEFAULT '0',
   scheduled_time int(11) NOT NULL DEFAULT '0',
+  subject_data text COLLATE utf8_unicode_ci,
   PRIMARY KEY (id)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 

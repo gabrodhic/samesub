@@ -223,7 +223,7 @@ function display_elements(obj_json){
 	current_title = obj_json.title;//title
 	submit_info = '<?php echo Yii::t('site','by {username} at {time} UTC',array('{username}'=>'<a href="'.Yii::app()->getRequest()->getBaseUrl(true).'/mysub/\'+obj_json.username+\'">\' + obj_json.username + \'</a>','{time}'=>"'+time_submitted.getHours()+':'+time_submitted.getMinutes()+'"));?>';
 	share_links = '<?php echo SiteHelper::share_links("'+obj_json.urn+'","'+obj_json.title+'"); ?>';
-	$('#subject_voting').html( '<?php echo SiteHelper::subject_vote("'+obj_json.suject_id+'","'+obj_json.likes+'","'+obj_json.dislikes+'"); ?>');;
+	$('#subject_voting').html( '<?php echo SiteHelper::subject_vote("'+obj_json.subject_id+'","'+obj_json.likes+'","'+obj_json.dislikes+'"); ?>');;
 	
 	$('#share_links').html(share_links);
 	$('#submit_info').html(submit_info);

@@ -125,7 +125,7 @@ class Subject extends CActiveRecord
 			//Invalidate any change if the subject has been showed while it was being modified
 			if( Yii::app()->db->createCommand("SELECT * FROM live_subject WHERE subject_id = {$this->id}")->queryRow())
 			{
-				if(Yii::app()->controller->action->id != 'fetch' and Yii::app()->controller->action->id != 'view'){
+				if(Yii::app()->controller->action->id != 'fetch' and Yii::app()->controller->action->id != 'view' and Yii::app()->controller->action->id != 'vote'){
 					$this->addError('title',Yii::t('subject', 'Right now this subject is either in the comming up queue or in the live-now stream. You can not modify it.'));
 					return false;
 				}
@@ -395,7 +395,7 @@ class Subject extends CActiveRecord
 		//If the subject cached on client's device its the same that the live_subject table indicates to be cached...
 		if($subject_id <> $live_subject['subject_id']){
 
-			$subject_data = Subject::model()->findByPk($live_subject['subject_id']);
+			$subject_data = unserialize($live_subject['subject_data']);
 			$arr_data['title'] = $subject_data->title;
 			$arr_data['content_type_id'] = $subject_data->content_type_id;
 			$arr_data['content_type'] = strtolower($subject_data->content_type->name);
@@ -430,6 +430,8 @@ class Subject extends CActiveRecord
 				$arr_data['new_sub']++;
 			}
 			
+			$arr_data['likes'] = $subject_data->likes;
+			$arr_data['dislikes'] = $subject_data->dislikes;
 			$arr_data['urn'] = $subject_data->urn;
 			$arr_data['permalink'] = Yii::app()->getRequest()->getBaseUrl(true)."/sub/".$subject_data->urn;
 			//Send the last two previous subjects
@@ -706,10 +708,10 @@ class Subject extends CActiveRecord
 		}			
 		if(! $model->save()) return false;
 		
-		//Update Live subjects table if needed(if record doesnt exists, it simply wont update anything)	
-		//TODO
-		//Yii::app()->db->createCommand()->update('live_subject', array('likes'=>$likes,'dislikes'=>$dislikes)
-		//,'subject_id=:subject_id',array(':subject_id'=>$subject_id));
+		//Update Live subjects table if needed
+		//Notice we are sending the subject id parameter as condition(if record doesnt exists, it simply wont update anything)		
+		Yii::app()->db->createCommand()->update('live_subject', array('subject_data'=>serialize($model))
+		,'subject_id=:subject_id',array(':subject_id'=>$subject_id));
 		
 		return array('subject_id'=>$subject_id, 'likes'=>$likes, 'dislikes'=>$dislikes);
 	}

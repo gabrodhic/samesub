@@ -404,10 +404,6 @@ www.samesub.com");
 		
 		$this->model->show_time = ">:0";
 		$this->model->deleted = 0;
-		$live_subject = Yii::app()->db->createCommand()
-			->select('*')
-			->from('live_subject')
-			->queryRow();
 		
 
 		$this->render('index',array(
