@@ -101,9 +101,14 @@ Yii::app()->clientScript->registerCss('countdowncss',
 	<p id="time_remaining" style="text-align: center;font-size: 30px; font-family: Impact"><?php echo Yii::t('subject','Time remaining');?></p>
 	<?php 
 	}else{
+		//$model->position > SiteLibrary::utc_time()
+		if(   (SiteLibrary::utc_time() - $model->show_time) <= (Yii::app()->params['subject_interval'] * 60))
+			$redirect_url = Yii::app()->getRequest()->getBaseUrl(true);
+		else
+			$redirect_url = Yii::app()->getRequest()->getBaseUrl(true).'/sub/'.$model->urn;
 	?>
 	<script>
-		tick=window.setTimeout(function (){ top.location="<?php echo Yii::app()->getRequest()->getBaseUrl(true).'/sub/'.$model->urn;?>"; },5000);
+		tick=window.setTimeout(function (){ top.location="<?php echo $redirect_url;?>"; },5000);
 	</script>
 	<p style="color:red; text-align: center;font-size: 30px; font-family: Impact"><?php echo Yii::t('subject','Subject already shown on: {date} UTC', array('{date}'=>date("Y/m/d", $model->position). ' '.  date("H",$model->position).':'.date("i",$model->position)));?> </p>
 	<?php
