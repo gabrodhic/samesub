@@ -101,6 +101,9 @@ table tr td{ border-bottom:1px solid #E0E0E0;}
 		<td><a href="#global">response_format</a></td>
 	</tr>
 	<tr>
+		<td><a href="#global">callback</a></td>
+	</tr>
+	<tr>
 		<td><a href="#global">response_code</a></td>
 	</tr>
 	<tr>
@@ -911,6 +914,14 @@ table tr td{ border-bottom:1px solid #E0E0E0;}
 				<td style="width:10%">string</td>
 				<td>How do you want the response encoded. <b>json </b>(default) or 
 				<b>xml</b>.</td>
+			</tr>
+			<tr>
+				<td style="width:20%"><b>callback<br>
+				</b>(optional)</td>
+				<td style="width:10%">string</td>
+				<td>If you need to use JSONP to prevent the 'Same Origin' 
+				security policy error, this is the name of the callback 
+				parametter.</td>
 			</tr>
 			<tr>
 				<td><b>anonymously<br>

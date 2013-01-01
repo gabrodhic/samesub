@@ -56,6 +56,9 @@ class DocumentationController extends Controller
 	}
 	public function actionQuickguide()
 	{
+		//Import the php class GeSHi syntax highlighter 
+		Yii::import('application.vendors.*');
+		require_once('geshi/geshi.php');
 		$this->render('quickguide');
 	}
 	public function actionApi()

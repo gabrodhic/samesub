@@ -19,22 +19,37 @@ class ApiController extends CController
 		);
 	}
 	
-		/**
+	/**
 	 * Override the missingAction method with our own.
 	 */
 	public function missingAction(){
 		global $arr_response;
 		$arr_response['response_code'] = 404;
 		$arr_response['response_message'] = Yii::t('api','No such method in this API section.');
-		if($_REQUEST['response_format'] == 'xml'){
-			header('Content-type: text/xml');
-			$response = SiteLibrary::array2xml($arr_response);
-		}else{
-			header('Content-type: text/plain');
-			$response = json_encode($arr_response);
-		}
+		$response = $this->encodeData($arr_response);
 		echo $response;
 	}
+	
+	/**
+	 * This is the action to handle external exceptions.
+	 */
+	public function actionError()
+	{
+		global $arr_response;
+	    if($error=Yii::app()->errorHandler->error)
+	    {
+			//$error['message'] = '?????????';
+			//TODO: Use the ApiController Component for all actions handling instead of the ApiModule
+            
+			$arr_response['response_code']=$error['code'];
+			$arr_response['response_message']=$error['message'];
+			$arr_response['errorCode']=$error['errorCode'];
+			$arr_response['result']='false';
+			//$response = $this->encodeData($arr_response);
+			//echo $response;
+	    }
+	}
+	
 	
 	/*
 	 * Filter to be applied to all actions
@@ -48,8 +63,20 @@ class ApiController extends CController
 		$arr_response['response_message'] = 'OK';		
 		$filterChain->run();
 		//Post-filter
-		if($arr_response){
-			if($_REQUEST['response_format'] == 'xml'){
+		if($arr_response){			
+			$response = $this->encodeData($arr_response);
+			echo $response;
+		}
+		return true;
+	}
+	
+	/*
+	 * Encodes the response data in the appropiate format.
+	 * @data array the data to be encoded
+	 */
+	protected function encodeData($data){
+		global $arr_response;
+		if($_REQUEST['response_format'] == 'xml'){
 				header('Content-type: text/xml');
 				$response = SiteLibrary::array2xml($arr_response);
 			}else{
@@ -59,13 +86,16 @@ class ApiController extends CController
 						$response = json_encode($arr_response,JSON_PRETTY_PRINT);
 					else
 						$response = json_encode($arr_response);
-				}else{
-					header('Content-type: text/plain');
+				}else{					
 					$response = json_encode($arr_response);
 				}
+				if(isset($_REQUEST['callback'])){
+					header('Content-type: application/x-javascript');
+					$response = $_REQUEST['callback'] . '('. $response . ')';
+				}else{
+					header('Content-type: text/plain');
+				}
 			}
-			echo $response;
-		}
-		return true;
+			return $response;
 	}
 }

@@ -1,120 +1,326 @@
-<h1>Quick Guide</h1>
-<?php echo "Last modified: " . date ("F d Y H:i:s.", filemtime(__FILE__));?><br><br>
-<p>
-
-</p>
-<p>
-This Quick Guide only covers the three most basic operations in the Samesub platform: get information about the current subject in LIVE, send a comment to the current subject in LIVE, 
+<h1>Quick Start Guide</h1>
+<?php echo "Last modified: " . date ("F d Y H:i:s.", filemtime(__FILE__));?><br>
+<br>
+<ol>
+	<li><a href="#Introduction">Introduction</a></li>
+	<li><a href="#Live_Info">Get Live Info - The 'Hello World' of Samesub</a></li>
+	<li><a href="#Refreshing_data">Refreshing the Data</a></li>
+	<li><a href="#Send_comment">Send a Comment to Live</a></li>
+	<li><a href="#Add_subject">Add a Subject</a></li>
+</ol>
+<h2 id="Introduction">&nbsp;</h2>
+	<h2>Introduction</h2>
+	<p>
+<br>
+This Quick Start Guide covers the three most basic operations in the Samesub platform: get information about the current subject in LIVE(homepage), send a comment to the current subject in LIVE, 
 and add a subject.
 </p>
 <p>
-To get more details about these and other api resources please click on the <?php echo CHtml::link('API documentation','api'); ?> link.
+To get more details about these and other Api resources please click on the <?php echo CHtml::link('API documentation','api'); ?> link.
 </p>
 <p>By following the steps described here you will be able to interface to our 
 platform quickly without having to enter into the details of every API 
 resource. Dominating these three basic operations of the API will help you conquer 
 all of the others, as these are the core and most important API operations.</p>
-<p>Let's start with the first one:</p>
+<p>Let's get started.</p>
 
 <br><br>
-<h3>Get Live Information</h3>
-&nbsp;<p>We will use the live/getall API resource to get information in live.<br>
-</p>
-<ol style="margin-top: 20px;">
-	<li>Make a request to the following URL: http://samesub.com/api/v1/live/getall</li>
-	<li>The response will return all the current data related to live (homepage) 
-	in a JSON encoded format. <br>
-	NOTE: you can get the response xml encoded by adding the <b>response_format=xml</b> 
-	parameter to the request URL. (ie: http://samesub.com/api/v1/live/getall?response_format=xml)</li>
-	<li>Decode the returned JSON/XML response string and look for 
-	the following items as appropriate:<br>
-	<b><br>
-	subject_id</b>: The id of the subject.<b><br>
-	<br>
-	title</b>: The title of the subject.<br>
-	<b><br>
-	urn</b>: Its the URN (Uniform Resource Name) of the subject. It can be 
-	used generate the <a href="http://en.wikipedia.org/wiki/Permalink">permalink</a> 
-	(Permanent Link) of&nbsp; the subject. ie http://www.samesub.com/sub/<b>urn-returned-value-goes-right-here</b><br>
-	<b><br>
-	content_type</b>: The type of content. i.e.: image, text, video.<br>
-	<b><br>
-	content_html</b>: This is the actual content in html format. This is what 
-	you are going to present as the subject in your application.<br>
-	<b><br>
-	content_data</b>: This is the same content as in <b>content_html</b> but 
-	its raw in this case and is an array of element. You use <b>content_type </b>to know how to handle 
-	that data. For example, if its an image&nbsp; then you would search for <b>url</b>(the 
-	url of the image) sub element of <b>content_data</b> array. If its text you 
-	would search for <b>text</b> sub element. If its video you would search 
-	for the <b>embed_code</b> sub element, and so on.<br>
-	<b><br>
-	comment_id</b>: This is the id of last comment received in the server for 
-	the subject in live. It should be the same as the last item in the <b>comments</b> 
-	array. You make all 
-	subsequent requests after the first one, with a <b>comment_id</b> param with the value you 
-	received in the last response so that the server knows if you are updated or 
-	not and don't have to send you all the comments you already have. i.e. :&nbsp; http://samesub.com/api/v1/live/getall?subject_id=356&amp;comment_id=568<br>
-	<b><br>
-	new_comment</b>: Indicates how many new comments are from the 
-	<b>comment_id</b> you sent in the request parameter.<br>
-	<b><br>
-	new_sub</b>: Indicates(0 or 1) if there is a new subject different than 
-	the one you already have. You tell the server which subject you have by 
-	sending the subject_id parameter with the last value you received. i.e.: 
-	http://samesub.com/api/v1/live/getall?subject_id=463<br>
-	<b><br>
-	comments</b>: These are the comments as an array that the subject has received from 
-	other users. Each comment has the following properties: username, comment_text, comment_id, comment_time, comment_country<b>.<br>
-	</b>NOTE: If you don't receive a item its because you don't need it, you have 
-	the last information of that item, so the server saves bandwidth and doesn't 
-	send you that item.<b><br>
-	<br>
-	user_comment</b>: This is the comment that the user who uploaded the content 
-	has placed in the subject. You should present this information as part of 
-	the content.<b><br>
-	<br>
-	user_id</b>: The id of the user who uploaded the content.<b><br>
-	<br>
-	username</b>: The username of the user who uploaded the content.<b><br>
-	<br>
-	current_time</b>: Its the current
-	<a href="http://en.wikipedia.org/wiki/Coordinated_Universal_Time">UTC</a>.<br>
-	<b><br>
-	time_remaining</b>: Is the time remaining in seconds for the subject to 
-	change to a new one. If you are running your application and you don't want 
-	to get the comments as they come in, then you would make a new request when 
-	time remaining gets to cero (by having a countdown counter in your app). 
-	Other way (if you will be showing the comments in your application) you 
-	should make a request every five seconds, to see if there are new comments 
-	and show them.<br>
-	<b><br>
-	priority</b>: The priority that has the subject. i.e.: low, medium, high, 
-	urgent.<br>
-	<b><br>
-	permalink</b>: The permanent link to access the subject when it goes away 
-	from live.<br>
-&nbsp;</li>
-	<li>As you may know, if you go to the <?php echo CHtml::link('homepage','../../'); ?>(LIVE) you can see that subjects changes every 5 minutes. But comments in the other hand can come in at any time. If you are displaying both(comments and subject) in your app, you should make a request every 5 seconds on average(you don't know if in the next few seconds there will be a new comment). But if you are just showing the subject, then you should make a request every 5 minutes (see <b>time_remaining</b> above). Remember that, all subsequent request(after the first one) to the live/getall api resource should include 
-	the
-	<b>comment_id</b> and
-	<b>subject_id</b> parameters with the last values you received respectively in 
-	your last response. i.e: http://samesub.com/api/v1/live/getall?subject_id=356&amp;comment_id=568</li>
-	<li>You know when a subject has changed if: the
-	<b>subject_id</b> value in the response is different than the one you sent 
-	parameter or if <b>new_sub</b> is not 0.</li>
-	<li>You know if there is a new comment if:
-	<b>new_comment</b> in the response is greater than 0.</li>
-	<li>When the subject has changed(<b>new_sub</b>) or there is a new comment(<b>new_comment</b>) 
-	you should update your application screen with the new values received.</li>
-	<li>The whole thing is to be in this loop waiting either for subs or comments, or both, and update your application screen as new information comes in.</li>
-	<li>That's it.</li>
+<h2 id="Live_Info">Get Live Info - The 'Hello World' of Samesub</h2>
+&nbsp;<p>Let's go right away with an example using Html and Javascript. Just 
+copy the following code, save it in a .html file and then open it from a Web 
+Browser. The example prints the current title and the time remaining.</p>
+<?php
+$source = "<html>
+	<head>
+		<script type=\"text/javascript\" src=\"http://code.jquery.com/jquery-latest.js\"></script>
+		<script type=\"text/javascript\">
+		function getLiveInfo(){
+			$.getJSON('http://samesub.com/api/v1/live/getall?callback=?',
+				{},
+				function(data) {
+					//If everything is ok(response_code == 200), let's print some LIVE information
+					if(data.response_code == 200){
+						$('#title').html(data.title);
+						$('#time_remaining').html(data.time_remaining + ' seconds.');
+					}else{
+						//Otherwise alert data.response_message				
+						alert(data.response_message);
+					}
+				}
+			);
+		}
+		
+		//When the page has loaded, we call our function
+		$(document).ready(function() {
+			getLiveInfo();
+		});
+		</script>
+	</head>
+	<body>
+		<h1>My First Samesub API example</h1>
+		<p>Current Title: <span id=\"title\"></span></p>
+		<p>Time remaining: <span id=\"time_remaining\"></span></p>
+	</body>
+</html>";
+$language = 'Javascript';
+ 
+$geshi = new GeSHi($source, $language);
+$geshi->enable_classes();
+$geshi->set_overall_class('myjs_lines');
+$geshi->set_header_type(GESHI_HEADER_PRE_TABLE);
+$geshi->set_overall_style("padding:0 0 5px 0;border:1px solid #999999");
+$geshi->set_tab_width(2);
+$geshi->set_header_content("(<LANGUAGE>) Example - Getting current subject info in homepage(LIVE) using Jquery");
+$geshi->set_header_content_style("background-color: #DFDFFF;font-size:14px;font-weight:bold;");
+
+$geshi->enable_line_numbers(GESHI_NORMAL_LINE_NUMBERS);
+$geshi->set_line_style('background: #fcfcfc;', true);
+
+Yii::app()->clientScript->registerCss('highlightcode',$geshi->get_stylesheet());
+echo $geshi->parse_code();
+?>
+
+<p>&nbsp;</p>
+<p>Let's analyze the code step by step:</p>
+<ol>
+	<li>We include the <a href="http://jquery.com/">Jquery Javascript Framework</a> 
+	to make our work more easy.</li>
+<li>We use the 
+<a href="api#live/getall">live/getall</a> API resource to get the information in live(homepage).</li>
+	<li>For this example we have added a callback parameter to the url (notice
+	<b>callback=?</b>) to prevent 'Same Origin' security policy error, since 
+	this example runs in a Web Browser. Read
+	<a href="http://en.wikipedia.org/wiki/JSONP">JSONp</a> for more. <b>NOTE</b>: 
+	If your app does NOT run inside a Web Browser, you should NOT add this 
+	parameter.</li>
+	<li>After we make the ajax request to the 
+<a href="api#live/getall">live/getall</a> resource, the response will return the 
+	current data in a JSON format.
+	<br /><br />
+	<div class="flash-notice"><b>TIP</b>: You can get the response xml encoded by adding the 
+		<b>response_format=xml</b> 
+	parameter to the request URL. (ie: http://samesub.com/api/v1/live/getall?response_format=xml)
+	</div>
+	</li>
+	<li>We examine <b><a href="api#global">response_code</a></b> returned value before we 
+	do anything.</li>
+	<li>We print the data in question.</li>
+</ol>
+<p>As you can see, this app is extremely simple, that's why we call it the 
+&quot;Hello World&quot; of Samesub. Now let's modify the app and add some features to make 
+it something more useful.</p>
+<h3>&nbsp;</h3>
+<h2 id="Refreshing_data">Refreshing the data</h2>
+<p><br>
+As you may know, subjects in the Live stream change every x seconds. We know how 
+much time is left for the current subject by reading the <b>time_remaining</b> 
+element in the response from the 
+<a href="api#live/getall">live/getall</a> resource. When that time is over, the 
+<a href="api#live/getall">live/getall</a> updates it's data automatically, and reflects 
+data for the new subject. </p>
+<p>Now we need that our app automatically refreshes when the <b>time_remaining</b> 
+is over, and then print the new data from the new subject. So, let's make some 
+changes to the function in our original example.</p>
+<?php
+$source = "
+function getLiveInfo(){
+	$.getJSON('http://samesub.com/api/v1/live/getall?callback=?',
+		{},
+		function(data) {
+			//If everything is ok(response_code == 200), let's print some LIVE information
+			if(data.response_code == 200){
+				$('#title').html(data.title);
+				$('#time_remaining').html(data.time_remaining + ' seconds.');
+				var counter = data.time_remaining;
+				var myInterval = setInterval(
+					function(){
+						if(counter < 1){ clearInterval(myInterval); getLiveInfo(); }
+						counter = counter - 1;
+						$('#time_remaining').html(counter + ' seconds.');
+					}
+				,1000);
+			}else{
+				//Otherwise alert data.response_message				
+				alert(data.response_message);
+			}
+		}
+	);
+}
+";
+$language = 'Javascript';
+ 
+$geshi = new GeSHi($source, $language);
+$geshi->enable_classes();
+$geshi->set_overall_class('myjs_no_lines');
+
+$geshi->set_header_type(GESHI_HEADER_DIV);
+$geshi->set_overall_style("padding:1px 15px 1px 15px;border:1px solid #999999;background: #fcfcfc;font: normal normal 1em/1.2em monospace;");
+$geshi->set_tab_width(2);
+
+//$geshi->enable_line_numbers(GESHI_NORMAL_LINE_NUMBERS);
+//$geshi->set_line_style('background: #fcfcfc;', true);
+
+Yii::app()->clientScript->registerCss('highlightcode2',$geshi->get_stylesheet());
+echo $geshi->parse_code();
+?>
+<p>&nbsp;</p>
+<ol>
+	<li>We have added a <b>counter</b> variable initialized with the <b>time_remaining</b> 
+	value.</li>
+	<li>We have added an interval function that is called every 1 second.</li>
+	<li>The interval function subtracts 1 to <b>counter</b> variable every time 
+	it is called.</li>
+	<li>When <b>counter</b> is less than 1 we clear the interval and call the <b>
+	getLiveInfo</b> function again.</li>
+	<li>The <b>getLiveInfo</b> gets the new data from the 
+<a href="api#live/getall">live/getall</a> resource and the the whole process 
+	repeats in a loop.</li>
 </ol>
 <p>&nbsp;</p>
+<h3>Refreshing comment data</h3>
+<p><br>
+While the <b>time_remaining</b> 
+	variable give us information about when the next subject is going to come, 
+there is no way to know when the next comment is going to come as it can come in at any time. If you are displaying comments 
+besides of the subject in your app, you should make a request 
+	at least every 10 seconds on average (you don't know if in the next few 
+	seconds there will be a new comment). But if you are just showing the 
+	subject, then you should make a new request depending only on the <b>time_remaining</b> value 
+as we've seen earlier. </p>
+<p>So, let's modify our app function so that it also display comments:</p>
+<p>First, we add a div element to our html body to hold the comments data. <br>
+&nbsp;</p>
+
+<?php
+$source = "...
+	<body>
+		<h1>My First Samesub API example</h1>
+		<p>Current Title: <span id=\"title\"></span></p>
+		<p>Time remaining: <span id=\"time_remaining\"></span></p>
+		<p>Comments:</p>
+		<div id=\"comments_box\"></div>
+	</body>
+</html>";
+$language = 'Javascript';
+ 
+$geshi = new GeSHi($source, $language);
+$geshi->enable_classes();
+$geshi->set_overall_class('myjs_no_lines');
+
+$geshi->set_header_type(GESHI_HEADER_DIV);
+$geshi->set_overall_style("padding:1px 15px 1px 15px;border:1px solid #999999;background: #fcfcfc;font: normal normal 1em/1.2em monospace;");
+$geshi->set_tab_width(2);
+
+//$geshi->enable_line_numbers(GESHI_NORMAL_LINE_NUMBERS);
+//$geshi->set_line_style('background: #fcfcfc;', true);
+
+Yii::app()->clientScript->registerCss('highlightcode2',$geshi->get_stylesheet());
+echo $geshi->parse_code();
+?>
+
+<p>&nbsp;</p>
+<p>Now we modify our function:<br>
+&nbsp;</p>
+<?php
+
+$source = "
+var counter = 0;
+var reset_comment = false;
+var comment_id = 0;
+var subject_id = 0;
+
+function getLiveInfo(){
+	$.getJSON('http://samesub.com/api/v1/live/getall?callback=?',
+		{subject_id:subject_id, coment_id:comment_id},
+		function(data) {
+			//If everything is ok(response_code == 200), let's print some LIVE information
+			if(data.response_code == 200){
+				counter = data.time_remaining;
+				if(data.new_sub != 0 || data.new_comment != 0 ){
+					if(data.new_sub != 0) {
+						//Every time there is a nuew sub, comments must be cleared
+						reset_comment=true;
+						comment_id = 0;	
+						
+						//Display subject
+						subject_id = data.subject_id;
+						$('#title').html(data.title);
+						$('#time_remaining').html(data.time_remaining + ' seconds.');
+					}
+					if(data.new_comment != 0){
+						comment_id = data.comment_id;
+						show_comments(data.comments);
+					}
+				}
+			}else{
+				//Otherwise alert data.response_message				
+				alert(data.response_message);
+			}
+		}
+	);
+	var aa = setTimeout('getLiveInfo()',8000);
+}
+
+function show_comments(comments){
+	if(reset_comment == true) {
+		$('#comments_box').html('');//Clear all previous comments
+	}
+	for(var i in comments) {
+		$('#comments_box').prepend(comments[i]['comment_text']+ '<br />');
+	}
+}
+
+var myInterval = setInterval(
+	function(){
+		counter = counter - 1;
+		$('#time_remaining').html(counter + ' seconds.');
+	}
+,1000);
+";
+$language = 'Javascript';
+ 
+$geshi = new GeSHi($source, $language);
+$geshi->enable_classes();
+$geshi->set_overall_class('myjs_no_lines');
+
+$geshi->set_header_type(GESHI_HEADER_DIV);
+$geshi->set_overall_style("padding:1px 15px 1px 15px;border:1px solid #999999;background: #fcfcfc;font: normal normal 1em/1.2em monospace;");
+$geshi->set_tab_width(2);
+
+//$geshi->enable_line_numbers(GESHI_NORMAL_LINE_NUMBERS);
+//$geshi->set_line_style('background: #fcfcfc;', true);
+
+Yii::app()->clientScript->registerCss('highlightcode2',$geshi->get_stylesheet());
+echo $geshi->parse_code();
+?>
+<p>&nbsp;</p>
+<p>As you can see there are several changes: </p>
+<ol>
+	<li>We have declared few global variables.</li>
+	<li>We have splitted our function in three main parts: the <b>getLiveInfo</b> 
+	function itself, the <b>show_comments</b> function, and the interval 
+	function.</li>
+	<li>Notice that now we are sending two data parameters to the <b>getJSON</b> 
+	jquery function; the <b>subject_id</b> and <b>comment_id</b> parameters.</li>
+	<li>Notice that the values we are sending in the two parameters are the same 
+	values we are receiving from the server.</li>
+	<li>The only way to know if there are newer comments than the last we 
+	received is by telling the server which was the last <b>comment_id</b> we 
+	received. The same goes for the <b>subject_id</b>.</li>
+	<li>We know when a subject has changed if the <b>new_sub</b> value is 
+	greater than 0 or the
+	<b>subject_id</b> value in the response is different than the one you sent. 
+	The same goes for
+	<b>new_comment</b> and <b>comment_id</b>.</li>
+	<li>When the subject has changed (<b>new_sub</b>) or there is a new comment (<b>new_comment</b>) 
+	you should update your application screen with the new values respectively.</li>
+</ol>
+<p></p>
+<p>The whole thing is to be in this loop waiting either for subs or comments, or both, and update your application screen as new information comes in. That's it.</p>
 <p>&nbsp;</p>
 
 <p>
-<h3>Send comment to Live(Homepage)</h3>
+<h2 id="Send_comment">Send comment to Live</h2>
 <br>
 To send a comment we use the live/sendcomment api resource.
 <br>
@@ -122,7 +328,7 @@ To send a comment we use the live/sendcomment api resource.
 <ol>
 	<li>Make a request (either post or get) to
 	http://samesub.com/api/v1/live/sendcomment.</li>
-	<li>In the request simply add a parameter named <b>text</b> with the value 
+	<li>In the request simply add a parameter named d <b>text</b> with the value 
 	you want to send as comment.</li>
 	<li>That's it. </li>
 </ol>
@@ -130,7 +336,7 @@ To send a comment we use the live/sendcomment api resource.
 http://samesub.com/api/v1/live/sendcomment?text=Hello+world&anonymously=1</p>
 <p>NOTE: See that we added a parameter called <b>anonymously</b> with value <b>1</b> to the request. That is because this api resource requires <a href="authentication">authentication</a> as you can see in the documentation <a href="api#live/sendcomment">here</a>, and we are authenticating as anonymous(guest) user in this case.
 <p>&nbsp;</p>
-<h3>Add a subject</h3>
+<h2 id="Add_subject">Add a subject</h2>
 <br>
 To add a subject we use the subject/add api resource.
 <br>

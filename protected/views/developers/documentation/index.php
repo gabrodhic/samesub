@@ -10,7 +10,7 @@ We give you here all the information you need to be able to use all the resource
 <h3>Documentation Resources</h3>
 <p>&nbsp;</p>
 <ul>
-	<li><?php echo CHtml::link('Quick Guide',array('developers/documentation/quickguide')); ?> - Start using the API in just 
+	<li><?php echo CHtml::link('Quick Start Guide',array('developers/documentation/quickguide')); ?> - Start using the API in just 
 	minutes.</li>
 	<li><?php echo CHtml::link('API',array('developers/documentation/api')); ?> - Read the whole specification of the API and&nbsp; 
 	have a better domain of the platform.</li>
