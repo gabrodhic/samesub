@@ -11,20 +11,22 @@
 	<?php } ?>
 	<meta name="keywords" content="<?php echo  str_replace(" ", ",", str_replace(",", "", $this->pageTitle));?>">
 
-	<?php if(strtolower($this->id) != 'site' or strtolower($this->action->Id) != 'index'){	?>
+	<?php
+	$filepath = Yii::app()->params['webdir'];
+	if(strtolower($this->id) != 'site' or strtolower($this->action->Id) != 'index'){	?>
 		<!-- blueprint CSS framework -->
-		<link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/screen.css" media="screen, projection" />
-		<link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/print.css" media="print" />
+		<link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/screen-<?php echo filemtime($filepath.'/css/screen.css'); ?>.css" media="screen, projection" />
+		<link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/print-<?php echo filemtime($filepath.'/css/print.css'); ?>.css" media="print" />
 		<!--[if lt IE 8]>
 		<link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/ie.css" media="screen, projection" />
 		<![endif]-->
 
-		<link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/main.css" />
-		<link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/form.css" />
-		<link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/core.css" />
+		<link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/main-<?php echo filemtime($filepath.'/css/main.css'); ?>.css" />
+		<link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/form-<?php echo filemtime($filepath.'/css/form.css'); ?>.css" />
+		<link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/core-<?php echo filemtime($filepath.'/css/core.css'); ?>.css" />
 	<?php
 		Yii::app()->clientScript->registerCoreScript('jquery');
-		Yii::app()->clientScript->registerScriptFile(Yii::app()->request->baseUrl.'/site/js/site');
+		Yii::app()->clientScript->registerScriptFile(Yii::app()->request->baseUrl.'/js/site-'.filemtime($filepath.'/js/core.js').'.js');
 	}else{
 	?>
 		<script type="text/javascript">
@@ -35,11 +37,18 @@
 		var element1 = document.createElement("link");
 		element1.type="text/css";
 		element1.rel = "stylesheet";
-		element1.href = "<?php echo Yii::app()->getRequest()->getBaseUrl(true);?>/css/core.css";
+		element1.href = "<?php echo Yii::app()->getRequest()->getBaseUrl(true);?>/css/core-<?php echo filemtime($filepath.'/css/core.css'); ?>.css";
 		document.getElementsByTagName("head")[0].appendChild(element1);
 
+		<?php $time = SiteLibrary::utc_time(); ?>
+
+		var utc_time = <?php echo $time;?>;
+		var utc_hour = <?php echo date("H",$time); ?>;
+		var utc_min = <?php echo date("i",$time); ?>;
+		var utc_sec = <?php echo date("s",$time); ?>;
+
 		var element2 = document.createElement("script");
-		element2.src = "<?php echo Yii::app()->getRequest()->getBaseUrl(true);?>/site/js/core";
+		element2.src = "<?php echo Yii::app()->getRequest()->getBaseUrl(true);?>/js/core-<?php echo filemtime($filepath.'/js/core.js'); ?>.js";
 		element2.type="text/javascript";
 		document.getElementsByTagName("head")[0].appendChild(element2);
 

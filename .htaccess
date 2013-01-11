@@ -5,6 +5,10 @@ php_flag display_errors on
 php_flag html_errors on
 RewriteEngine on
 
+#Rewrite rule for more robust caching (ie: file-023.js -> file.js, file-024.js -> file.js)
+#Every time a file changes, a new url is generated and is mapped to the original file name
+RewriteRule ^(.+)-(\d+).(js|css)$ $1.$3 [L]
+
 # if a directory or a file exists, use it directly
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
@@ -27,3 +31,25 @@ RewriteRule . index.php
 #RewriteCond %{HTTP_HOST} ^api\.samesub\.com
 #RewriteCond %{REQUEST_URI} !^webmail/ [NC]
 #RewriteRule ^(.*) /api/$1 [P,L]
+
+
+# FILE CACHING (Client Side - Browser) Directives
+#
+# cache images/pdf docs for 4 weeks days
+<FilesMatch "\.(ico|pdf|jpg|jpeg|png|gif)$">
+	Header unset Pragma
+	FileETag None
+	Header unset ETag
+	Header set Cache-Control "max-age=2419200, public, must-revalidate"
+	Header unset Last-Modified
+</FilesMatch>
+# cache js files with other syntax file names, and for 1 year as this are going to change with the url in the filename with the RewriteRule
+<FilesMatch "(\.css|\.js)$">
+	Header unset Pragma
+	FileETag None
+	Header unset ETag
+	ExpiresDefault A29030400
+	Header set Cache-Control "public"
+	Header unset Last-Modified
+</FilesMatch>
+

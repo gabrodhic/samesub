@@ -5,11 +5,13 @@
 	<meta name="language" content="en" />
 	<meta name="keywords" content="<?php echo  str_replace(" ", ",", str_replace(",", "", $this->pageTitle));?>">
 
-	<?php if(strtolower($this->id) != 'site' or strtolower($this->action->Id) != 'index'){	?>
+	<?php
+	$filepath = Yii::app()->params['webdir'];
+	if(strtolower($this->id) != 'site' or strtolower($this->action->Id) != 'index'){	?>
 
 		<link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/main.css" />
 		<link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/form.css" />
-		<link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->theme->baseUrl; ?>/css/core.css" />
+		<link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->theme->baseUrl; ?>/css/core-<?php echo filemtime($filepath.'themes/mobile/css/core.css'); ?>.css" />
 	<?php
 		Yii::app()->clientScript->registerCoreScript('jquery');		
 	}else{
@@ -22,11 +24,11 @@
 		var element1 = document.createElement("link");
 		element1.type="text/css";
 		element1.rel = "stylesheet";
-		element1.href = "<?php echo Yii::app()->theme->baseUrl;?>/css/core.css";
+		element1.href = "<?php echo Yii::app()->theme->baseUrl;?>/css/core-<?php echo filemtime($filepath.'themes/mobile/css/core.css'); ?>.css";
 		document.getElementsByTagName("head")[0].appendChild(element1);
 
 		var element2 = document.createElement("script");
-		element2.src = "<?php echo Yii::app()->getRequest()->getBaseUrl(true);?>/site/js/core";
+		element2.src = "<?php echo Yii::app()->getRequest()->getBaseUrl(true);?>/js/core-<?php echo filemtime($filepath.'/js/core.js'); ?>.js";
 		element2.type="text/javascript";
 		document.getElementsByTagName("head")[0].appendChild(element2);
 
