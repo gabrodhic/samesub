@@ -1,3 +1,5 @@
+//Update of js/core.js file should be made upon modification of this file.
+//This file is generated from another path: /site/js/core
 <?php echo $this->renderPartial('js/core_lib'); ?>
 
 //Evaluate ifis necesary to add the jquery blink plugin: https://github.com/fcarriedo/jquery-blink

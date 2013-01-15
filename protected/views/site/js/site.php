@@ -1,3 +1,5 @@
+//Update of js/site.js file should be made upon modification of this file.
+//This file is generated from another path: /site/js/site
 epoch_time = 0;
 next_fetch = 0;
 function epoch_timer(){
