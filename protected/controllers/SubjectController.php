@@ -120,6 +120,7 @@ class SubjectController extends Controller
 	 */
 	public function actionAdd()
 	{
+		$this->layout = '//layouts/column1';
 		$this->model=new Subject;
 		$this->model->scenario='add';
 

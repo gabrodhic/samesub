@@ -2,7 +2,7 @@
 $this->pageTitle=$information->live;
 ?>
 	<div id="header_bottom">
-		<div id="header_error">ERROR DIV</div>
+		<div id="header_error"></div>
 		<div id="header_title">
 			<div><h1></h1></div>
 		</div>

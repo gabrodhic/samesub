@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<meta name="language" content="en" />
+	<meta name="language" content="<?php echo Yii::app()->language;?>" />
 	<?php echo $this->ogtags; ?>
 	<?php 
 	if( strtolower($this->id) == 'site' and strtolower($this->action->Id) == 'index'){
@@ -10,7 +10,15 @@
 	<meta name="description" content="<?php echo Yii::t('site','Samesub is a space where only one subject is transmitted at a time in a synchronous manner, thus, everyone connected to the site interact with that same subject');?>">
 	<?php } ?>
 	<meta name="keywords" content="<?php echo  str_replace(" ", ",", str_replace(",", "", $this->pageTitle));?>">
-
+	<script type="text/javascript">
+	var ssBaseUrl = '<?php echo Yii::app()->getRequest()->getBaseUrl(true);?>';
+	var ssRequestInterval = <?php echo Yii::app()->params['request_interval'];?>;
+	var ssAddThisLinkUrl = '<?php echo Yii::app()->params['addthis_link_url'];?>';
+	var ssAddThisImgUrl = '<?php echo Yii::app()->params['addthis_img_url'];?>';
+	var ssLang=new Object();
+	
+	ssLang.site={'liveNowTitle':'<?php echo Yii::t('site','LIVE NOW: {1}',array('{1}'=>'{0}'));?>', 'errorGettingData':'<?php echo Yii::t('site','LIVE: There was an error getting data from the server to your device. Please check your internet connection. Retrying in 15 seconds.');?>','myAccount':'<?php echo Yii::t('site','My Account');?>','profile':'<?php echo Yii::t('site','Profile');?>','mySub':'<?php echo Yii::t('site','Mysub');?>','logout':'<?php echo Yii::t('site','Logout');?>','writeYourComments':'<?php echo Yii::t('site','Write your comments here!');?>','commentSentChat':'<?php echo Yii::t('site','Sent, wait few seconds');?>','errorSendingComment':'<?php echo Yii::t('site','Error: check connection');?>','waitingForComments':'<?php echo Yii::t('site','Waiting for comments');?>','commentsClosing':'<?php echo Yii::t('site','Comments closing...');?>','commentsClosed':'<?php echo Yii::t('site','Comments CLOSED');?>','changingToNextSubject':'<?php echo Yii::t('site','Changing to next subject, get ready!');?>'}
+	</script>
 	<?php
 	$filepath = Yii::app()->params['webdir'];
 	if(strtolower($this->id) != 'site' or strtolower($this->action->Id) != 'index'){	?>
@@ -29,11 +37,7 @@
 		Yii::app()->clientScript->registerScriptFile(Yii::app()->request->baseUrl.'/js/site-'.filemtime($filepath.'/js/core.js').'.js');
 	}else{
 	?>
-		<script type="text/javascript">
-		
-		var preload_time_passed = 0;
-		window.setTimeout(function () { preload_time_passed = 5;},5000);
-		
+		<script type="text/javascript">				
 		var element1 = document.createElement("link");
 		element1.type="text/css";
 		element1.rel = "stylesheet";
@@ -51,45 +55,32 @@
 		element2.src = "<?php echo Yii::app()->getRequest()->getBaseUrl(true);?>/js/core-<?php echo filemtime($filepath.'/js/core.js'); ?>.js";
 		element2.type="text/javascript";
 		document.getElementsByTagName("head")[0].appendChild(element2);
-
 		</script>
 		<style>
 		
 		</style>
-	<?php
-		
+	<?php		
 	}
 	?>
 	<title><?php echo CHtml::encode($this->pageTitle); ?></title>
 </head>
-
 <body>
 <noscript>Your browser does NOT support javascript or has it disabled. Please click <?php echo CHtml::link('here',Yii::app()->getRequest()->getBaseUrl(true).'/index'); ?> if you want to use this site without javascript or enable the javascript feature in your browser and reload the page.</noscript>
-
 <?php 
-if( Yii::app()->session->get('site_loaded') != "yes" and (strtolower($this->id) == 'site' and strtolower($this->action->Id) == 'index')){
+if( (strtolower($this->id) == 'site' and strtolower($this->action->Id) == 'index')){
 ?>
-<div id="preload" style="padding-top:100px; position:fixed; width: 680px; left: 50%; margin:20px 0px 0px -340px;font-family: Trebuchet MS, Arial, Helvetica, sans-serif;">
-	<div style="text-align:center; padding:50px;"><a href="<?php echo Yii::app()->createUrl('site/index');?>"><img src="<?php echo Yii::app()->request->baseUrl; ?>/images/logo.jpg"></a></div>	
-	<div style="font-size: 20px; color:#303030;"><?php echo Notification::getNotification()->note;?></div>	
-	<div style="margin:150px 0px 0px 0px; font-size: 12px; color:grey;"><b><?php echo Yii::t('site','NOW: {live_title}', array('{live_title}'=>'</b><a href="'.Yii::app()->createUrl('subject/index').'" style="text-decoration: none; color: grey;">'.$this->pageTitle.'</a>'));?></div>
+<div id="preload" style="position:absolute;width: 100%; top:50%; height:50px; margin-top:-50px; text-align:center; font-weight:bold; font-size: 40px; color:#D6D6D6;font-family: Trebuchet MS, Arial, Helvetica, sans-serif;"><p><?php echo Yii::t('site','ssBackgroundMessageDescription');?></p>
 </div>
 <?php 
-}else{
-?>
-<script>
-preload_time_passed = 5;
-</script>
-<?php
 }
 ?>
-<div id="page" class="container" <?php echo (Yii::app()->session->get('site_loaded') != "yes" and (strtolower($this->id) == 'site' and strtolower($this->action->Id) == 'index')) ? 'style="display:none;"' : '';?>>
+<div id="page" class="container" <?php echo ((strtolower($this->id) == 'site' and strtolower($this->action->Id) == 'index')) ? 'style="display:none;"' : '';?>>
 	<div id="header" class="bounded">
 		<div id="header_top">
 		<?php if(strtolower(Yii::app()->controller->action->id) == 'index' and strtolower(Yii::app()->controller->id) == 'site'){
 				
 		} else { ?>
-			<iframe src="about:blank" width="980" height="30" id="header_top_frame" frameBorder="0" scrolling="no" style="background-color:white; z-index:9000; position:absolute;"></iframe>
+			<iframe src="about:blank" width="980" height="30" id="header_top_frame" frameBorder="0" scrolling="no" style="background-color:white; z-index:9000;"></iframe>
 		<?php } ?>
 		</div>
 		<div id="header_middle">
@@ -112,9 +103,7 @@ preload_time_passed = 5;
 					</div>
 				</div>
 				<div id="menu_right">					
-					<span><?php echo (Yii::app()->user->isGuest) ? '<a href="'. Yii::app()->createUrl('site/login').'">'.Yii::t('site','Login').'</a>' 
-					:  '<span>'.SiteHelper::get_user_picture((int)Yii::app()->user->id,'icon_','profile').'|<a href="'. Yii::app()->createUrl('profile/'.Yii::app()->user->name).'">'.Yii::app()->user->name.'</a></span>'
-					.'| <span><a href="'. Yii::app()->createUrl('site/logout').'">'.Yii::t('site','Logout').'</a></span>';?></span>										
+					<span><?php echo '<a href="'. Yii::app()->createUrl('site/login').'">'.Yii::t('site','Login').'</a>';?></span>
 				</div>
 			</div>
 		</div>

@@ -91,9 +91,11 @@ class UserController extends Controller
 	 * Displays a particular model.
 	 * @param integer $id the ID of the model to be displayed
 	 */
-	public function actionProfile($username)
+	public function actionProfile($username='')
 	{
 		$this->layout='//layouts/column1';
+		if(!$username and Yii::app()->user->isGuest) {Yii::app()->user->setReturnUrl(Yii::app()->getRequest()->url); $this->redirect(array('site/login'));}
+		if(!$username) $this->redirect( array('profile/'.Yii::app()->user->name));		
 		if(! $this->model = User::model()->find('username=:username', array(':username'=>$username))) 
 			throw new CHttpException(404,'The username '.$username.' does not exist.');
 		//$this->model=$this->loadModel($id);

@@ -472,6 +472,14 @@ class Subject extends CActiveRecord
 		}
 		$arr_data['comments']= $arr_comments;
 		
+		//Add user session information
+		if( (!$subject_id) and (!Yii::app()->user->isGuest) ){
+			$arr_data['session_userid'] = Yii::app()->user->id;
+			$arr_data['session_username'] = Yii::app()->user->name;
+			$session_user = User::model()->findByPk((int)Yii::app()->user->id);
+			$arr_data['session_userimage'] = $session_user->getUserImage("small_");
+		}
+		
 		//Set times
 		$utc_time = SiteLibrary::utc_time();
 		$arr_data['current_time'] = $utc_time;
@@ -494,6 +502,7 @@ class Subject extends CActiveRecord
 		->from('subject_tag')
 		->where(array('like', 'name', '%'.$text.'%'))
 		->order('name DESC')
+		->limit(5)
 		->queryAll();
 		foreach($tags as $tag){
 			if($text){

@@ -41,9 +41,15 @@ function get_Contents(callback){
 				setTimeout(function (){$("#header_top_frame").contents().find('body, body a').css("color", "");},1000);
 				setTimeout(function (){$("#header_top_frame").contents().find('body, body a').css("color", "white");},1500);
 				setTimeout(function (){$("#header_top_frame").contents().find('body, body a').css("color", "");},2000);
-			}else{
+			}else{				
 				$('#header_top_frame').contents().find('head').append('<style> a, a:link, a:visited { text-decoration: none; color: #046381;font-weight: bold;  font-size: 13px;}a:hover { text-decoration: underline; }</style>');
 				$('#header_top_frame').contents().find('body').attr('style','margin:3px 1px 1px 1px; border:0px;padding:0px;text-align:right; font: bold 13px Trebuchet MS, Arial, Helvetica, sans-serif; color: #686868;');
+				
+				if(callback == "firsttime"){
+					if( typeof json.session_username !== 'undefined' ) {
+						$('#menu_right').html('<?php echo SiteHelper::get_user_picture((int)Yii::app()->user->id,'icon_','profile');?><select style="vertical-align:middle" onchange="if (this.value) window.location.href=this.value"><option value="" selected><?php echo Yii::t('site','My Account:');?></option><option value="<?php echo Yii::app()->createUrl("profile/".Yii::app()->user->name);?>"><?php echo Yii::t('site','Profile');?></option><option value="<?php echo Yii::app()->createUrl('site/logout');?>"><?php echo Yii::t('site','Logout');?></option></select>');
+					}
+				}
 			}
 			
 			next_fetch = json.time_remaining + 5;//let's give an extra 5 seconds in case of robot delay to prevent 2 requests

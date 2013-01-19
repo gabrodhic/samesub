@@ -189,7 +189,7 @@ class User extends CActiveRecord
 	 * @param string $size the desired image size. ie: 'small_', '' => default size
 	 * @return string with the url of the image.
 	 */
-	public function getUserImage($size='')
+	public function getUserImage($size='small_')
 	{
 		if(! $this->image_name){
 			if($this->sex == 2)

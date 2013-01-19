@@ -462,6 +462,22 @@ table tr td{ border-bottom:1px solid #E0E0E0;}
 				from live.</td>
 			</tr>
 			<tr>
+			<tr>
+				<td><b>session_userid</b><br>(optional)</td>
+				<td>int</td>
+				<td>If set, the user id of the current logged in user. Usually this is set only when there is a user logged in, and is your first request to the resource.</td>
+			</tr>
+			<tr>
+				<td><b>session_username</b><br>(optional)</td>
+				<td>string</td>
+				<td>If set, the user name of the current logged in user. Usually this is set only when there is a user logged in, and is your first request to the resource.</td>
+			</tr>
+			<tr>
+				<td><b>session_userimage</b><br>(optional)</td>
+				<td>string</td>
+				<td>If set, the url of the profile image of the current logged in user. Usually this is set only when there is a user logged in, and is your first request to the resource.</td>
+			</tr>			
+			<tr>
 				<td>
 	<b>subject_id</b></td>
 				<td>int</td>

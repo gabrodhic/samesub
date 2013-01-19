@@ -1,3 +1,16 @@
+//Update of js/site.js file should be made upon modification of this file.
+//This file is generated from another path: /site/js/site
+
+String.prototype.format = function() {
+  var args = arguments;
+  return this.replace(/{(\d+)}/g, function(match, number) { 
+    return typeof args[number] != 'undefined'
+      ? args[number]
+      : match
+    ;
+  });
+};
+
 epoch_time = 0;
 next_fetch = 0;
 function epoch_timer(){
@@ -21,7 +34,7 @@ var interval_check;
 function get_Contents(callback){
 	var d = new Date();
 	ajax_request(
-		"/samesub/subject/fetch",
+		ssBaseUrl+"/api/v1/live/getall",
 		"time="+d.getTime(),
 		function(){},
 		function(json){
@@ -31,17 +44,22 @@ function get_Contents(callback){
 				epoch_time = json.current_time;//Update the epoch_time whenever the client time has get delayed
 				//most probably that the clock also is slow, so lets update it also
 
-			}
-			
-			$('#header_top_frame').contents().find('body').html('LIVE NOW: <a target="_top" style="color: #046381;" href="/samesub/site/index">' + json.title + '</a>');
+			}			
+			$('#header_top_frame').contents().find('body').html('<a target="_top" style="color: #046381;" href="'+ ssBaseUrl + '/site/index">' + ssLang.site.liveNowTitle.format(json.title) + '</a>');
 			if(callback === undefined) {
 				setTimeout(function (){$("#header_top_frame").contents().find('body, body a').css("color", "white");},500);
 				setTimeout(function (){$("#header_top_frame").contents().find('body, body a').css("color", "");},1000);
 				setTimeout(function (){$("#header_top_frame").contents().find('body, body a').css("color", "white");},1500);
 				setTimeout(function (){$("#header_top_frame").contents().find('body, body a').css("color", "");},2000);
-			}else{
+			}else{				
 				$('#header_top_frame').contents().find('head').append('<style> a, a:link, a:visited { text-decoration: none; color: #046381;font-weight: bold;  font-size: 13px;}a:hover { text-decoration: underline; }</style>');
 				$('#header_top_frame').contents().find('body').attr('style','margin:3px 1px 1px 1px; border:0px;padding:0px;text-align:right; font: bold 13px Trebuchet MS, Arial, Helvetica, sans-serif; color: #686868;');
+				
+				if(callback == "firsttime"){
+					if( typeof json.session_username !== 'undefined' ) {
+						$('#menu_right').html('<a href="'+ ssBaseUrl + '/profile/'+json.session_username+'"><img style="vertical-align:middle" src="'+ json.session_userimage + '" width="25" height="25"></a><select style="vertical-align:middle" onchange="if (this.value) window.location.href=this.value"><option value="" selected>'+ssLang.site.myAccount+'</option><option value="'+ ssBaseUrl + '/profile/'+json.session_username+'">'+ssLang.site.profile+'</option><option value="'+ ssBaseUrl + '/mysub/'+json.session_username+'">'+ssLang.site.mySub+'</option><option value="'+ ssBaseUrl + '/site/logout">Logout</option></select>');
+					}
+				}
 			}
 			
 			next_fetch = json.time_remaining + 5;//let's give an extra 5 seconds in case of robot delay to prevent 2 requests
@@ -57,7 +75,7 @@ function get_Contents(callback){
 		},
 		function(){
 
-			$("#header_top_frame").contents().find('body').html("LIVE: There was an error getting data from the server to your device. Please check your internet connection. Retrying in 15 seconds.");
+			$("#header_top_frame").contents().find('body').html(ssLang.site.errorGettingData);
 			
 			var bb = setTimeout(function(){$("#header_top_frame").contents().find('body').html(".")},10000);
 			var bb = setTimeout("get_Contents()",15000);//There was an error loading content, lets make a new request to try to get content again
