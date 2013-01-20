@@ -1,5 +1,5 @@
 <?php
-$this->pageTitle=$information->live;
+$this->pageTitle=Yii::app()->name . ' - '.Yii::t('site','ssTitleDescription');
 ?>
 	<div id="header_bottom">
 		<div id="header_error"></div>
