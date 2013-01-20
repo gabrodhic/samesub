@@ -52,8 +52,10 @@ class Controller extends CController
 	* Override afterAction method to implement some codes(eg: logging)
 	*/
 	function afterAction(){
-		$this->log_request();
-		if( Yii::app()->session->get('site_loaded') != "yes") Yii::app()->session->add('site_loaded', 'yes');
+		//Internal logging disabled, 
+		//TODO:must be rewriten only for CUD operatios as apache cache is being implemented
+		//$this->log_request();
+		//if( Yii::app()->session->get('site_loaded') != "yes") Yii::app()->session->add('site_loaded', 'yes');
 		
 		return true;
 	}
