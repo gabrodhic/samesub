@@ -5,4 +5,8 @@ $this->breadcrumbs=array(
 );
 ?>
 <h1>About</h1>
-
+</br>
+<p></p>
+<p>
+<?php echo Yii::t('site','ssAboutUsDescription');?>
+</p>
