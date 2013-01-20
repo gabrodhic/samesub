@@ -80,7 +80,7 @@ if( (strtolower($this->id) == 'site' and strtolower($this->action->Id) == 'index
 		<?php if(strtolower(Yii::app()->controller->action->id) == 'index' and strtolower(Yii::app()->controller->id) == 'site'){
 				
 		} else { ?>
-			<iframe src="about:blank" width="980" height="30" id="header_top_frame" frameBorder="0" scrolling="no" style="background-color:white; z-index:9000;"></iframe>
+			<iframe src="<?php echo Yii::app()->getRequest()->getBaseUrl(true).'/empty.html';?>" width="980" height="30" id="header_top_frame" frameBorder="0" scrolling="no" style="background-color:white; z-index:9000;"></iframe>
 		<?php } ?>
 		</div>
 		<div id="header_middle">
