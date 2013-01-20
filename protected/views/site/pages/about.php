@@ -8,5 +8,5 @@ $this->breadcrumbs=array(
 </br>
 <p></p>
 <p>
-<?php echo Yii::t('site','ssAboutUsDescription');?>
+<?php echo nl2br(Yii::t('site','ssAboutUsDescription'));?>
 </p>
