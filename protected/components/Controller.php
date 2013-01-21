@@ -111,7 +111,7 @@ class Controller extends CController
 	}
 	// Override init to set theme property and language
 	function init() {
-		$this->set_theme();
+		//$this->set_theme();//TEMPORAL:Disable theme(mobile) setup
 		Yii::app()->setLanguage('en');//set it fixed to english by now
 	}
 }

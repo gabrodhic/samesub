@@ -11,7 +11,7 @@
 
 		<link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/main.css" />
 		<link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/form.css" />
-		<link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->theme->baseUrl; ?>/css/core-<?php echo filemtime($filepath.'themes/mobile/css/core.css'); ?>.css" />
+		<link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->theme->baseUrl; ?>/css/core-<?php echo filemtime($filepath.'/themes/mobile/css/core.css'); ?>.css" />
 	<?php
 		Yii::app()->clientScript->registerCoreScript('jquery');		
 	}else{
