@@ -26,7 +26,7 @@
 		<link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/screen-<?php echo filemtime($filepath.'/css/screen.css'); ?>.css" media="screen, projection" />
 		<link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/print-<?php echo filemtime($filepath.'/css/print.css'); ?>.css" media="print" />
 		<!--[if lt IE 8]>
-		<link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/ie.css" media="screen, projection" />
+		<link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/ie-<?php echo filemtime($filepath.'/css/ie.css'); ?>.css" media="screen, projection" />
 		<![endif]-->
 
 		<link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/main-<?php echo filemtime($filepath.'/css/main.css'); ?>.css" />
