@@ -5,6 +5,10 @@ php_flag display_errors on
 php_flag html_errors on
 RewriteEngine on
 
+# Fix Apache internal dummy connections from breaking [(site_url)], generating /* URI requests to the webapp 
+RewriteCond %{HTTP_USER_AGENT} ^.*internal\ dummy\ connection.*$ [NC]
+RewriteRule .* - [F,L]
+
 #Rewrite rule for more robust caching (ie: file-023.js -> file.js, file-024.js -> file.js)
 #Every time a file changes, a new url is generated and is mapped to the original file name
 RewriteRule ^(.+)-(\d+).(js|css)$ $1.$3 [L]
