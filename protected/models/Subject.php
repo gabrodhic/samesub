@@ -494,25 +494,31 @@ class Subject extends CActiveRecord
 	/**
 	 * Gets tag list of a category or tag
 	 * @param string $text to search for in the table
+	 * @param mixed $limit this query result. int number of records OR bool false to unlimit
 	 * @return Array with the tags
 	 */
-	public function getTags($text=''){
+	public function getTags($text='',$limit=7){
 		$tags = Yii::app()->db->createCommand()
 		->select('name')
 		->from('subject_tag')
-		->where(array('like', 'name', '%'.$text.'%'))
-		->order('name DESC')
-		->limit(5)
-		->queryAll();
-		foreach($tags as $tag){
-			if($text){
-				if (stripos($tag['name'], $text) === 0) {
-					$arr_tags[] = $tag['name'];
-				}
-			}else{
-				$arr_tags[] = $tag['name'];
-			}
+		->where(array('like', 'name', $text.'%'))		
+		->order('name DESC');
+		if($limit) $tags = $tags->limit($limit);	//Setting limit varriable to 0 or false in the parameter function would unlimit the result
+		$tags = $tags->queryAll();
+		
+		foreach($tags as $tag) $arr_tags[] = $tag['name'];
+		if((! $limit) OR count($arr_tags) < $limit ){
+			$tags = Yii::app()->db->createCommand()
+			->select('name')
+			->from('subject_tag')
+			->where(array('like', 'name', '% '.$text.'%'))			
+			->order('name DESC');
+			if($limit) $tags = $tags->limit($limit);
+			$tags = $tags->queryAll();
+			foreach($tags as $tag) $arr_tags[] = $tag['name'];
 		}
+		//********ARREGLAR EN ahcer checkout PRODUCCION nano /var/www/html/protected/models/Subject.php
+		
 		return $arr_tags;
 		
 	

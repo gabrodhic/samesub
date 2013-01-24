@@ -22,12 +22,13 @@ class SubjectController extends ApiController
 	 * Searches for a tag suggestion
 	 * @param string $tag the text to search tags
 	 */
-	public function actionGettags($tag='')
+	public function actionGettags($tag='',$limit='')
 	{
 		global $arr_response;
 		$tag = $_REQUEST['tag'];
+		$limit = $_REQUEST['limit'];
 				
-		$tags = Subject::getTags($tag);
+		$tags = ($limit) ? Subject::getTags($tag,(int)$limit) : Subject::getTags($tag);
 		if ($tags)$arr_response['tags'] = $tags;
 		
 	}
