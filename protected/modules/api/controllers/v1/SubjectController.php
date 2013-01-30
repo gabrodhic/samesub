@@ -20,17 +20,17 @@ class SubjectController extends ApiController
 
 	/**
 	 * Searches for a tag suggestion
-	 * @param string $tag the text to search tags
+	 * @param string $term the text to search for
 	 */
-	public function actionGettags($tag='',$limit='')
+	public function actionGettags($term='',$limit='')
 	{
 		global $arr_response;
-		$tag = $_REQUEST['tag'];
+		$term = $_REQUEST['term'];
 		$limit = $_REQUEST['limit'];
 				
-		$tags = ($limit) ? Subject::getTags($tag,(int)$limit) : Subject::getTags($tag);
-		if ($tags)$arr_response['tags'] = $tags;
-		
+		$tags = ($limit) ? Subject::getTags($term,(int)$limit) : Subject::getTags($term);
+		$arr_response = $tags;//Notice we are altering the arr_response completely, thus errasing any previous values stored. ie: on a taglist autocomplete json request so that results dont get contaminated
+		//TODO:Implemento some kind of condition that if $_REQUEST['response_info'] param is received, response_code,response_message, etc should be in the response either way
 	}
 	
 	/**
@@ -41,7 +41,7 @@ class SubjectController extends ApiController
 		global $arr_response;
 				
 		$categories = Subject::getCategories();
-		$arr_response['categories'] = $categories;
+		$arr_response = $categories;//Notice we are altering the arr_response completely, thus errasing any previous values stored. ie: on a taglist autocomplete json request so that results dont get contaminated
 		
 	}
 	

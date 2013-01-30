@@ -37,6 +37,7 @@ class Subject extends CActiveRecord
 	public $user_position_hour;
 	public $user_position_minute;
 	public $user_position_anydatetime;
+	public $tag;
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @return Subject the static model class
@@ -233,14 +234,38 @@ class Subject extends CActiveRecord
 	 */
 	public function afterSave()
 	{
-		//Update the tag table if there are new tags
-		if($this->tag){
-			$tags = Subject::getTags();
-			$new_tags = explode(" ",strtolower($this->tag));
+		//Update the tag table if there are new tags and only in the case of an update or create action
+		if($this->tag and (Yii::app()->controller->action->id == 'add' OR Yii::app()->controller->action->id == 'update' OR Yii::app()->controller->action->id == 'moderate' OR Yii::app()->controller->action->id == 'authorize')  ){
+			$tags_old = Yii::app()->db->createCommand()->select('*')->from('tag')->queryAll();		
+			foreach($tags_old as $tag_old) $tags[$tag_old['id']] = $tag_old['name'];
+			
+			$sub_tags = Yii::app()->db->createCommand()->select('tag_id')->from('subject_tag')->where('subject_id=:subject_id', array(':subject_id'=>$this->id))->queryAll();
+			foreach($sub_tags as $sub_tag) $current_tags[] = $sub_tag['tag_id'];
+			
+			$new_tags = explode(",",strtolower($this->tag));			
 			foreach($new_tags as $new_tag) {
-				$new_tag = substr($new_tag,0,48);//a word can't be larger than 50 chars,maybe we have no white spaces also
-				if (! in_array($new_tag, $tags)) 
-					Yii::app()->db->createCommand()->insert('subject_tag',array('name'=>$new_tag));
+				$new_tag = trim($new_tag);
+				if (! in_array($new_tag, $tags)) {//If there is a new tag name add it to the list of tags
+					$tag=new Tag;
+					$tag->name = $new_tag;
+					if($tag->save()){ 
+						$tag_id = $tag->id;
+						$tags[$tag_id] = $tag->name;
+					}else{
+						$tag_id = 0;
+					}
+				}else{
+					$tag_id = array_search($new_tag, $tags);
+				}
+				if($tag_id){
+					if($current_tags){
+						if (! in_array($tag_id, $current_tags)) 
+						Yii::app()->db->createCommand()->insert('subject_tag',array('subject_id'=>$this->id, 'tag_id'=>$tag_id));
+					}else{
+						Yii::app()->db->createCommand()->insert('subject_tag',array('subject_id'=>$this->id, 'tag_id'=>$tag_id));
+					}
+					$current_tags[] = $tag_id;
+				}
 			}
 		}
 		//Set position for the time board if not set and if it is authorized only
@@ -495,12 +520,13 @@ class Subject extends CActiveRecord
 	 * Gets tag list of a category or tag
 	 * @param string $text to search for in the table
 	 * @param mixed $limit this query result. int number of records OR bool false to unlimit
-	 * @return Array with the tags
+	 * @return mixed Array with the tags or false on no results
 	 */
-	public function getTags($text='',$limit=7){
+	public function getTags($text,$limit=7){
+		if(! $text ) return false;
 		$tags = Yii::app()->db->createCommand()
 		->select('name')
-		->from('subject_tag')
+		->from('tag')
 		->where(array('like', 'name', $text.'%'))		
 		->order('name DESC');
 		if($limit) $tags = $tags->limit($limit);	//Setting limit varriable to 0 or false in the parameter function would unlimit the result
@@ -510,18 +536,15 @@ class Subject extends CActiveRecord
 		if((! $limit) OR count($arr_tags) < $limit ){
 			$tags = Yii::app()->db->createCommand()
 			->select('name')
-			->from('subject_tag')
+			->from('tag')
 			->where(array('like', 'name', '% '.$text.'%'))			
 			->order('name DESC');
 			if($limit) $tags = $tags->limit($limit);
 			$tags = $tags->queryAll();
 			foreach($tags as $tag) $arr_tags[] = $tag['name'];
 		}
-		//********ARREGLAR EN ahcer checkout PRODUCCION nano /var/www/html/protected/models/Subject.php
 		
 		return $arr_tags;
-		
-	
 	}
 	
 	/**
@@ -741,6 +764,7 @@ class Subject extends CActiveRecord
 		//but right now doesn't: var_dump( Subject::model()->with('type_content')->findByPk(30)->type_content->name);
 		return array(
 			'comments' => array(self::HAS_MANY, 'Comment', 'subject_id', 'order'=>'comments.id DESC'),
+			'tags'=>array(self::MANY_MANY, 'Tag', 'subject_tag(subject_id, tag_id)'),
 			'country'=>array(self::BELONGS_TO, 'Country', 'country_id'),
 			'user'=>array(self::BELONGS_TO, 'User', 'user_id'),
 			'user_country'=>array(self::BELONGS_TO, 'Country', 'user_country_id'),
@@ -805,12 +829,12 @@ class Subject extends CActiveRecord
 		if($this->username) $criteria->compare('user_id', $user_id);
 		$criteria->compare('user_ip',$this->user_ip,true);
 		$criteria->compare('user_comment',$this->user_comment,true);
-		$criteria->compare('title',$this->title,true);
+		$criteria->compare('title',$this->title,true);//TODO:change this for a LIKE
 		//3 Things to take note in the following line here:
 		//Notice $this->title: we can just have just one field in the griddview. 
 		//Notice also OR, thats to not force this condition. 
 		//Notice  that 'tag' compare condition its immediately after the former 'title' compare condition. So that the OR its between them and not other fields
-		$criteria->compare('tag',$this->title,true,'OR');
+		$criteria->compare('tags.name',$this->title,true,'OR');//TODO:change this for a LIKE
 		$criteria->compare('urn',$this->urn,true);
 		$criteria->compare('content_type_id',$this->content_type_id);
 		$criteria->compare('priority_id',$this->priority_id);
@@ -832,7 +856,7 @@ class Subject extends CActiveRecord
 		$criteria->compare('category',$this->category, true);
 		$criteria->compare('position',$this->position);
 
-		$criteria->with=array('user','country','priority_type','content_type');//Disabled, Not needed anynmore, as we better use filter in view files
+		$criteria->with=array('tags'=>array('select'=>'tag.name','together'=>true),'user','country','priority_type','content_type');//Disabled, Not needed anynmore, as we better use filter in view files
 
 		return new CActiveDataProvider(get_class($this), array(
 			'criteria'=>$criteria,

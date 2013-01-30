@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Nov 17, 2012 at 08:37 PM
+-- Generation Time: Jan 29, 2013 at 09:21 AM
 -- Server version: 5.1.33
 -- PHP Version: 5.2.9
 
@@ -562,7 +562,6 @@ CREATE TABLE `subject` (
   disabled tinyint(4) NOT NULL DEFAULT '0',
   deleted tinyint(4) NOT NULL DEFAULT '0',
   show_time int(11) NOT NULL DEFAULT '0' COMMENT 'time when the running thread shows the content',
-  tag varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   category varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   views int(11) NOT NULL DEFAULT '0',
   live_views int(11) NOT NULL DEFAULT '0',
@@ -590,7 +589,6 @@ CREATE TABLE `subject` (
   KEY position (position),
   KEY user_position (user_position),
   KEY manager_position (manager_position),
-  FULLTEXT KEY tag (tag),
   FULLTEXT KEY category (category)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -615,9 +613,10 @@ CREATE TABLE subject_category (
 
 CREATE TABLE subject_tag (
   id int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
+  subject_id int(11) NOT NULL,
+  tag_id int(11) NOT NULL,
   PRIMARY KEY (id),
-  UNIQUE KEY `name` (`name`)
+  UNIQUE KEY subjectid_tagid (subject_id,tag_id)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
@@ -634,6 +633,19 @@ CREATE TABLE subject_vote (
   `time` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (id),
   UNIQUE KEY subject_user_vote (subject_id,user_id,vote)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table 'tag'
+--
+
+CREATE TABLE tag (
+  id int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
+  PRIMARY KEY (id),
+  UNIQUE KEY `name` (`name`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------

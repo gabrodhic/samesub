@@ -168,12 +168,12 @@ class SiteHelper extends CHtml
 	
 	/**
 	 * Generates tags from a string
-	 * @param string $text the text to generate the tags from
+	 * @param mixed $text the text OR array to generate the tags from
 	 * @param boolean $set_link wether to make links to the tag
-	 * @param string $type source where we are generating tags from. eg: From a URN field or from a TAG table field.
+	 * @param string $type source where we are generating tags from. eg: From a URN field or from a COMMA separated table field or SPACE separated.
 	 * @return array with the tags
 	 */
-	public function make_tags($text,$set_link=true,$type='tag')
+	public function make_tags($text,$set_link=true,$type='comma')
 	{
 		if($type == 'urn'){
 			//First, lets generate a clean text(just letters, remove everything else)		
@@ -182,10 +182,12 @@ class SiteHelper extends CHtml
 			$text = trim($text);//we need to trim also as there can be white spaces at the end (ie: how are you? => 'how are you ')
 			//$text = str_replace(" ", " *", $text);
 			//And split to an array by whitespaces
-			$arr_text =  explode(" ", $text);
+			$arr_text =   array_filter(explode(" ", $text));//Notice that array_filter removes any empty values from array if no callback its specified
 			$arr_text = array_unique($arr_text);//remove any duplicate tag
+		}elseif($type == 'comma'){
+			$arr_text =  array_filter (explode(",",trim($text)));//Notice that array_filter removes any empty values from array if no callback its specified
 		}else{
-			$arr_text = explode(" ",$text);
+			$arr_text =  array_filter(explode(" ",trim($text)));//Notice that array_filter removes any empty values from array if no callback its specified
 		}
 		
 		if(! $set_link)	return $arr_text;

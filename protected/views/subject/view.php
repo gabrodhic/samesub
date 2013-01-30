@@ -106,8 +106,9 @@ foreach($comments as $comment): ?>
 			<h3 class="detail_header"><?php echo Yii::t('subject','Tags');?></h3>
 			<div id="tags_list">
 				<ul>
-				<?php 
-					$tags = ($model->tag) ? SiteHelper::make_tags($model->tag) : SiteHelper::make_tags($model->urn, true, 'urn'); 
+				<?php 					
+					foreach ($model->tags as $mtag) $model->tag .= $mtag->name.',';
+					$tags = ($model->tag) ? SiteHelper::make_tags($model->tag) : SiteHelper::make_tags($model->tag , true); 
 				?>
 				<?php foreach($tags as $tag) echo "<li>".$tag."</li>";?>
 				</ul>

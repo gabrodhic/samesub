@@ -55,11 +55,11 @@ class SubjectController extends Controller
 
 	/**
 	 * Searches for a tag suggestion
-	 * @param string $text the text to search tags
+	 * @param string $term the text to search for
 	 */
-	public function actionGettags($tag='',$limit='')
+	public function actionGettags($term='',$limit='')
 	{
-		$tags = ($limit) ? Subject::getTags($tag,(int)$limit) : Subject::getTags($tag);
+		$tags = ($limit) ? Subject::getTags($term,(int)$limit) : Subject::getTags($term);
 		if ($tags){
 			echo json_encode($tags);
 		}

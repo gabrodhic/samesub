@@ -783,7 +783,7 @@ table tr td{ border-bottom:1px solid #E0E0E0;}
 				<td>The list of tag words for the subject.<p>NOTE: You can get a 
 				tag suggestions service on the subject/gettags resource. You 
 				should send a parameter named &quot;tag&quot; with the value typed by the 
-				user. i.e.:A REQUEST to http://samesub.com/api/v1/subject/gettags?tag=ca 
+				user. i.e.:A REQUEST to http://samesub.com/api/v1/subject/gettags?term=ca 
 				can have a RESPONSE like this list: &quot;car&quot;,&quot;castle&quot;,&quot;california&quot;,&quot;camera&quot;</td>
 			</tr>
 			<tr>

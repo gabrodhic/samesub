@@ -2,34 +2,19 @@
 $this->breadcrumbs=array(
 	'Subjects'=>array('index'),
 	$model->title=>array('view','id'=>$model->id),
-	'Moderate',
+	'Authorize',
 );
 
-$this->menu=array(
-	array('label'=>'List Subject', 'url'=>array('index')),
-	array('label'=>'Create Subject', 'url'=>array('add')),
-	array('label'=>'View Subject', 'url'=>array('view', 'id'=>$model->id)),
-	array('label'=>'Manage Subject', 'url'=>array('manage')),
-);
-
-Yii::app()->clientScript->registerScriptFile(Yii::app()->request->baseUrl.'/js/tag.js');
-Yii::app()->clientScript->registerCss('tagssugest',
-"
-SPAN.tagMatches {
-	margin-left: 10px;
-}  
-SPAN.tagMatches SPAN {
-	padding: 2px;
-	margin-right: 4px;
-	background-color: #0000AB;
-	color: #fff;
-	cursor: pointer;
-}
-");
+Yii::app()->clientScript->registerCoreScript('jquery.ui');
+Yii::app()->clientScript->registerScriptFile(Yii::app()->request->baseUrl.'/js/tag-it.min.js');
+Yii::app()->clientScript->registerCssFile(Yii::app()->clientScript->getCoreScriptUrl().'/jui/css/base/jquery-ui.css');
+Yii::app()->clientScript->registerCssFile(Yii::app()->request->baseUrl.'/css/jquery.tagit.css');
 $code = "
-$('#Subject_tag').tagSuggest({
-        url: '".Yii::app()->request->baseUrl.'/subject/gettags'."',
-        delay: 300
+$(document).ready(function() {
+$('#Subject_tag').tagit({
+    autocomplete: {delay: 0, minLength: 2,source: '".Yii::app()->request->baseUrl.'/api/v1/subject/gettags'."'},
+	allowSpaces: true,
+});
 });
 ";
 Yii::app()->clientScript->registerScript('tagscodeid',$code);
@@ -81,7 +66,9 @@ Yii::app()->clientScript->registerScript('tagscodeid',$code);
 		<?php echo SiteHelper::formatted($model->user_comment); ?>
 	</div>
 	<div class="row">
-		<?php echo $form->labelEx($model,'tag'); ?>
+		<?php
+		foreach ($model->tags as $tag) $model->tag .= $tag->name.',';
+		echo $form->labelEx($model,'tag'); ?>
 		<?php echo $form->textField($model,'tag',array('size'=>40,'maxlength'=>250)); ?>
 		<?php echo $form->error($model,'tag'); ?>
 	</div>

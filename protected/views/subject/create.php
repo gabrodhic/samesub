@@ -6,7 +6,19 @@ $this->breadcrumbs=array(
 
 
 
-
+Yii::app()->clientScript->registerCoreScript('jquery.ui');
+Yii::app()->clientScript->registerScriptFile(Yii::app()->request->baseUrl.'/js/tag-it.min.js');
+Yii::app()->clientScript->registerCssFile(Yii::app()->clientScript->getCoreScriptUrl().'/jui/css/base/jquery-ui.css');
+Yii::app()->clientScript->registerCssFile(Yii::app()->request->baseUrl.'/css/jquery.tagit.css');
+$code = "
+$(document).ready(function() {
+$('#Subject_tag').tagit({
+    autocomplete: {delay: 0, minLength: 2,source: '".Yii::app()->request->baseUrl.'/api/v1/subject/gettags'."'},
+	allowSpaces: true,
+});
+});
+";
+/*
 Yii::app()->clientScript->registerScriptFile(Yii::app()->request->baseUrl.'/js/tag.js');
 Yii::app()->clientScript->registerCss('tagssugest',
 "
@@ -24,9 +36,11 @@ SPAN.tagMatches SPAN {
 $code = "
 $('#Subject_tag').tagSuggest({
         url: '".Yii::app()->request->baseUrl.'/subject/gettags'."',
-        delay: 300
+        delay: 300,
+		separator: ','
 });
 ";
+*/
 Yii::app()->clientScript->registerScript('tagscodeid',$code);
 ?>
 
