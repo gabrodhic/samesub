@@ -191,13 +191,14 @@ class User extends CActiveRecord
 	 */
 	public function getUserImage($size='small_')
 	{
+		$filepath = Yii::app()->params['webdir'];
 		if(! $this->image_name){
 			if($this->sex == 2)
-				return Yii::app()->getRequest()->getBaseUrl(true).'/'.'images/'.$size.'user_female.jpg';
+				return Yii::app()->getRequest()->getBaseUrl(true).'/'.'images/'.$size.'user_female-'.filemtime($filepath.'/images/'.$size.'user_female.jpg').'.jpg';
 			elseif($this->sex == 1)
-				return Yii::app()->getRequest()->getBaseUrl(true).'/'.'images/'.$size.'user_male.jpg';
+				return Yii::app()->getRequest()->getBaseUrl(true).'/'.'images/'.$size.'user_male-'.filemtime($filepath.'/images/'.$size.'user_male.jpg').'.jpg';
 			else
-				return Yii::app()->getRequest()->getBaseUrl(true).'/'.'images/'.$size.'user_unisex.jpg';
+				return Yii::app()->getRequest()->getBaseUrl(true).'/'.'images/'.$size.'user_unisex-'.filemtime($filepath.'/images/'.$size.'user_unisex.jpg').'.jpg';
 		}else{
 			return Yii::app()->getRequest()->getBaseUrl(true).'/'.Yii::app()->params['user_img_path'].'/'.$size.$this->image_name;		
 		}

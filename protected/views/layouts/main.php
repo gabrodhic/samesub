@@ -57,7 +57,12 @@
 		document.getElementsByTagName("head")[0].appendChild(element2);
 		</script>
 		<style>
-		
+		.comment_dislike_button, .sub_dislike_button {
+			background-image:url(<?php echo Yii::app()->request->baseUrl; ?>/images/dislike-<?php echo filemtime($filepath.'/images/dislike.png'); ?>.png);
+		}
+		.comment_like_button, .sub_like_button{
+			background-image:url(<?php echo Yii::app()->request->baseUrl; ?>/images/like-<?php echo filemtime($filepath.'/images/like.png'); ?>.png);
+		}
 		</style>
 	<?php		
 	}
@@ -84,7 +89,7 @@ if( (strtolower($this->id) == 'site' and strtolower($this->action->Id) == 'index
 		<?php } ?>
 		</div>
 		<div id="header_middle">
-			<div id="logo"><a href="<?php echo Yii::app()->createUrl('site/index');?>"><img src="<?php echo Yii::app()->request->baseUrl; ?>/images/logo.jpg"></a></div>
+			<div id="logo"><a href="<?php echo Yii::app()->createUrl('site/index');?>"><img src="<?php echo Yii::app()->request->baseUrl; ?>/images/logo-<?php echo filemtime($filepath.'/images/logo.jpg'); ?>.jpg"></a></div>
 			<div id="main_menu">
 				<div id="menu_left">
 					<div class="navigation">
