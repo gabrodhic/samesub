@@ -46,13 +46,14 @@ RewriteRule . index.php
 # http://www.askapache.com/htaccess/apache-speed-cache-control.html
 # cache all resources files for 1 year as this are going to change with the url in the filename with the RewriteRule on the calling dynamically generated html page
 # We dont set for more than a year because that would full the user's browser cache
+# Set both(Expires and Max-age) for backward compatiblity Http1/1.1 browsers
 <FilesMatch "\.(ico|pdf|jpg|jpeg|png|gif)$">
 	Header unset Pragma
 	FileETag None
 	Header unset ETag
 	#Header set Cache-Control "max-age=2419200, public, must-revalidate"
 	#Header set Expires "Thu, 15 Apr 2020 20:00:00 GMT"
-	Header set Cache-Control "public"	
+	Header set Cache-Control "max-age=31536000, public"	
 	ExpiresDefault "access plus 1 year"
 	Header unset Last-Modified
 </FilesMatch>
@@ -62,7 +63,7 @@ RewriteRule . index.php
 	Header unset ETag
 	#ExpiresDefault A29030400
 	#Header set Expires "Thu, 15 Apr 2020 20:00:00 GMT"
-	Header set Cache-Control "public"	
+	Header set Cache-Control "max-age=31536000, public"	
 	ExpiresDefault "access plus 1 year"
 	Header unset Last-Modified
 </FilesMatch>
