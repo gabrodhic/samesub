@@ -7,42 +7,22 @@ RewriteEngine on
 ExpiresActive on
 
 
-# Fix Apache internal dummy connections from breaking [(site_url)], generating /* URI requests to the webapp 
+# Fix Apache internal dummy connections from breaking the site [(site_url)], generating /* URI requests to the webapp
+# This rules cancels the apache dummy connection deamon requests from actually executing in the server
 RewriteCond %{HTTP_USER_AGENT} ^.*internal\ dummy\ connection.*$ [NC]
 RewriteRule .* - [F,L]
 
+
+
+# CLIENT SIDE CACHING CONFIGURATION
 #Rewrite rule for more robust caching (ie: file-023.js -> file.js, file-024.js -> file.js)
-#Every time a file changes, a new url is generated and is mapped to the original file name
+#Every time a file changes, the php script is programmed to generated a new url for each resource in the main html.
+#This url then is mapped to the original file name with this rule.
 RewriteRule ^(.+)-(\d+).(js|css)$ $1.$3 [L]
 #Also implement same rewrite for image resources under /images directory only (notice is NOT the img for user uploaded files)
 RewriteCond %{REQUEST_URI} /images/
 RewriteRule ^(.+)-(\d+).(ico|pdf|jpg|jpeg|png|gif)$ $1.$3 [L]
 
-# if a directory or a file exists, use it directly
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-
-# otherwise forward it to index.php
-RewriteRule . index.php
-
-#  Rewrite subdomains (TODO: Disabled for now, lots of issues. apache not stable, or bad site design for domain rewrite with yii pages)
-#RewriteCond %{HTTP_HOST} !^www.* [NC]
-#RewriteCond %{HTTP_HOST} ^([^\.]+)\.samesub\.com
-#RewriteRule ^(.*) /%1/$1 [L]
-
-#RewriteBase /
-#RewriteCond %{HTTP_HOST} !^samesub\.com [NC]
-#RewriteCond %{REQUEST_URI}!^something
-#RewriteCond %{HTTP_HOST} ^([^.]+)\.samesub\.com
-#RewriteRule (.*) http://samesub.com/%1/$1 [P,L]
-
-#RewriteCond %{HTTP_HOST} !^www.* [NC]
-#RewriteCond %{HTTP_HOST} ^api\.samesub\.com
-#RewriteCond %{REQUEST_URI} !^webmail/ [NC]
-#RewriteRule ^(.*) /api/$1 [P,L]
-
-
-# FILE CACHING (Client Side - Browser) Directives
 # http://www.askapache.com/htaccess/apache-speed-cache-control.html
 # cache all resources files for 1 year as this are going to change with the url in the filename with the RewriteRule on the calling dynamically generated html page
 # We dont set for more than a year because that would full the user's browser cache
@@ -68,3 +48,30 @@ RewriteRule . index.php
 	Header unset Last-Modified
 </FilesMatch>
 
+
+
+# if a directory or a file exists, use it directly
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# otherwise forward it to index.php
+RewriteRule . index.php
+
+# TODO:Rewrite subdomains ( Disabled for now, lots of issues. apache not stable, or bad site design for domain rewrite with yii pages)
+#RewriteCond %{HTTP_HOST} !^www.* [NC]
+#RewriteCond %{HTTP_HOST} ^([^\.]+)\.samesub\.com
+#RewriteRule ^(.*) /%1/$1 [L]
+
+
+
+# SERVER SIDE CACHING CONFIGURATION
+# http://www.softslate.com/blog/2011/07/apache-modcache-in-real-world.html
+# Apache refreshes cache for a file if it receives the cache-control: no-cache,p OR ragma: no-cache, OR cache-control: max-age=0 RequestHeaders from the client.
+# Nobody except localhost is allowed to refresh the cache as this would make unnecesary load. The decision of refreshing cache should be controlled serverside.
+# If client ip is NOT from localhost unset the Cache-Control RequestHeader by declaring a new env variable(cacheunset) to true, later on used.
+RewriteCond %{REMOTE_ADDR} !^(?:(?:00\.00\.000\.000)|(?:127\.0\.0\.1))$
+RewriteRule .* - [env=cacheunset:true,L]
+
+#unset the Header if the enviroment variable has been set above. NOTE: if there is a redirect we might need to prepend "REDIRECT_" to the variable name.
+RequestHeader unset Cache-Control env=cacheunset
+RequestHeader unset Pragma env=cacheunset
