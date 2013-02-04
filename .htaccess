@@ -15,6 +15,12 @@ RewriteRule .* - [F,L]
 
 
 # CLIENT SIDE CACHING CONFIGURATION
+# Unset the Expires Headers in every url to prevent apache Cache(server side) from NOT caching urls. Then enable back again for earch resourses as desired.
+# //TODO: Set a Expires with a weekly date with a cronjob rewriting the first line of this file. ie: Header set Expires "Thu, 15 Apr 2013 20:00:00 GMT"
+# This way speed would be even faster as client(or middle proxies!!) would be caching the page for a week, not even needing to reach to the server
+# also bots wont be visiting unnecesarily
+Header unset Expires
+
 #Rewrite rule for more robust caching (ie: file-023.js -> file.js, file-024.js -> file.js)
 #Every time a file changes, the php script is programmed to generated a new url for each resource in the main html.
 #This url then is mapped to the original file name with this rule.
