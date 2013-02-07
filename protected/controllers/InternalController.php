@@ -178,6 +178,14 @@ www.samesub.com");
 		}
 		echo 'Done setting next subject_id_2 : '.$subject->id;
 		
+		//There are some pages that need to be refreshed from the cache such as /subject/index, so that it content reflects the updated data.
+		//Make a request(from this localhost) to the /subject/index page with a no-cache RequestHeader to force mod_cache to refresh the last cache state of this url.
+		//NOTE: The httpd.conf is configured to only allow a localhost address to be able to send a no-cache RequestHeader		
+		$ch = curl_init(Yii::app()->getRequest()->getBaseUrl(true)."/subject/index");
+		curl_setopt($ch, CURLOPT_HTTPHEADER, array('Cache-Control: no-cache',' Pragma: no-cache'));
+		curl_exec($ch);		
+		curl_close($ch);				
+		
 	}
 
 	/**

@@ -20,6 +20,8 @@ RewriteRule .* - [F,L]
 # This way speed would be even faster as client(or middle proxies!!) would be caching the page for a week, not even needing to reach to the server
 # also bots wont be visiting unnecesarily
 Header unset Expires
+Header unset Cache-Control
+Header unset Pragma
 
 #Rewrite rule for more robust caching (ie: file-023.js -> file.js, file-024.js -> file.js)
 #Every time a file changes, the php script is programmed to generated a new url for each resource in the main html.
@@ -61,23 +63,11 @@ RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 
 # otherwise forward it to index.php
-RewriteRule . index.php
+RewriteRule ^(.*)$ index.php/$1 [L]
 
 # TODO:Rewrite subdomains ( Disabled for now, lots of issues. apache not stable, or bad site design for domain rewrite with yii pages)
 #RewriteCond %{HTTP_HOST} !^www.* [NC]
 #RewriteCond %{HTTP_HOST} ^([^\.]+)\.samesub\.com
 #RewriteRule ^(.*) /%1/$1 [L]
 
-
-
-# SERVER SIDE CACHING CONFIGURATION
-# http://www.softslate.com/blog/2011/07/apache-modcache-in-real-world.html
-# Apache refreshes cache for a file if it receives the cache-control: no-cache,p OR ragma: no-cache, OR cache-control: max-age=0 RequestHeaders from the client.
-# Nobody except localhost is allowed to refresh the cache as this would make unnecesary load. The decision of refreshing cache should be controlled serverside.
-# If client ip is NOT from localhost unset the Cache-Control RequestHeader by declaring a new env variable(cacheunset) to true, later on used.
-RewriteCond %{REMOTE_ADDR} !^(?:(?:00\.00\.000\.000)|(?:127\.0\.0\.1))$
-RewriteRule .* - [env=cacheunset:true,L]
-
-#unset the Header if the enviroment variable has been set above. NOTE: if there is a redirect we might need to prepend "REDIRECT_" to the variable name.
-RequestHeader unset Cache-Control env=cacheunset
-RequestHeader unset Pragma env=cacheunset
+# RequestHeader unseting is configure on the httpd.conf file, as this rule needs to be set on the early stage
