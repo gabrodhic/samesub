@@ -182,7 +182,7 @@ www.samesub.com");
 		//Make a request(from this localhost) to the /subject/index page with a no-cache RequestHeader to force mod_cache to refresh the last cache state of this url.
 		//NOTE: The httpd.conf is configured to only allow a localhost address to be able to send a no-cache RequestHeader		
 		$ch = curl_init(Yii::app()->getRequest()->getBaseUrl(true)."/subject/index");
-		curl_setopt($ch, CURLOPT_HTTPHEADER, array('Cache-Control: no-cache',' Pragma: no-cache'));
+		curl_setopt($ch, CURLOPT_HTTPHEADER, array('User-Agent:'.Yii::app()->params['no_cache_agent'],'Cache-Control:no-cache',' Pragma:no-cache'));
 		curl_exec($ch);		
 		curl_close($ch);				
 		
