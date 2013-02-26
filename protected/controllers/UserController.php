@@ -345,17 +345,17 @@ www.samesub.com");
 				if(! $this->model->Day) $this->model->Day = 01;
 				$this->model->birthdate = strtotime($this->model->Year."/".$this->model->Month."/".$this->model->Day);
 			}
-			
+			$this->model->addError('firstname',Yii::t('user','Please select an image smaller than 7MB.'));
 			if($this->model->validate()){
 				//Delete image reference if marked
 				if($this->model->deleteimage) $this->model->image_name = '';
 				//Save the image if any
 				$image=CUploadedFile::getInstance($this->model,'image');
-				if (get_class($image) == 'CUploadedFile'){
+				if (get_class($image) == 'CUploadedFile'){				
 					if($image->getSize() > (1024 * 1024 * Yii::app()->params['max_image_size'])){  $this->model->addError('image',Yii::t('user','Please select an image smaller than 7MB.'));
 					$error = true;}//MB
 					$types = array("image/jpg", "image/png", "image/gif", "image/jpeg");
-					if (! in_array(CFileHelper::getMimeType($image->getTempName()), $types)){ $this->model->addError('image',Yii::t('user','File type {filetype} not supported. Please select a valid image type.',array('{filetype}'=>CFileHelper::getMimeType($image->getTempName())))); $error = true;} 
+					if (! in_array($image->type, $types)){ $this->model->addError('image',Yii::t('user','File type {filetype} not supported. Please select a valid image type.',array('{filetype}'=>CFileHelper::getMimeType($image->getTempName())))); $error = true;} 
 				}
 				if(! $error){
 					Yii::import('ext.EUploadedImage');
@@ -383,6 +383,7 @@ www.samesub.com");
 				}
 				
 			}
+			$this->model->validate();
 			if($this->model->save())
 			Yii::app()->user->setFlash('profile_success',Yii::t('user','Profile Settings updated successfully.'));
 				//$this->redirect(array('index'));

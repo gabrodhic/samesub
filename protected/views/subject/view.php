@@ -7,10 +7,26 @@ $this->ogtags = SiteHelper::get_ogtags($this->pageTitle,
  $sub_data['url']);
  
  
+ /*
+ $(document).ready(function() {
+});*/
+ 
 $code = JsHelper::comments_voting();
 Yii::app()->clientScript->registerScript('commentsvoting',$code);
 $code2 = JsHelper::subject_voting();
 Yii::app()->clientScript->registerScript('subjectvoting',$code2);
+$code3 = 'var updateSubReadyCheck=setInterval(function(){
+if( typeof window.getallData !== "undefined" ) {
+	if( typeof window.getallData.session_username !== "undefined" ) {
+		$("#sub_info_column").prepend(\'<div class="detail_section"><h3 class="detail_header">Settings</h3><div style="float:left;">'.CHtml::link(Yii::t('subject','updateSubject'),array('subject/update/'.$model->id)).'</div><div style="float:left; padding-left:10px"><br></div><div class="clear_both"></div></div>\');
+	}
+	clearInterval(updateSubReadyCheck);
+}
+},1000);
+
+';
+Yii::app()->clientScript->registerScript('updatesub',$code3);
+
 ?>
 
 <h1><?php echo CHtml::encode($model->title); ?></h1>
@@ -70,7 +86,7 @@ foreach($comments as $comment): ?>
 <div class="flash-notice" style="border:none"><?php echo Yii::t('subject','NOTE: Comments are allowed only on Live Subjects({link_begin}homepage{link_end}).', array('{link_begin}'=>'<a href ="'.Yii::app()->createUrl('site/index').'">', '{link_end}'=>'</a>'));?></div>
 </div><!-- form -->
 <div id="right_container">
-	<div style="padding-left:30px;">
+	<div id="sub_info_column" style="padding-left:30px;">
 		<div class="detail_section">
 		<h3 class="detail_header">Author</h3>
 		<div style="float:left;"><?php echo SiteHelper::get_user_picture((int)$model->user_id,'small_','mysub');?></div>

@@ -38,7 +38,7 @@ function get_Contents(callback){
 		"time="+d.getTime(),
 		function(){},
 		function(json){
-			
+			window.getallData = json;//This variable can be used sitewide on different pages, so that only one ajax request is used for most things.
 			
 			if(epoch_time < json.current_time){
 				epoch_time = json.current_time;//Update the epoch_time whenever the client time has get delayed

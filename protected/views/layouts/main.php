@@ -3,7 +3,7 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<meta name="language" content="<?php echo Yii::app()->language;?>" />
-	<?php echo $this->ogtags; ?>
+	<?php if( isset ($this->ogtags) ) echo $this->ogtags; ?>
 	<?php 
 	if( strtolower($this->id) == 'site' and strtolower($this->action->Id) == 'index'){
 	?>

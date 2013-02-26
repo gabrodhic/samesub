@@ -127,20 +127,16 @@ class SubjectController extends Controller
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($this->model);
 		$country_id = 1;
-		if($_SERVER['REMOTE_ADDR'] != '127.0.0.1'){
-			Yii::import('ext.EGeoIP');
-			$geoIp = new EGeoIP();
-			$geoIp->locate($_SERVER['REMOTE_ADDR']);
-			//http://www.iso.org/iso/english_country_names_and_code_elements
-			$country=Country::model()->find('code=:code', array(':code'=>$geoIp->countryCode));
-			if($country) $country_id = $country->id;
-		}
 		
 		if(isset($_POST['Subject']))
 		{
 			$this->model->attributes=$_POST['Subject'];
 
 			$this->model->user_country_id = $country_id;
+			
+			if(! $this->model->urn = Subject::generateUrn($this->model->title)){
+				$this->model->addError('title',Yii::t('subject', 'Please change something in the title.'));
+			}
 			
 			if($this->model->save()){
 				$wait = Subject::getPrognostic($this->model->id);
@@ -199,20 +195,35 @@ www.samesub.com");
 	{
 		$this->model=$this->loadModel($id);
 		$this->model->scenario='update';
+		$this->model->text = $this->model->content_text->text;
+		$this->model->video = $this->model->content_video->embed_code;
+		foreach ($this->model->tags as $mtag) $this->model->tag .= $mtag->name.',';//Notice tags is a a call to the relation model
+		if( $this->model->user_position ){
+			$this->model->user_position_ymd = date("Y/m/d",$this->model->user_position);
+			$this->model->user_position_hour = date("G",$this->model->user_position);//Notice is 24 hour without leading zero as we are setting the value not the text
+			$this->model->user_position_minute = date("i",$this->model->user_position);			
+		}else{
+			$this->model->user_position_anydatetime = 1;//set the checkbox
+		}
+		//Create an array(named Subject) with the params stored in the databse for this element
+		//We can't use $_POST['Subject'], because it would just load the submited user data params and not other data already in database.
+		$params=array('Subject'=>$this->model->attributes);
+		if(! Yii::app()->user->checkAccess('subject_updateown',$params)) throw new CHttpException(403,Yii::t('subject','You are not allowed to update this subject.'));
 
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($this->model);
 
 		if(isset($_POST['Subject']))
 		{
-			//Create an array(named Subject) with the params stored in the databse for this element
-			//We can't use $_POST['Subject'], because it would just load the submited user data params and not other data already in database.
-			$params=array('Subject'=>$this->model->attributes);
 			if(Yii::app()->user->checkAccess('subject_update',$params))
 			{
+				if($_POST['Subject']['title'] != $this->model->title)
+					if(! $this->model->urn = Subject::generateUrn($_POST['Subject']['title'])){
+						$this->model->addError('title',Yii::t('subject', 'Please change something in the title.'));
+					}
 				$this->model->attributes=$_POST['Subject'];
 				if($this->model->save())
-					$this->redirect(array('view','id'=>$this->model->id));
+					$this->redirect(array('view','id'=>$this->model->urn));
 			}else
 			{
 				throw new CHttpException(403,Yii::t('subject','You are not allowed to update this subject.'));
@@ -246,12 +257,38 @@ www.samesub.com");
 					$this->model->attributes=$_POST['Subject'];
 					Yii::import('ext.EGeoIP');
 					$geoIp = new EGeoIP();
-					$geoIp->locate($_SERVER['REMOTE_ADDR']);
-					//http://www.iso.org/iso/english_country_names_and_code_elements
-					$country=Country::model()->find('code=:code', array(':code'=>$geoIp->countryCode)); 
-					$this->model->moderator_country_id = $country->id;
-					if($this->model->save())
+					if ($_SERVER['REMOTE_ADDR'] != '127.0.0.1'){
+						$geoIp->locate($_SERVER['REMOTE_ADDR']);
+						//http://www.iso.org/iso/english_country_names_and_code_elements
+						$country=Country::model()->find('code=:code', array(':code'=>$geoIp->countryCode)); 
+						$this->model->moderator_country_id = $country->id;
+					}
+					if($this->model->save()){
+						if($this->model->moderator_comment){
+							$user = User::model()->findByPk($this->model->user_id); 
+							$mail_message = Yii::t('subject',"Hi {username} 
+This message is to inform you that a moderator set a comment on your sub, and most probably you need to change something in your sub.
+Details
+Subject Title: {title}
+Uploaded time: {uploaded_time} UTC
+Current time: {current_time} UTC (time of this message)
+Moderator Comment: {moderator_comment}
+Sub Link: {sub_link}
+
+NOTE: This message is supposed be received only by the uploader user. If you
+are not the uploader of this subject please notify us by replaying to this mail."
+,array('{username}'=>$user->username,'{title}'=>$this->model->title,'{uploaded_time}'=>date("Y/m/d H:i", $this->model->time_submitted), '{current_time}'=>date("Y/m/d H:i", SiteLibrary::utc_time()),'{moderator_comment}'=>$this->model->moderator_comment, '{sub_link}'=> Yii::app()->request->baseUrl.'/sub/'. $this->model->urn));
+
+$mail_message .= "\n\n";		
+$mail_message .= Yii::t('site',"Thanks
+Sincerely
+Samesub Team
+www.samesub.com");			
+							SiteLibrary::send_email($user->email,Yii::t('subject',"Moderator Comment"),$mail_message);
+						
+						}						
 						$this->redirect(array('manage'));
+					}
 			}
 
 			$this->render('moderate',array(

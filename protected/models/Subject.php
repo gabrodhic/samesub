@@ -75,7 +75,7 @@ class Subject extends CActiveRecord
 			array('image_url', 'url', 'on'=>'add,update'),
 			array('text', 'safe', 'on'=>'add,update'),//So that it can be massively assigned, either way its gonna be validated by validateContentType
 			array('video', 'safe', 'on'=>'add,update'),//So that it can be massively assigned, either way its gonna be validated by validateContentType
-			array('content_type_id', 'validateContentType', 'on'=>'add'),
+			array('content_type_id', 'validateContentType', 'on'=>'add,update'),
 			array('user_position_ymd,user_position_hour,user_position_minute', 'safe', 'on'=>'add,update'),//So that it can be massively assigned, either way its gonna be validated by validateDateTime
 			array('user_position_anydatetime', 'validateDateTime', 'on'=>'add,update'),
 
@@ -131,9 +131,66 @@ class Subject extends CActiveRecord
 					return false;
 				}
 			}
+			
+			if (Yii::app()->controller->action->id == 'update'){
+				
+				//Insert the content type on its proper table
+				switch ($this->content_type_id) {
+					case 1:
+						//Image
+						if(strlen($this->image_url) > 2) {
+							if(! Yii::app()->db->createCommand()
+							->update('content_image', array('url'=>$this->image_url),'id=:id', array(':id'=>$this->content_id)));
+							{
+								$this->addError('image',Yii::t('subject', 'We could not save the image url in the database.')); 
+								return false;				
+							}
+							break;
+						}						
+						if(get_class($this->image) <> 'CUploadedFile') break; //Nothing to do, user didn't submitted any file, so things stay the same
+						
+						$content_image = Yii::app()->db->createCommand()->select('*')->from('content_image')->where('id=:id',array(':id'=>$this->content_id))->queryRow();
+						$img_name = $content_image['id'].'.'.$content_image['extension'];
+						$img_path = Yii::app()->params['img_path'];
+						
+						Yii::import('ext.EUploadedImage');
+						$this->image = EUploadedImage::getInstance($this,'image');
+						$this->image->maxWidth = 980;
+						$this->image->maxHeight = 750;
+						 
+						$this->image->thumb = array(
+							'maxWidth' => 300,	//Because we dont know if its viewing in landscape or portrait
+							'maxHeight' => 300, //we set bowth to a max of 800 instead of 480(no, lets make both 480)
+							//'dir' => Yii::app()->params['dirroot'] . '/'.$img_path,
+							'prefix' => 'small_',
+						);
+						 
+						if (! $this->image->saveAs(Yii::app()->params['webdir'].DIRECTORY_SEPARATOR.$img_path.DIRECTORY_SEPARATOR.$img_name)){
+							$this->addError('image',Yii::t('subject', 'We could not save the image in the disk.')); 
+							return false;
+						}
+						
 
-			//TODO:Update the table belonging to each content type(image,text,video,etc)
-			//also validatecontenttype
+						break;
+					case 2:
+						//Text
+						if(! Yii::app()->db->createCommand()->update('content_text', array('text'=>$this->text), array(':id'=>$this->content_id)))
+						{
+							$this->addError('text',Yii::t('subject', 'We could not save the text.')); 
+							return false;
+						}
+						break;
+					case 3:
+						//Video
+						//echo "aaaaa".$this->video.$this->content_id;
+						if(! Yii::app()->db->createCommand()->update('content_video', array('embed_code'=>$this->video), 'id=:id', array(':id'=>$this->content_id)))
+						{
+						//	$this->addError('video',Yii::t('subject', 'We could not save the video.')); 
+							//return false;
+						}
+						break;
+				}				
+			}
 		}
 		else{
 		
@@ -145,10 +202,6 @@ class Subject extends CActiveRecord
 			
 			//Assign subject hash(for guest users that want to register and own an added subject)
 			$this->hash = md5(uniqid(""));
-			//Generate the urn for this subject
-			if(! $this->urn = $this->generateUrn($this->title)){
-				$this->addError('title',Yii::t('subject', 'Please change something in the title.')); return false;
-			}
 			
 			//Insert the content type on its proper table
 			switch ($this->content_type_id) {
@@ -236,6 +289,7 @@ class Subject extends CActiveRecord
 	{
 		//Update the tag table if there are new tags and only in the case of an update or create action
 		if($this->tag and (Yii::app()->controller->action->id == 'add' OR Yii::app()->controller->action->id == 'update' OR Yii::app()->controller->action->id == 'moderate' OR Yii::app()->controller->action->id == 'authorize')  ){
+			$tags_ids = array();
 			$tags_old = Yii::app()->db->createCommand()->select('*')->from('tag')->queryAll();		
 			foreach($tags_old as $tag_old) $tags[$tag_old['id']] = $tag_old['name'];
 			
@@ -258,15 +312,20 @@ class Subject extends CActiveRecord
 					$tag_id = array_search($new_tag, $tags);
 				}
 				if($tag_id){
+					$tags_ids[] = $tag_id;
 					if($current_tags){
 						if (! in_array($tag_id, $current_tags)) 
-						Yii::app()->db->createCommand()->insert('subject_tag',array('subject_id'=>$this->id, 'tag_id'=>$tag_id));
+							Yii::app()->db->createCommand()->insert('subject_tag',array('subject_id'=>$this->id, 'tag_id'=>$tag_id));						
+							
 					}else{
 						Yii::app()->db->createCommand()->insert('subject_tag',array('subject_id'=>$this->id, 'tag_id'=>$tag_id));
 					}
 					$current_tags[] = $tag_id;
 				}
+				
 			}
+			if(count($tags_ids) > 0) 
+				Yii::app()->db->createCommand()->delete('subject_tag', array('and', array('subject_id=:subject_id',array(':subject_id'=>$this->id)), array('not in', 'tag_id', $tags_ids)));				
 		}
 		//Set position for the time board if not set and if it is authorized only
 		if( $this->authorized and (!$this->position) and ($this->user_position or $this->manager_position) ) {
@@ -355,6 +414,8 @@ class Subject extends CActiveRecord
 					$this->addError('user_position',Yii::t('subject', 'Invalid date and times.'));
 				}
 			}
+		}else{			
+			$this->user_position = 0;
 		}
 	}
 	/**
@@ -370,14 +431,15 @@ class Subject extends CActiveRecord
 				$this->image=CUploadedFile::getInstance($this,'image');
 				if(get_class($this->image) <> 'CUploadedFile'){
 					if(strlen($this->image_url) < 2) {
+						if( Yii::app()->controller->action->id != 'update')
 						$this->addError('content_type_id',Yii::t('subject', 'Please upload OR insert an image url.'));
 						break; 
 					}
 				}else{
 					if($this->image->getHasError()){ $this->addError('image',Yii::t('subject', 'Please select an image.'));break; }
 					if($this->image->getSize() > (1024 * 1024 * Yii::app()->params['max_image_size'])){  $this->addError('image',Yii::t('subject', 'Please select an image smaller than 7MB.'));break;}//MB
-					$types = array("image/jpg", "image/png", "image/gif", "image/jpeg");
-					if (! in_array(CFileHelper::getMimeType($this->image->getTempName()), $types)) $this->addError('image', Yii::t('subject', 'File type {filetype} not supported .Please select a valid image type.', array('{filetype}'=>CFileHelper::getMimeType($this->image->getTempName()))));
+					$types = array("image/jpg", "image/png", "image/gif", "image/jpeg");					
+					if (! in_array($this->image->type, $types)) $this->addError('image', Yii::t('subject', 'File type {filetype} not supported .Please select a valid image type.', array('{filetype}'=>CFileHelper::getMimeType($this->image->getTempName()))));
 				}
 				break;
 			case 2:
