@@ -3,16 +3,34 @@ Yii::app()->clientScript->registerCoreScript('jquery.ui');
 Yii::app()->clientScript->registerScriptFile(Yii::app()->request->baseUrl.'/js/tag-it.min.js');
 Yii::app()->clientScript->registerCssFile(Yii::app()->clientScript->getCoreScriptUrl().'/jui/css/base/jquery-ui.css');
 Yii::app()->clientScript->registerCssFile(Yii::app()->request->baseUrl.'/css/jquery.tagit.css');
+
+Yii::app()->clientScript->registerCssFile(Yii::app()->request->baseUrl.'/css/jquery.wysiwyg.css');
+Yii::app()->clientScript->registerScriptFile(Yii::app()->request->baseUrl.'/js/jquery.wysiwyg.js');
+Yii::app()->clientScript->registerScriptFile(Yii::app()->request->baseUrl.'/js/wysiwyg.link.js');
 $code = "
 $(document).ready(function() {
 $('#Subject_tag').tagit({
     autocomplete: {delay: 0, minLength: 2,source: '".Yii::app()->request->baseUrl.'/api/v1/subject/gettags'."'},
-	allowSpaces: true,
+	allowSpaces: true
 });
 });
 ";
-
 Yii::app()->clientScript->registerScript('tagscodeid',$code);
+
+$code3 = "$('.rte-area').wysiwyg({  
+	rmUnusedControls: true,
+    controls: {
+        bold: { visible : true },
+		italic: { visible : true },
+		underline: { visible: true },
+		createLink: { visible : true },
+		unLink: { visible : true },
+		html: { visible : true },
+		removeFormat: { visible : true }
+    }});";
+Yii::app()->clientScript->registerScript('wysiwygcodeid',$code3);
+
+
 ?>
 
 <?php if(Yii::app()->user->hasFlash('subject_added')): ?>
@@ -55,7 +73,7 @@ Yii::app()->clientScript->registerScript('tagscodeid',$code);
 
 	<div class="row">
 		<?php echo $form->labelEx($model,'content_type_id'); ?>
-		<?php echo $form->DropDownList($model, 'content_type_id', CHtml::listData(ContentType::model()->findAll(),'id','name'),array('prompt'=>'Select Type', 'disabled'=> (Yii::app()->controller->action->id == 'update') )); ?> 
+		<?php echo $form->DropDownList($model, 'content_type_id', CHtml::listData(ContentType::model()->findAll(array('condition'=>"name <> 'text'")),'id','name'),array('prompt'=>'Select Type', 'disabled'=> (Yii::app()->controller->action->id == 'update') )); ?> 
 		<?php echo $form->error($model,'content_type_id'); ?>
 	</div>
 	
@@ -73,10 +91,12 @@ Yii::app()->clientScript->registerScript('tagscodeid',$code);
 		<?php echo $form->textField($model,'image_url',array('size'=>80,'maxlength'=>250));?>
 		<?php echo $form->error($model,'image_url'); ?>
 	</div>
+	<?php if($this->action->id == 'update'): ?>
 	<div class="row">
 		<?php echo $form->labelEx($model,'Content'); ?>
 		<?php echo SiteHelper::subject_content($model); ?>
 	</div>	
+	<?php endif; ?>
 	<div class="row">
 		<?php echo $form->labelEx($model,'text'); ?>
 		<?php echo $form->textArea($model,'text',array('rows'=>6, 'cols'=>50)); ?>
@@ -90,7 +110,7 @@ Yii::app()->clientScript->registerScript('tagscodeid',$code);
 	
 	<div class="row">
 		<?php echo $form->labelEx($model,'user_comment'); ?>
-		<?php echo $form->textArea($model,'user_comment',array('rows'=>6, 'cols'=>50)); ?>
+		<?php echo $form->textArea($model,'user_comment',array('rows'=>20, 'cols'=>65,'class'=>'rte-area')); ?>
 		<?php echo $form->error($model,'user_comment'); ?>
 	</div>
 
@@ -158,7 +178,7 @@ function show_content_input(){
 	  $("#Subject_image,#Subject_image_url,#Subject_image_source").parent().hide();
 	  $("#Subject_text").parent().hide();
 	  $("#Subject_video").parent().hide();
-	  $("#Subject_user_comment").parent().hide();
+	  
 	  break;
 	case '1':
 	  $("#Subject_image_source").parent().show();
@@ -172,19 +192,19 @@ function show_content_input(){
 
 	  $("#Subject_text").parent().hide();
 	  $("#Subject_video").parent().hide();
-	  $("#Subject_user_comment").parent().show();
+	  
 	  break;
 	case '2':
 	  $("#Subject_image,#Subject_image_url,#Subject_image_source").parent().hide();
 	  $("#Subject_text").parent().show();
 	  $("#Subject_video").parent().hide();
-	  $("#Subject_user_comment").parent().show();
+	  
 	  break;
 	case '3':
 	  $("#Subject_image,#Subject_image_url,#Subject_image_source").parent().hide();
 	  $("#Subject_text").parent().hide();
 	  $("#Subject_video").parent().show();
-	  $("#Subject_user_comment").parent().show();
+	  
 	  break;
 	default:
 	  //nothing

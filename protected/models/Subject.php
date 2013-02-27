@@ -62,6 +62,7 @@ class Subject extends CActiveRecord
 	{
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
+		$obj=new CHtmlPurifier(); $obj->options = array('HTML.Allowed'=>'a[href],b,i,u,p,br,div');//http://htmlpurifier.org/live/configdoc/plain.html#HTML.Allowed
 		return array(
 			array('priority_id', 'numerical', 'integerOnly'=>true, 'on'=>'add,update,moderate,authorize'),
 			array('priority_id', 'numerical', 'min'=>1, 'max'=>3),
@@ -71,6 +72,7 @@ class Subject extends CActiveRecord
 			array('content_type_id,country_id', 'numerical', 'integerOnly'=>true, 'on'=>'add,update'),			
 			array('title', 'length', 'max'=>240, 'on'=>'add,update'),
 			array('user_comment', 'type', 'type'=>'string', 'on'=>'add,update'),			
+			array('user_comment', 'filter', 'filter'=>array($obj,'purify')),
 			array('image,image_source', 'safe', 'on'=>'add,update'),//So that it can be massively assigned, either way its gonna be validated by validateContentType
 			array('image_url', 'url', 'on'=>'add,update'),
 			array('text', 'safe', 'on'=>'add,update'),//So that it can be massively assigned, either way its gonna be validated by validateContentType
