@@ -17,7 +17,7 @@
 	var ssAddThisImgUrl = '<?php echo Yii::app()->params['addthis_img_url'];?>';
 	var ssLang=new Object();
 	
-	ssLang.site={'liveNowTitle':'<?php echo Yii::t('site','LIVE NOW: {1}',array('{1}'=>'{0}'));?>', 'errorGettingData':'<?php echo Yii::t('site','LIVE: There was an error getting data from the server to your device. Please check your internet connection. Retrying in 15 seconds.');?>','myAccount':'<?php echo Yii::t('site','My Account');?>','profile':'<?php echo Yii::t('site','Profile');?>','mySub':'<?php echo Yii::t('site','Mysub');?>','logout':'<?php echo Yii::t('site','Logout');?>','writeYourComments':'<?php echo Yii::t('site','Write your comments here!');?>','commentSentChat':'<?php echo Yii::t('site','Sent, wait few seconds');?>','errorSendingComment':'<?php echo Yii::t('site','Error: check connection');?>','waitingForComments':'<?php echo Yii::t('site','Waiting for comments');?>','commentsClosing':'<?php echo Yii::t('site','Comments closing...');?>','commentsClosed':'<?php echo Yii::t('site','Comments CLOSED');?>','changingToNextSubject':'<?php echo Yii::t('site','Changing to next subject, get ready!');?>'}
+	ssLang.site={'liveNowTitle':'<?php echo Yii::t('site','LIVE NOW: {1}',array('{1}'=>'{0}'));?>', 'errorGettingData':'<?php echo Yii::t('site','LIVE: There was an error getting data from the server to your device. Please check your internet connection. Retrying in 15 seconds.');?>','myAccount':'<?php echo Yii::t('site','My Account');?>','profile':'<?php echo Yii::t('site','Profile');?>','mySub':'<?php echo Yii::t('site','Mysub');?>','logout':'<?php echo Yii::t('site','Logout');?>','writeYourComments':'<?php echo Yii::t('site','Write your comments here!');?>','commentSentChat':'<?php echo Yii::t('site','Sent, wait few seconds');?>','errorSendingComment':'<?php echo Yii::t('site','Error: check connection');?>','waitingForComments':'<?php echo Yii::t('site','Waiting for comments');?>','commentsClosing':'<?php echo Yii::t('site','Comments closing...');?>','commentsClosed':'<?php echo Yii::t('site','Comments CLOSED');?>','changingToNextSubject':'<?php echo Yii::t('site','Changing to next subject, get ready!');?>','uploadSubject':'<?php echo Yii::t('site','Add Subject');?>','history':'<?php echo Yii::t('site','History');?>'}
 	</script>
 	<?php
 	$filepath = Yii::app()->params['webdir'];
@@ -79,43 +79,38 @@ if( (strtolower($this->id) == 'site' and strtolower($this->action->Id) == 'index
 <?php 
 }
 ?>
+<div id="top_page">
+	<div id="top_page_menu_left">		
+		
+	</div>
+	<div id="top_page_menu_right2" class="top_page_menu">
+		<ul id="nav" class="drop"><li><a href="<?php echo Yii::app()->request->baseUrl.'/site/index';?>"><img src="<?php echo Yii::app()->request->baseUrl.'/images/menu_icon.png';?>"></a><ul><li><a href="<?php echo Yii::app()->request->baseUrl.'/site/index';?>">Home</a></li><li><a href="<?php echo Yii::app()->request->baseUrl.'/subject/index';?>"><?php echo Yii::t('site','History');?></a></li></ul></li></ul>
+	</div>
+	<div class="top_page_menu">
+		<span><a href="<?php echo Yii::app()->request->baseUrl.'/subject/index';?>" title="<?php echo Yii::t('site','History');?>"><img src="<?php echo Yii::app()->request->baseUrl.'/images/search_icon.png';?>"></a></span>
+	</div>
+	<div id="top_page_menu_right1" class="top_page_menu">
+		<span><?php echo '<a href="'. Yii::app()->createUrl('site/login').'">'.Yii::t('site','Login').'</a>';?></span>
+		<span> | <?php echo '<a href="'. Yii::app()->createUrl('subject/add').'">'.Yii::t('site','Add Subject').'</a>';?> | </span>		
+	</div>
+
+</div>
 <div id="page" class="container" <?php echo ((strtolower($this->id) == 'site' and strtolower($this->action->Id) == 'index')) ? 'style="display:none;"' : '';?>>
 	<div id="header" class="bounded">
-		<div id="header_top">
+
 		<?php if(strtolower(Yii::app()->controller->action->id) == 'index' and strtolower(Yii::app()->controller->id) == 'site'){
 				
 		} else { ?>
-			<iframe src="<?php echo Yii::app()->getRequest()->getBaseUrl(true).'/empty.html';?>" width="980" height="30" id="header_top_frame" frameBorder="0" scrolling="no" style="background-color:white; z-index:9000;"></iframe>
-		<?php } ?>
+		<div id="header_top">
+			<iframe src="<?php echo Yii::app()->getRequest()->getBaseUrl(true).'/empty.html';?>" width="800" height="20" id="header_top_frame" frameBorder="0" scrolling="no" style="background-color:white; z-index:9000;"></iframe>
 		</div>
-		<div id="header_middle">
-			<div id="logo"><a href="<?php echo Yii::app()->createUrl('site/index');?>"><img src="<?php echo Yii::app()->request->baseUrl; ?>/images/logo-<?php echo filemtime($filepath.'/images/logo.jpg'); ?>.jpg"></a></div>
-			<div id="main_menu">
-				<div id="menu_left">
-					<div class="navigation">
-							<?php $this->widget('zii.widgets.CMenu',array(
-							'items'=>array(
-								array('label'=>Yii::t('site','Live'), 'url'=>array('site/index')),
-								array('label'=>" | "),
-								array('label'=>Yii::t('site','Add Subject'), 'url'=>array('subject/add')),
-								array('label'=>" | "),
-								array('label'=>Yii::t('site','Mysub'), 'url'=>array((Yii::app()->user->isGuest) ? '/mysub' : 'mysub/'.Yii::app()->user->name)),
-								array('label'=>" | "),
-								array('label'=>Yii::t('site','History'), 'url'=>array('subject/index')),
-
-							),
-						)); ?>					
-					</div>
-				</div>
-				<div id="menu_right">					
-					<span><?php echo '<a href="'. Yii::app()->createUrl('site/login').'">'.Yii::t('site','Login').'</a>';?></span>
-				</div>
-			</div>
-		</div>
-		<div class="clear_both"></div>
+		<div class="clear_both" style="margin-bottom:30px"></div>
 		<?php $this->widget('zii.widgets.CBreadcrumbs', array(
               'links'=>$this->breadcrumbs,
 		)); ?><!-- breadcrumbs -->
+		<?php } ?>
+		
+
 	</div>
 	<div id="main_body" class="bounded">
 	<?php if (Yii::app()->user->hasFlash('layout_flash_success')):?>

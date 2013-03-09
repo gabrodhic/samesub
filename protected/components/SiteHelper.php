@@ -45,22 +45,22 @@ class SiteHelper extends CHtml
 							//set ?wmode=opaque because so that the the #header_top div does not get bellow the movie
 							//http://stackoverflow.com/questions/3820325/overlay-opaque-div-over-youtube-iframe
 							$time = ($query_arr['t']) ? '#at='.$query_arr['t'] : '';//#at=** is the correct syntax for embed url, ie clic on the youtube logo while wathching a video on X seconds: it will open a new window with that param
-							$html = '<iframe width="425" height="349" src="http://www.youtube.com/embed/'.$query_arr['v'].'?wmode=opaque'.$time.'" frameborder="0" allowfullscreen></iframe>';
+							$html = '<iframe width="640" height="390" src="http://www.youtube.com/embed/'.$query_arr['v'].'?wmode=opaque'.$time.'" frameborder="0" allowfullscreen></iframe>';
 						}
 					}elseif(stristr($parsed_url['host'],'youtu.be')){//and its from youtube shortly
 						$time = ($query_arr['t']) ? '#at='.$query_arr['t'] : ''; //#at=** is the correct syntax for embed url, ie clic on the youtube logo while wathching a video on X seconds: it will open a new window with that param
 						
-						$html = '<iframe width="425" height="349" src="http://www.youtube.com/embed/'.$parsed_url['path'].'?wmode=opaque'.$time.'" frameborder="0" allowfullscreen></iframe>';
+						$html = '<iframe width="640" height="390" src="http://www.youtube.com/embed/'.$parsed_url['path'].'?wmode=opaque'.$time.'" frameborder="0" allowfullscreen></iframe>';
 					}elseif(stristr($parsed_url['host'],'dailymotion.com')){
 						//the code is before the first undersore for the video source(pending verify if thats the syntax for all cases)
 						if($last_code_pos = stripos($parsed_url['path'], '_')){
 							$video_code = substr($parsed_url['path'],1, $last_code_pos-1);
-							if($video_code)	$html = '<iframe frameborder="0" width="480" height="360" src="http://www.dailymotion.com/embed/'.$video_code.'"></iframe>'; //$video_code already contains: /videdo/
+							if($video_code)	$html = '<iframe frameborder="0" width="640" height="390" src="http://www.dailymotion.com/embed/'.$video_code.'"></iframe>'; //$video_code already contains: /videdo/
 						}
 					}elseif(stristr($parsed_url['host'],'vimeo.com')){
 						if($parsed_url['path'])
 						//nice, we can play with params here, title, portrait, etc
-						$html = '<iframe src="http://player.vimeo.com/video'.$parsed_url['path'].'?title=0&byline=0&portrait=0" width="400" height="225" frameborder="0"></iframe>';
+						$html = '<iframe src="http://player.vimeo.com/video'.$parsed_url['path'].'?title=0&byline=0&portrait=0" width="640" height="390" frameborder="0"></iframe>';
 					}
 				}else{
 					$html = SiteHelper::formatted($subject->content_video->embed_code);
@@ -98,7 +98,7 @@ class SiteHelper extends CHtml
 					$max_width = 250;
 					$max_height = 190;
 				}else{
-					$max_width = 550;
+					$max_width = 640;
 					$max_height = 440;
 				}
 				$pattern = '/(width=")(\d+)(")/i';//Replace: width="***"  ---> width="MOBILE_WIDTH"

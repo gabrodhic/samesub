@@ -494,6 +494,9 @@ class Subject extends CActiveRecord
 			$arr_data['country_name'] = ($country->name) ? $country->name : 'WORLD';
 			$user = User::model()->findByPk($subject_data->user_id);
 			$arr_data['username'] = $user->username;
+			$arr_data['user_firstname'] = $user->firstname;
+			$arr_data['user_lastname'] = $user->lastname;
+			$arr_data['user_image'] = $user->getUserImage("small_");
 
 			$arr_data['content_html'] = SiteHelper::subject_content($subject_data);
 			$arr_data['content_data'] = (array) Subject::subject_content($subject_data)->getAttributes();
@@ -550,8 +553,12 @@ class Subject extends CActiveRecord
 		foreach ($live_comments as $live_comment){
 			$arr_data['new_comment']++;
 			$arr_data['comment_id'] = $live_comment['comment_id'];
+			$user = User::model()->find('username=:username', array(':username'=>$live_comment['username']));
 			$arr_comments[] = array('comment_id'=>$live_comment['comment_id'],
-			'username'=>$live_comment['username'],
+			'username'=>$live_comment['username'],			
+			'user_firstname' => $user->firstname,
+			'user_lastname' => $user->lastname,
+			'user_image' => $user->getUserImage("small_"),
 			'comment_text'=> CHtml::encode($live_comment['comment_text']), 'comment_number'=>$live_comment['comment_number'],
 			'comment_time'=>date("H:i:s",$live_comment['comment_time']),
 			'comment_country'=>$live_comment['comment_country'],

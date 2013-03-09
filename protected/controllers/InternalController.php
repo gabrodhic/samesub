@@ -113,7 +113,7 @@ class InternalController extends Controller
 		//This frees up subs that never were used because they were fixed position but cron failed to run and time passed by
 		Subject::model()->updateAll(array('position'=>'0','user_position'=>'0','manager_position'=>'0'), 'position < '.$round_utc_time .' AND user_position < '.$round_utc_time.' AND manager_position < '.$round_utc_time);
 		
-		$subject = Subject::model()->find(array('condition'=>'position >= '.$round_utc_time.' AND approved=1 AND authorized=1 AND disabled=0 AND deleted=0', 'order'=>'position ASC'));
+		$subject = Subject::model()->find(array('condition'=>'position >= '.$round_utc_time.' AND content_type_id <> 2 AND approved=1 AND authorized=1 AND disabled=0 AND deleted=0', 'order'=>'position ASC'));
 		
 
 		$live_subject = Yii::app()->db->createCommand()->select('*')->from('live_subject')->queryRow();

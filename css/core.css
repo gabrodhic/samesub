@@ -49,17 +49,35 @@ background-color:#777777;
 background-color:#1C75CE;
 }
 
+/*---- CROSS BROWSER DROPDOWN MENU ----*/
+ul#nav {margin: 0 0 0 0;}
+ul.drop li ul li{ padding: 5px 15px; }
+ul.drop a { display:block; color: #fff; font-size: 14px; text-decoration: none;}
+ul.drop, ul.drop li, ul.drop ul { list-style: none; margin: 0; padding: 0; border: 1px solid #fff; color: #fff;}
+ul.drop { position: relative; z-index: 597; float: left; }
+ul.drop li { float: left; line-height: 1.3em; vertical-align: middle; zoom: 1; padding: 0px 0px; }
+ul.drop li.hover, ul.drop li ul li:hover { position: relative; z-index: 599; cursor: default; background: #1e7c9a; }
+ul.drop ul { visibility: hidden; position: absolute; top: 100%; left: -70px; z-index: 598; width: 105px; background: #555; border: 1px solid #fff; }
+ul.drop ul li { float: none; }
+ul.drop ul ul { top: -2px; left: 100%; }
+ul.drop li:hover > ul { visibility: visible }
+
 #logo{
 float:left;
 }
 #header_top{
 height:30px;
 position:fixed;
-width:980px; 
+width:800px; 
 z-index:99;
-text-align:right;
+text-align:left;
 }
-
+#top_page{
+position:fixed;
+right:5px;
+background:white;
+height: 20px;
+}
 #header_middle{
 padding-top:30px;
 }
@@ -68,7 +86,6 @@ padding-top:10px;
 padding-bottom:10px;
 }
 #header_board {
-margin-top:15px;
 }
 #header_error{
 color: #686868;
@@ -80,99 +97,183 @@ display:none;
 
 #time_remaining_box{
 padding:5px;
-width: 118px;
-background-color: #1C75CE;
-float: right;
-color:white;
+float: left;
+color:black;
 text-align: center;
 }
 
 #header_title{
-width: 850px;
 float: left;
+width: 460px;
+text-align:right;
 }
 
 #left_container{
 float:left;
-width:588px;/*60%*/
+width:645px;/*60%*/
 /*background-color:red;*/
 }
 #right_container{
-float:right;
-width:392px;/*40%*/
-/*background-color:blue;*/
+float:left;
+width:330px;/*40%*/
+margin: 0 0 0 -3px;/*as close as posible to the left container*/
 }
 .user_input{
 font: normal 13px helvetica,arial;
 color:black;
 }
+.user_input img{
+border: 1px solid black;
+}
 #comments_container{
 padding-left:10px;
-padding-top:10px;
 }
 #cache_html{
 display:none;
 }
 
-
 .content_image{
-max-width:550px;
+max-width:638px;
+max-height:388px;
+border:1px solid grey;
 /*width:100%;*/
 }
 #board_left{
 margin:15px 0 5px 0;
 float:left;
-width:580px;
+width:645px;
 }
 #board_right{
-width:385px;
-float:right;
+margin:15px 0 5px 0;
+width:330px;
+float:left;
 }
 #comment_textarea{
-margin: 0; padding: 0;
+margin: 0; 
+padding: 2px;
 /*border: 1px solid grey;*/
-width:380px;
+width:510px;
 overflow:hidden; 
+height:35px;
 }
 #send_comment{
+margin-left:5px;
 float:right;
-padding-right: 5px;
+padding: 8px 15px 0px 15px;
 cursor:pointer;
-font-size:14px;
+height:31px;
+background:#9CA6B2;
+border:1px solid grey;
+}
+#send_comment:hover{
+background:#697077;
+}
+#send_comment a{
+color:white;
+font-size:18px;
+}
+#content_footer{
+margin: 7px 0 40px 0;
 }
 #share_links{
-float:left;
+float:right;
 }
-#header_info{
-float:left;
+#perma_link{
+float:right;
+margin-left: 10px;
+}
+#subject_voting{
+margin-right:5px;
+}
+#country_info{
+font-weight: bold;
+margin-top:40px;
 }
 #submit_info{
 float:left;
-margin-left: 5px;
-}
-#perma_link{
-float:left;
 margin-left: 10px;
+padding-left: 10px;
+border-left:1px solid #848282;
+height:60px;
+width:150px;
 }
-
 #comment_status{
-float:right;
+float:left;
 font-weight:bold;
 background-color: #0099CC;
 color:white;
-/*padding: 0 5px 5px 0;*/
-/*visibility:hidden;*/
+visibility:hidden;
 }
 #comment_timer{
-font-size: 22px;
-color:white;
+float:left;
+font-size: 70px;
+color:black;
 font-weight:bold;
 text-align: center;
+margin: -10px 0 -20px 50px;
+}
+.time_remaining_encloser {
+float:left;
+font-size:50px;
+}
+/*VERTICAL ALIGN http://www.jakpsatweb.cz/css/css-vertical-center-solution.html*/
+/*HORIZONTAL ALIGN http://www.katcode.com/css-horizontally-centering-div-of-unknown-width/*/
+#left_content_container{
+width:640px;
+height:390px;
+border: 1px solid grey;
+}
+#left_content_div{
+float: left;
+position: relative;
+right: 50%;
+margin: 0px auto;
+#position: relative;
+/* #top: -50%;*/
+}
+#left_content_container_outter{
+display: table; height: 390px; #position: relative; overflow: hidden;
+}
+#left_content_container_inner {
+text-align:left;
+margin-left: auto;
+margin-right: auto;
+overflow:hidden;
+width:640px; #position: absolute; display: table-cell; vertical-align: middle;
+/*#top: 50%;*/
+}
+#left_content_container_inside{
+float: left;
+left: 50%;
+position: relative;
+margin: 0px auto;
+}
+#right_content_container{
+margin-left:15px;
+}
+#live_now_box{
+text-align:center;
+font-family:Arial;
+font-size: 14px;
+font-weight:bold;
+color:#FFF2EC;
+background:#94080B;
+width:50px;
+height:45px;
+display:table-cell;
+vertical-align:middle;
+margin:0;
+}
+#right_content_div{
+text-align: justify;
+font-size:14px;
 }
 #comments_title{
+color:#8A899E;
 float:left;
 font-size: 16px;
 font-weight:bold;
+margin-top:10px;
 }
 
 #previous_left{
@@ -186,17 +287,13 @@ float:left;
 font-size: 11px;
 }
 
-
-#menu_left{
-float:left;
-margin-top:18px;
-}
-
-#menu_right{
-text-align:right;
+.top_page_menu{
 float:right;
-margin-top:18px;
+text-align:right;
+padding:1px 3px 0 3px;
+/*margin-top:18px;*/
 }
+
 .navigation{
 list-style: none;
 margin-bottom: 1em;
@@ -237,16 +334,20 @@ padding:0;
 
 }
 .comment_board_entry{
-margin-bottom:7px;
+margin-bottom:30px;
 padding: 0px;
-/*height:55px;*/
+
 }
-.left_comment{
-/*float:left;*/
-margin-right:6px
+.left_comment_side{
+float:left;
+width:60px;
 }
-.right_comment{
-top:0px;
+.user_image_icon{
+border:1px solid black;
+}
+.right_comment_side{
+float:left;
+width:550px;
 }
 .comment_number{
 /*font-size:26px;*/
@@ -254,12 +355,6 @@ background-color: grey;
 color: white;
 }
 .comment_country{
-/*letter-spacing: 5px;
-font-size:16px;
-padding-top:5px;
-*/
-margin: 0 5px 0 5px;
-color:black;
 font-weight:bold;
 }
 .comment_text{
@@ -282,16 +377,16 @@ width:15px;
 .total_dislikes0{color:grey !important;}
 .comment_like_button, .sub_like_button{
     display:block;
-    height:18px;
-    width:16px;
+    height:16px;
+    width:14px;
 	float:left;
 	cursor:pointer;
 }
 .comment_dislike_button, .sub_dislike_button {    
 	margin-top:4px;
     display:block;
-    height:18px;
-    width:16px;
+    height:16px;
+    width:14px;
 	float:left;
 	cursor:pointer;
 }

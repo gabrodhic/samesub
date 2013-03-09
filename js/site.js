@@ -53,11 +53,13 @@ function get_Contents(callback){
 				setTimeout(function (){$("#header_top_frame").contents().find('body, body a').css("color", "");},2000);
 			}else{				
 				$('#header_top_frame').contents().find('head').append('<style> a, a:link, a:visited { text-decoration: none; color: #046381;font-weight: bold;  font-size: 13px;}a:hover { text-decoration: underline; }</style>');
-				$('#header_top_frame').contents().find('body').attr('style','margin:3px 1px 1px 1px; border:0px;padding:0px;text-align:right; font: bold 13px Trebuchet MS, Arial, Helvetica, sans-serif; color: #686868;');
+				$('#header_top_frame').contents().find('body').attr('style','margin:3px 1px 1px 1px; border:0px;padding:0px;text-align:left; font: bold 13px Trebuchet MS, Arial, Helvetica, sans-serif; color: #686868;');
 				
 				if(callback == "firsttime"){
+					$('#top_page').css("width","100%");
 					if( typeof json.session_username !== 'undefined' ) {
-						$('#menu_right').html('<a href="'+ ssBaseUrl + '/profile/'+json.session_username+'"><img style="vertical-align:middle" src="'+ json.session_userimage + '" width="25" height="25"></a><select style="vertical-align:middle" onchange="if (this.value) window.location.href=this.value"><option value="" selected>'+ssLang.site.myAccount+'</option><option value="'+ ssBaseUrl + '/profile/'+json.session_username+'">'+ssLang.site.profile+'</option><option value="'+ ssBaseUrl + '/mysub/'+json.session_username+'">'+ssLang.site.mySub+'</option><option value="'+ ssBaseUrl + '/site/logout">Logout</option></select>');
+						$('#top_page_menu_right1').html('<a href="'+ ssBaseUrl + '/profile/'+json.session_username+'"><img style="vertical-align:middle" src="'+ json.session_userimage + '" width="20" height="20"></a> <a href="'+ ssBaseUrl + '/mysub/'+json.session_username+'">'+json.session_username+'</a> | <a href="'+ ssBaseUrl + '/subject/add">'+ssLang.site.uploadSubject+'</a> | ');
+						$('#top_page_menu_right2 ul li ul').append('<li><a href="'+ ssBaseUrl + '/site/logout">'+ssLang.site.logout+'</a></li>');
 					}
 				}
 			}
