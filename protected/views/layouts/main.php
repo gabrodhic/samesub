@@ -34,7 +34,7 @@
 		<link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/core-<?php echo filemtime($filepath.'/css/core.css'); ?>.css" />
 	<?php
 		Yii::app()->clientScript->registerCoreScript('jquery');
-		Yii::app()->clientScript->registerScriptFile(Yii::app()->request->baseUrl.'/js/site-'.filemtime($filepath.'/js/core.js').'.js');
+		Yii::app()->clientScript->registerScriptFile(Yii::app()->request->baseUrl.'/js/site-'.filemtime($filepath.'/js/site.js').'.js');
 	}else{
 	?>
 		<script type="text/javascript">				

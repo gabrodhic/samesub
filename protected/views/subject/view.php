@@ -18,12 +18,13 @@ Yii::app()->clientScript->registerScript('subjectvoting',$code2);
 $code3 = 'var updateSubReadyCheck=setInterval(function(){
 if( typeof window.getallData !== "undefined" ) {
 	if( typeof window.getallData.session_username !== "undefined" ) {
-		$("#sub_info_column").prepend(\'<div class="detail_section"><h3 class="detail_header">Settings</h3><div style="float:left;">'.CHtml::link(Yii::t('subject','updateSubject'),array('subject/update/'.$model->id)).'</div><div style="float:left; padding-left:10px"><br></div><div class="clear_both"></div></div>\');
+		if( window.getallData.session_userid == '.$model->user_id.') {
+			$("#sub_info_column").prepend(\'<div class="detail_section"><h3 class="detail_header">Settings</h3><div style="float:left;">'.CHtml::link(Yii::t('subject','updateSubject'),array('subject/update/'.$model->id)).'</div><div style="float:left; padding-left:10px"><br></div><div class="clear_both"></div></div>\');
+		}
 	}
 	clearInterval(updateSubReadyCheck);
 }
 },1000);
-
 ';
 Yii::app()->clientScript->registerScript('updatesub',$code3);
 

@@ -3,11 +3,22 @@ $this->breadcrumbs=array(
 	Yii::t('site','Users')=>array('index'),
 	Yii::t('site','Profile'),
 );
+$code3 = 'var updateprofileReadyCheck=setInterval(function(){
+if( typeof window.getallData !== "undefined" ) {
+	if( typeof window.getallData.session_username !== "undefined" ) {
+		if( window.getallData.session_userid == '.$model->id.') {
+			$("#profile_user_head_info").append(\'<br />'.CHtml::link(Yii::t('user','Update Profile'),array('user/update')).'\');
+		}
+	}
+	clearInterval(updateprofileReadyCheck);
+}
+},1000);
+';
+Yii::app()->clientScript->registerScript('updateprofile',$code3);
+Yii::app()->clientScript->registerCssFile(Yii::app()->request->baseUrl.'/css/nyroModal.css');
+Yii::app()->clientScript->registerScriptFile(Yii::app()->request->baseUrl.'/js/jquery.nyroModal.custom.min.js');
 
 ?>
-<link rel="stylesheet" href="<?php echo Yii::app()->request->baseUrl;?>/css/nyroModal.css" type="text/css" media="screen" />
-<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
-<script type="text/javascript" src="<?php echo Yii::app()->request->baseUrl;?>/js/jquery.nyroModal.custom.min.js"></script>
 <!--[if IE 6]>
 	<script type="text/javascript" src="<?php echo Yii::app()->request->baseUrl;?>/js/jquery.nyroModal-ie6.min.js"></script>
 <![endif]-->
@@ -41,12 +52,9 @@ $this->pageTitle=Yii::app()->name . ' - '. $model->firstname.' '.$model->lastnam
 
 <div id="left_container" class="form">
 		<div style="float:left;" class="nyroModal"><?php echo SiteHelper::get_user_picture((int)$model->id,'medium_','image');?></div>
-		<div style="float:left; padding-left:10px">
-			<h2 style="padding:0px"><?php 			
-			echo $model->firstname .' '.$model->lastname;?></h2>
-			<?php echo CHtml::link($model->username,array('mysub/'.$model->username)); ?>
-			<br><?php if ($model->sex) echo($model->sex == 1) ? Yii::t('site','Male') : Yii::t('site','Female');?>
-			<br><?php if($model->country_id) echo ucwords(strtolower($model->ucountry->name)); ?>
+		<div id="profile_user_head_info" style="float:left; padding-left:10px">
+			<h2 style="padding:0px"><?php echo $model->firstname .' '.$model->lastname;?></h2>
+			<?php echo CHtml::link($model->username,array('mysub/'.$model->username)); ?>			
 		</div>
 		<div class="clear_both"></div>
 		<br><br>
@@ -54,11 +62,13 @@ $this->pageTitle=Yii::app()->name . ' - '. $model->firstname.' '.$model->lastnam
 			<h3 class="detail_header"><?php echo Yii::t('user','User Information');?></h3>
 			
 			<table border="0" width="100%">
-				<?php 
+				<?php
+				if($model->country_id){
 				echo '<tr>
-					<td width="80" class="detail_cell"><b>'.Yii::t('user','Member Since').'</b></td>
-					<td class="detail_cell">'.date("Y/m/d",$model->time_created).'</td>
+					<td width="80" class="detail_cell"><b>'.Yii::t('site', 'Country').'</b></td>
+					<td class="detail_cell">'. ucwords(strtolower($model->ucountry->name)).'</td>
 				</tr>';
+				}
 
 				if($model->region and $model->share_region == 1 ){
 				echo '<tr>
@@ -104,6 +114,16 @@ $this->pageTitle=Yii::app()->name . ' - '. $model->firstname.' '.$model->lastnam
 					<td class="detail_cell">'.Yii::t('user','{birthdate} Age: {years_old} years old.',array('{birthdate}'=>date("Y/m/d",$model->birthdate),'{years_old}'=>floor($ageYears))).'</td>
 				</tr>';
 				}
+				if($model->sex){
+				echo '<tr>
+					<td width="80" class="detail_cell"><b>'.Yii::t('site','Sex').'</b></td>
+					<td class="detail_cell">';echo ($model->sex == 1) ? Yii::t('site','Male') : Yii::t('site','Female').'</td>
+				</tr>';
+				}
+				echo '<tr>
+					<td width="80" class="detail_cell"><b>'.Yii::t('user','Member Since').'</b></td>
+					<td class="detail_cell">'.date("Y/m/d",$model->time_created).'</td>
+				</tr>';
 				if($model->interests and $model->share_interests == 1 ){
 				echo '<tr>
 					<td width="80" class="detail_cell"><b>'.Yii::t('user','Interests').'</b></td>
@@ -126,8 +146,6 @@ $this->pageTitle=Yii::app()->name . ' - '. $model->firstname.' '.$model->lastnam
 			?>
 			</table>
 			
-			<br>
-			<?php if(Yii::app()->user->id == (int)$model->id) echo CHtml::link(Yii::t('user','Update Profile'),array('user/update')); ?>
 		</div>
 </div>
 <div id="right_container">
