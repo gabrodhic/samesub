@@ -57,7 +57,7 @@ ul.drop, ul.drop li, ul.drop ul { list-style: none; margin: 0; padding: 0; borde
 ul.drop { position: relative; z-index: 597; float: left; }
 ul.drop li { float: left; line-height: 1.3em; vertical-align: middle; zoom: 1; padding: 0px 0px; }
 ul.drop li.hover, ul.drop li ul li:hover { position: relative; z-index: 599; cursor: default; background: #1e7c9a; }
-ul.drop ul { visibility: hidden; position: absolute; top: 100%; left: -70px; z-index: 598; width: 105px; background: #555; border: 1px solid #fff; }
+ul.drop ul { visibility: hidden; position: absolute; top: 100%; left: -105px; z-index: 598; width: 135px; background: #555; border: 1px solid #fff; }
 ul.drop ul li { float: none; }
 ul.drop ul ul { top: -2px; left: 100%; }
 ul.drop li:hover > ul { visibility: visible }
@@ -96,7 +96,6 @@ display:none;
 }
 
 #time_remaining_box{
-padding:5px;
 float: left;
 color:black;
 text-align: center;
@@ -187,7 +186,7 @@ margin-right:5px;
 }
 #country_info{
 font-weight: bold;
-margin-top:40px;
+margin-top:20px;
 }
 #submit_info{
 float:left;
@@ -206,11 +205,12 @@ visibility:hidden;
 }
 #comment_timer{
 float:left;
-font-size: 70px;
+font-size: 68px;
 color:black;
 font-weight:bold;
 text-align: center;
-margin: -10px 0 -20px 50px;
+margin: -10px 0 -20px 55px;
+padding:10px 0 0 0;
 }
 .time_remaining_encloser {
 float:left;

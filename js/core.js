@@ -294,11 +294,10 @@ function get_Contents(callback){
 				countdown();
 				if( typeof json.session_username !== 'undefined' ) {
 					var top_page_menu_right1;
-					var top_page_menu_right2;
 					top_page_menu_right1 = '<a href="'+ ssBaseUrl + '/profile/'+json.session_username+'"><img style="vertical-align:middle" src="'+ json.session_userimage + '" width="20" height="20"></a> <a href="'+ ssBaseUrl + '/mysub/'+json.session_username+'">'+json.session_username+'</a> | <a href="'+ ssBaseUrl + '/subject/add">'+ssLang.site.uploadSubject+'</a> | ';
-					$('#top_page_menu_right1').html(top_page_menu_right1);
-					top_page_menu_right2 = '<ul id="nav" class="drop"><li><a href="'+ssBaseUrl+'/site/index"><img src="'+ssBaseUrl+'/images/menu_icon.png"></a><ul><li><a href="'+ssBaseUrl+'/site/index">Home</a></li><li><a href="'+ssBaseUrl+'/subject/index">'+ssLang.site.history+'</a></li><li><a href="'+ ssBaseUrl + '/site/logout">Logout</a></li></ul></li></ul>';
-					$('#top_page_menu_right2').html(top_page_menu_right2);
+					$('#top_page_menu_right1').html(top_page_menu_right1);					
+					$('#top_page_menu_right2 ul li ul').append('<li><a href="'+ ssBaseUrl + '/site/logout">'+ssLang.site.logout+'</a></li>');
+					
 				}				
 			}
 			if(json.new_sub != 0 || json.new_comment != 0 ){				
@@ -571,6 +570,17 @@ $(document).ready(function() {
 		first_focus = true;
 	});
 	$("#send_comment").click(function (){send_comment();});
+	
+	//Setup searchbox
+	$("#search_icon").click(function () {		
+		$("#search_box").css({display:'inline'});
+        $("#search_box").animate({width: '150px'});
+		$("#search_box").focus();
+    });
+    $("#search_box").blur(function () {
+        $(this).css({width: '1px'});
+		$("#search_box").css({display:'none'});
+    });
 	
 	//Setup Voting
 	subject_voting();

@@ -86,5 +86,16 @@ function get_Contents(callback){
 }
 $(document).ready(function() {
 epoch_timer();
+//Setup searchbox
+$("#search_icon").click(function () {		
+	$("#search_box").css({display:'inline'});
+	$("#search_box").animate({width: '150px'});
+	$("#search_box").focus();
+});
+$("#search_box").blur(function () {
+	$(this).css({width: '1px'});
+	$("#search_box").css({display:'none'});
+});
+
 get_Contents("firsttime");
 });

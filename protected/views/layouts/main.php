@@ -83,16 +83,23 @@ if( (strtolower($this->id) == 'site' and strtolower($this->action->Id) == 'index
 	<div id="top_page_menu_left">		
 		
 	</div>
+	
 	<div id="top_page_menu_right2" class="top_page_menu">
-		<ul id="nav" class="drop"><li><a href="<?php echo Yii::app()->request->baseUrl.'/site/index';?>"><img src="<?php echo Yii::app()->request->baseUrl.'/images/menu_icon.png';?>"></a><ul><li><a href="<?php echo Yii::app()->request->baseUrl.'/site/index';?>">Home</a></li><li><a href="<?php echo Yii::app()->request->baseUrl.'/subject/index';?>"><?php echo Yii::t('site','History');?></a></li></ul></li></ul>
+		<ul id="nav" class="drop"><li><a href="<?php echo Yii::app()->request->baseUrl.'/site/index';?>"><img src="<?php echo Yii::app()->request->baseUrl.'/images/menu_icon.png';?>"></a><ul><li><a href="<?php echo Yii::app()->request->baseUrl.'/site/index';?>">Home</a></li><li><a href="<?php echo Yii::app()->request->baseUrl.'/subject/index';?>"><?php echo Yii::t('site','History');?></a></li><li><a href="<?php echo Yii::app()->request->baseUrl.'/site/contact';?>"><?php echo Yii::t('site','Contact us');?></a></li></ul></li></ul>
 	</div>
 	<div class="top_page_menu">
-		<span><a href="<?php echo Yii::app()->request->baseUrl.'/subject/index';?>" title="<?php echo Yii::t('site','History');?>"><img src="<?php echo Yii::app()->request->baseUrl.'/images/search_icon.png';?>"></a></span>
+		<span><a href="javascript:void(0)" id="search_icon" title="<?php echo Yii::t('site','Search');?>"><img src="<?php echo Yii::app()->request->baseUrl.'/images/search_icon.png';?>"></a></span>
+	</div>
+	<div class="top_page_menu" style="padding:0">
+		<form method="get" action="<?php echo Yii::app()->request->baseUrl.'/subject/index';?>" id="search">
+			<input id="search_box" name="Subject[title]" type="text" size="5" value="" style="display:none; width:1px; margin:0"/>
+		</form>
 	</div>
 	<div id="top_page_menu_right1" class="top_page_menu">
 		<span><?php echo '<a href="'. Yii::app()->createUrl('site/login').'">'.Yii::t('site','Login').'</a>';?></span>
-		<span> | <?php echo '<a href="'. Yii::app()->createUrl('subject/add').'">'.Yii::t('site','Add Subject').'</a>';?> | </span>		
+		<span> | <?php echo '<a href="'. Yii::app()->createUrl('subject/add').'">'.Yii::t('site','Add Subject').'</a>';?> |</span>		
 	</div>
+	
 
 </div>
 <div id="page" class="container" <?php echo ((strtolower($this->id) == 'site' and strtolower($this->action->Id) == 'index')) ? 'style="display:none;"' : '';?>>
