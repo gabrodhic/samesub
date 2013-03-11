@@ -45,7 +45,7 @@ function get_Contents(callback){
 				//most probably that the clock also is slow, so lets update it also
 
 			}			
-			$('#header_top_frame').contents().find('body').html('<a target="_top" style="color: #046381;" href="'+ ssBaseUrl + '/site/index">' + ssLang.site.liveNowTitle.format(json.title) + '</a>');
+			$('#header_top_frame').contents().find('body').html('<a target="_top" style="color: #046381;" href="'+ ssBaseUrl + '/site/index"><img src="'+ssBaseUrl+'/images/home_icon.png" style="vertical-align:middle" width="20" height="20"></a> <a target="_top" style="color: #046381;" href="'+ ssBaseUrl + '/site/index">' + ssLang.site.liveNowTitle.format(json.title) + '</a>');
 			if(callback === undefined) {
 				setTimeout(function (){$("#header_top_frame").contents().find('body, body a').css("color", "white");},500);
 				setTimeout(function (){$("#header_top_frame").contents().find('body, body a').css("color", "");},1000);
