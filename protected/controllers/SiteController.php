@@ -73,7 +73,6 @@ class SiteController extends Controller
 					SiteLibrary::send_email(Yii::app()->params['contactEmail'],"SSCONTACT ".SiteLibrary::utc_time(),$this->model->text);
 				}
 				Yii::app()->user->setFlash('contact',Yii::t('site','Thank you for contacting us. If you provided an email we will respond to you as soon as possible.'));
-				$this->refresh();
 			}
 		}
 		$this->render('contact',array('model'=>$this->model));
