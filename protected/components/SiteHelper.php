@@ -34,9 +34,10 @@ class SiteHelper extends CHtml
 				$html = SiteHelper::formatted($subject->content_text->text);
 				break;
 			case 3:
+				preg_match_all('#\bhttps?://[^\s()<>]+(?:\([\w\d]+\)|([^[:punct:]\s]|/))#', $subject->content_video->embed_code, $match);
 				//would be nice to use yii validator to see if its an url but: http://code.google.com/p/yii/issues/detail?id=1324
-				if(SiteLibrary::valid_url($subject->content_video->embed_code)){//if its an url
-					$parsed_url = parse_url($subject->content_video->embed_code);
+				if(SiteLibrary::valid_url($match[0][0])){//if its an url(if we could extract an url from the content)
+					$parsed_url = parse_url($match[0][0]);
 					$query_arr = SiteLibrary::parse_url_query($parsed_url['query']);
 					if(stristr($parsed_url['host'], 'youtube.com')){//and its from youtube
 					
@@ -61,6 +62,8 @@ class SiteHelper extends CHtml
 						if($parsed_url['path'])
 						//nice, we can play with params here, title, portrait, etc
 						$html = '<iframe src="http://player.vimeo.com/video'.$parsed_url['path'].'?title=0&byline=0&portrait=0" width="640" height="390" frameborder="0"></iframe>';
+					}else{
+						$html = SiteHelper::formatted($subject->content_video->embed_code);
 					}
 				}else{
 					$html = SiteHelper::formatted($subject->content_video->embed_code);
