@@ -56,8 +56,9 @@ class SiteHelper extends CHtml
 								$vid_url = substr($vid_url, 0, strpos($vid_url,"?"));//remove the old params
 							elseif(strpos($vid_url,"&"))
 								$vid_url = substr($vid_url, 0, strpos($vid_url,"&"));//remove the old params
-							$vid_url = str_replace("/embed/","",$parsed_url['path']);//remove the old embed code variable just in case it is present
-							$html = '<iframe width="640" height="390" src="http://www.youtube.com/embed/'.$vid_url.'?wmode=opaque'.$time.'" frameborder="0" allowfullscreen></iframe>';							
+							$vid_url = str_replace("/embed/","",$vid_url);//remove the old embed code variable just in case it is present
+							$html = '<iframe width="640" height="390" src="http://www.youtube.com/embed/'.$vid_url.'?wmode=opaque'.$time.'" frameborder="0" allowfullscreen></iframe>';
+echo	'http://www.youtube.com/embed/'.$vid_url.'?wmode=opaque'.$time;						
 						}
 					}elseif(stristr($parsed_url['host'],'youtu.be')){//and its from youtube shortly
 						$time = ($query_arr['t']) ? '#at='.$query_arr['t'] : ''; //#at=** is the correct syntax for embed url, ie clic on the youtube logo while wathching a video on X seconds: it will open a new window with that param
