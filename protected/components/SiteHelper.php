@@ -36,6 +36,7 @@ class SiteHelper extends CHtml
 			case 3:
 				preg_match_all('#\bhttps?://[^\s()<>]+(?:\([\w\d]+\)|([^[:punct:]\s]|/))#', $subject->content_video->embed_code, $match);
 				//would be nice to use yii validator to see if its an url but: http://code.google.com/p/yii/issues/detail?id=1324
+				
 				if(SiteLibrary::valid_url($match[0][0])){//if its an url(if we could extract an url from the content)
 					$parsed_url = parse_url($match[0][0]);
 					$query_arr = SiteLibrary::parse_url_query($parsed_url['query']);
@@ -47,6 +48,12 @@ class SiteHelper extends CHtml
 							//http://stackoverflow.com/questions/3820325/overlay-opaque-div-over-youtube-iframe
 							$time = ($query_arr['t']) ? '#at='.$query_arr['t'] : '';//#at=** is the correct syntax for embed url, ie clic on the youtube logo while wathching a video on X seconds: it will open a new window with that param
 							$html = '<iframe width="640" height="390" src="http://www.youtube.com/embed/'.$query_arr['v'].'?wmode=opaque'.$time.'" frameborder="0" allowfullscreen></iframe>';
+						}else{
+							$time = ($query_arr['t']) ? '#at='.$query_arr['t'] : ''; //#at=** is the correct syntax for embed url, ie clic on the youtube logo while wathching a video on X seconds: it will open a new window with that param
+							
+							$vid_url = str_replace("/v/","",$parsed_url['path']);//remove the old embed code variable just in case it is present
+							$vid_url = substr($vid_url, 0, strpos($vid_url,"&"));//remove the old params
+							$html = '<iframe width="640" height="390" src="http://www.youtube.com/embed/'.$vid_url.'?wmode=opaque'.$time.'" frameborder="0" allowfullscreen></iframe>';							
 						}
 					}elseif(stristr($parsed_url['host'],'youtu.be')){//and its from youtube shortly
 						$time = ($query_arr['t']) ? '#at='.$query_arr['t'] : ''; //#at=** is the correct syntax for embed url, ie clic on the youtube logo while wathching a video on X seconds: it will open a new window with that param
